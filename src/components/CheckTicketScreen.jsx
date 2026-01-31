@@ -107,7 +107,7 @@ const CheckTicketScreen = () => {
         <div className="w-full min-h-screen main-bg flex flex-col items-center overflow-x-hidden relative pb-10">
             <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
             
-            <div className="relative z-10 w-full flex flex-col items-center pt-28 pb-10">
+            <div className="relative z-10 w-full flex flex-col items-center pt-26 pb-10">
                 <div className="w-full max-w-[500px] px-6">
                     <AnimatePresence mode="wait">
                         {/* Хайсны дараа ч (RESULTS үед) PHONE эсвэл OTP харагдана */}
@@ -116,20 +116,20 @@ const CheckTicketScreen = () => {
                                 key="phone-input"
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="relative flex items-center w-full h-[60px] rounded-[16px] bg-[#F9F9F9] border-[1.5px] border-[#D4AF37] transition-all shadow-2xl"
+                                className="relative flex items-center w-full h-[56px] rounded-[16px] bg-[#F9F9F9] border-[1.5px] border-[#D4AF37] transition-all shadow-2xl"
                             >
                                 <input
                                     type="tel"
                                     value={phoneNumber}
                                     onChange={handlePhoneChange}
-                                    placeholder="Утасны дугаар оруулах"
+                                    placeholder="Утасны дугаар"
                                     className="w-full h-full bg-transparent outline-none px-6 text-[#1a2e2a] font-bold text-xl font-play tracking-[0.2em] custom-placeholder"
                                 />
                                 <div className="absolute right-5">
                                     {isLoading ? (
                                         <div className="w-6 h-6 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin"></div>
                                     ) : (
-                                        <Icons.Search className="w-6 h-6" color="#D4AF37" />
+                                        <Icons.Search className="w-5 h-5" color="#D4AF37" />
                                     )}
                                 </div>
                             </motion.div>
@@ -143,8 +143,8 @@ const CheckTicketScreen = () => {
                                 exit={{ opacity: 0, x: -20 }}
                                 className="flex flex-col items-center w-full"
                             >
-                                <p className="text-white font-play mb-4 text-sm opacity-80">Танд ирсэн 4 оронтой кодыг оруулна уу (Test: 1234)</p>
-                                <div className="relative flex items-center w-full h-[60px] rounded-[16px] bg-white border-[1.5px] border-[#D4AF37] shadow-2xl">
+                                <p className="text-white font-play mb-4 text-sm opacity-80">(Test: 1234)</p>
+                                <div className="relative flex items-center w-full h-[56px] rounded-[16px] bg-white border-[1.5px] border-[#D4AF37] shadow-2xl">
                                     <input
                                         type="text"
                                         value={otp}
@@ -220,7 +220,7 @@ const LotteryResultCard = ({ data }) => {
                         <div 
                             key={i} 
                             className={`
-                                flex items-center justify-center py-2 rounded-[5px]
+                                flex items-center justify-center py-1 rounded-[5px]
                                 font-bold font-play text-[10px] shadow-sm
                                 ${isWinner ? 'bg-[#2AFA62] ring-2 ring-[#1a9e3e] scale-110' : 'bg-[#A6ECFF]'}
                                 text-[#000000] transition-transform
