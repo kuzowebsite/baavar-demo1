@@ -8,16 +8,149 @@ import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 
+const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
+  const gradientId = `starGradient-${item.uniqueId}`;
+
+  const getTitleStyle = (title) => {
+    const length = title.length;
+    let fontSize;
+    
+    if (isMobile) {
+      if (length > 25) fontSize = '18px';
+      else if (length > 15) fontSize = '20px';
+      else fontSize = '24px';
+    } else {
+      if (length > 20) fontSize = '24px';
+      else fontSize = '36px';
+    }
+
+    return {
+      fontFamily: 'Roboto, sans-serif', 
+      fontWeight: 900, 
+      fontSize: fontSize, 
+      color: '#FFFFFF', 
+      margin: isMobile ? '8px 0 0 0' : '12px 0 0 0', 
+      textTransform: 'uppercase', 
+      lineHeight: '1.2', 
+      textAlign: 'center',
+      textShadow: '0px 2px 4px rgba(0,0,0,0.8)',
+      whiteSpace: 'normal', 
+      wordBreak: 'break-word',
+      width: '100%',
+      display: 'block',
+      paddingBottom: '0px' 
+    };
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col items-center flex-grow">
+      {/* 1. PROGRESS BAR */}
+      <div className="w-full relative z-30 bg-[#0f172a]" style={{ marginBottom: '0px', flexShrink: 0 }}>
+        <div className="w-full h-[6px] md:h-[8px] bg-white overflow-visible relative">
+          <div style={{ 
+              width: `${item.fillPercent}%`,
+              background: 'linear-gradient(90deg, #A54400 0%, #FAE8B2 20%, #EFC140 40%, #C26C0D 60%, #FFE89C 80%, #A54400 100%)'
+            }} 
+            className="h-full relative">
+            
+            <div className="absolute" 
+              style={{ 
+                right: '-16px', 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                zIndex: 30,
+                filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.3))'
+              }}>
+              <svg width={isMobile ? "45" : "60"} height={isMobile ? "45" : "60"} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#A54400" />
+                    <stop offset="25%" stopColor="#FEF5BA" />
+                    <stop offset="50%" stopColor="#C26C0D" />
+                    <stop offset="75%" stopColor="#FDF5B9" />
+                    <stop offset="100%" stopColor="#A54400" />
+                  </linearGradient>
+                </defs>
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
+                  fill={`url(#${gradientId})`} stroke="white" strokeWidth="1"/>
+              </svg>
+              
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-[1px]">
+                <span style={{ 
+                  fontSize: isMobile ? '10px' : '13px', 
+                  fontWeight: '900', 
+                  color: '#000000' 
+                }}>
+                  {item.fillPercent}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* 2. МЭДЭЭЛЛИЙН ХЭСЭГ */}
+      <div className="w-full flex flex-col items-center relative z-20"
+        style={{
+          backgroundImage: "url('assets/background.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderBottomLeftRadius: isMobile ? '18px' : '38px',
+          borderBottomRightRadius: isMobile ? '18px' : '38px',
+          paddingLeft: isMobile ? '24px' : '45px',
+          paddingRight: isMobile ? '24px' : '45px',
+          paddingBottom: '8px', 
+          paddingTop: '0px', 
+          marginTop: '0px', 
+          marginBottom: '-1px', 
+          flexShrink: 0, 
+          minHeight: 0 
+        }}>
+        
+        <h3 style={getTitleStyle(item.title)}>{item.title}</h3>
+        
+        <div style={{ 
+          width: '100%', 
+          height: '1px', 
+          backgroundColor: '#D9D9D9', 
+          marginTop: '0px', 
+          marginBottom: '4px' 
+        }}></div>
+        
+        <div className="w-full flex items-center justify-between" style={{ marginTop: '4px', marginBottom: '0' }}>
+          <div className="flex items-center justify-center shadow-md" 
+            style={{ 
+              backgroundColor: '#F8BE53', 
+              borderRadius: '8px', 
+              padding: isMobile ? '4px 10px' : '8px 16px' 
+            }}>
+            <span className="font-bold text-black text-[12px] md:text-[16px]">{item.displayPrice}</span>
+          </div>
+
+          <button onClick={(e) => { e.stopPropagation(); handlePurchaseClick(item); }}
+            className="flex items-center justify-center shadow-lg hover:scale-105 transition-transform" 
+            style={{ 
+              backgroundColor: '#FF6060',
+              borderRadius: '8px', 
+              padding: isMobile ? '6px 16px' : '10px 24px', 
+              cursor: 'pointer', border: 'none',
+              minWidth: isMobile ? '80px' : '120px'
+            }}>
+            <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm">Шууд оролцох</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const BodyContent = ({ onLottoClick }) => { 
   const [swiperRef, setSwiperRef] = useState(null);
   const [scale, setScale] = useState(1);
-  
   const [isMobile, setIsMobile] = useState(false); 
   const [isPhone, setIsPhone] = useState(false);
-
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [selectedLotto, setSelectedLotto] = useState(null);
-
   const [mobileSlideSize, setMobileSlideSize] = useState({ width: 340, height: 500 });
 
   useEffect(() => {
@@ -35,19 +168,17 @@ const BodyContent = ({ onLottoClick }) => {
 
       if (mobileCheck) {
         setScale(1); 
-        
         if (windowWidth >= 740) {
-            setMobileSlideSize({ width: 330, height: 420 });
+          setMobileSlideSize({ width: 330, height: 420 });
         } else {
-            const mWidth = Math.min(windowWidth * 0.65, 260); 
-            const mHeight = mWidth * 1.35; 
-            setMobileSlideSize({ width: mWidth, height: mHeight });
+          const mWidth = Math.min(windowWidth * 0.65, 260); 
+          const mHeight = mWidth * 1.35; 
+          setMobileSlideSize({ width: mWidth, height: mHeight });
         }
-
       } else {
         const widthScale = windowWidth / designWidth;
         const heightScale = windowHeight / designHeight;
-        const finalScale = Math.min(widthScale, heightScale) * 0.9; 
+        const finalScale = Math.min(widthScale, heightScale) * (windowWidth < 1500 ? 0.95 : 0.9); 
         setScale(finalScale);
       }
     };
@@ -67,33 +198,28 @@ const BodyContent = ({ onLottoClick }) => {
 
   const displayList = useMemo(() => {
     return [...baseLottoList, ...baseLottoList, ...baseLottoList].map((item, index) => ({
-        ...item,
-        uniqueId: `${item.id}-${index}`
-      }));
+      ...item,
+      uniqueId: `${item.id}-${index}`
+    }));
   }, []);
 
   const DESKTOP_SLIDE_WIDTH = 540;
   const DESKTOP_SLIDE_HEIGHT = 680;
-  
   const SLIDE_WIDTH_ACTIVE = isMobile ? mobileSlideSize.width : DESKTOP_SLIDE_WIDTH;
   const SLIDE_HEIGHT_ACTIVE = isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT;
-  
   const CONTAINER_HEIGHT = 760;
 
   const handlePurchaseClick = (item) => {
-      // --- RAM (Session Storage) дээр хадгалах хэсэг ---
-      sessionStorage.setItem('currentLottoType', item.type);
-      sessionStorage.setItem('currentLottoTitle', item.title);
-      sessionStorage.setItem('currentLottoImage', item.imageUrl);
-      // ------------------------------------------------
-
-      setSelectedLotto(item);
-      setShowPurchaseDialog(true);
+    sessionStorage.setItem('currentLottoType', item.type);
+    sessionStorage.setItem('currentLottoTitle', item.title);
+    sessionStorage.setItem('currentLottoImage', item.imageUrl);
+    setSelectedLotto(item);
+    setShowPurchaseDialog(true);
   };
 
   const closePurchaseDialog = () => {
-      setShowPurchaseDialog(false);
-      setSelectedLotto(null);
+    setShowPurchaseDialog(false);
+    setSelectedLotto(null);
   };
 
   return (
@@ -135,14 +261,8 @@ const BodyContent = ({ onLottoClick }) => {
           }
 
           @media (max-width: 739px) {
-             .swiper-slide {
-                filter: blur(4px);
-                opacity: 0.5;
-             }
-             .swiper-slide-prev {
-                opacity: 0.2 !important;
-                filter: blur(8px) !important;
-             }
+             .swiper-slide { filter: blur(4px); opacity: 0.5; }
+             .swiper-slide-prev { opacity: 0.2 !important; filter: blur(8px) !important; }
              .swiper-slide-next {
                 opacity: 0.5 !important; 
                 filter: blur(5px) !important; 
@@ -153,64 +273,41 @@ const BodyContent = ({ onLottoClick }) => {
           }
 
           .swiper-slide img { 
-              width: 100%; 
-              height: 100%; 
-              object-fit: cover; 
+              width: 100%; height: 100%; object-fit: cover; 
               border-radius: ${isMobile ? '20px' : '40px'} !important; 
           }
           
           .swiper-slide-active { 
               width: ${SLIDE_WIDTH_ACTIVE}px !important; 
               height: ${SLIDE_HEIGHT_ACTIVE}px !important; 
-              
-              filter: blur(0px) !important; 
-              opacity: 1 !important; 
-              z-index: 100 !important; 
-              background-color: transparent; 
-              box-shadow: 0 15px 40px rgba(0,0,0,0.55); 
+              filter: blur(0px) !important; opacity: 1 !important; z-index: 100 !important; 
+              background-color: transparent; box-shadow: 0 15px 40px rgba(0,0,0,0.55); 
               border-radius: ${isMobile ? '20px' : '40px'} !important;
           }
           
-          .swiper-slide-active img { 
-              border-radius: 0 !important;
-          }
+          .swiper-slide-active img { border-radius: 0 !important; }
           
           .golden-3d-text {
-    font-family: 'Montserrat Alternates', sans-serif;
-    font-weight: 900;
-    text-transform: uppercase;
-    
-    /* Эхлээд энгийн өнгө өгье (Gradient ажиллахгүй бол энэ харагдана) */
-    color: #F8BE53; 
-    
-    /* Доорх хэсгийг түр коммент болгоод туршаарай. Хэрэв текст гарч ирвэл эдгээр мөрөнд асуудал байна */
-    /* background: linear-gradient(180deg, #F9F0CF 0%, #E6C86E 50%, #C49F30 100%); */
-    /* -webkit-background-clip: text; */
-    /* background-clip: text; */
-    /* -webkit-text-fill-color: transparent; */
-    
-    /* Сүүдрийг хэвээр үлдээнэ, энэ нь текстийг тод харагдуулна */
-    text-shadow: 0px 2px 4px rgba(0,0,0,0.5); 
-    filter: drop-shadow(0px 2px 0px #7D5A12);
-    
-    position: relative;
-    z-index: 10000;
-}
+            font-family: 'Montserrat Alternates', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #F8BE53; 
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5); 
+            filter: drop-shadow(0px 2px 0px #7D5A12);
+            position: relative;
+            z-index: 10000;
+          }
 
           @media (max-width: 739px) {
               .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
-              
               .mobile-title { 
-    font-size: 24px !important; 
-    margin-bottom: 20px; 
-    margin-top: 20px; 
-    position: relative;
-    /* 9999-ийг 10 эсвэл 20 болгож багасгах */
-    z-index: 10 !important; 
-    opacity: 1 !important;
-    display: block !important;
-    visibility: visible !important;
-}
+                font-size: 24px !important; 
+                margin-bottom: 20px; 
+                margin-top: 20px; 
+                position: relative;
+                z-index: 10 !important; opacity: 1 !important;
+                display: block !important; visibility: visible !important;
+              }
               body, html { overflow-x: hidden; }
           }
         `}
@@ -244,35 +341,36 @@ const BodyContent = ({ onLottoClick }) => {
                    alignItems: 'center'
                }}>
             
-            {/* ГАРЧИГ ХЭСЭГ - Footer-тэй яг ижил зарчмаар тохируулав */}
+            {/* ГАРЧИГ ХЭСЭГ */}
             <div className={isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"} 
-      style={{ 
-          position: isPhone ? 'relative' : (isMobile ? 'relative' : 'absolute'),
-          marginTop: isPhone ? '120px' : '0', 
-          top: isPhone ? 'auto' : (isMobile ? 'auto' : '50px'),
-          paddingBottom: isPhone ? '10px' : '0',
-          zIndex: 50, // <--- Энд 9999 байсныг 50 болгож багасгав
-          flexShrink: 0, 
-          pointerEvents: 'none'
-      }}>
-      <h1 className="mobile-title golden-3d-text"
-          style={{ 
-              fontSize: isPhone ? '28px' : '36px',
-              letterSpacing: '1px', 
-              margin: 0, 
-              textAlign: 'center', 
-              lineHeight: 1.2,
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' 
-          }}>
-          {isPhone ? (
-            <>
-              <span style={{ display: 'block' }}>Монголын хамгийн</span>
-              <span style={{ display: 'block' }}>том хонжворт сугалаа</span>
-            </>
-          ) : (
-            "Монголын хамгийн том хонжворт сугалаа"
-          )}
-      </h1>
+                 style={{ 
+                    position: isPhone ? 'relative' : (isMobile ? 'relative' : 'absolute'),
+                    // SE утасны хэмжээн дээр гарчгийг дээшлүүлсэн хэсэг
+                    marginTop: isPhone ? '80px' : '0', 
+                    top: isPhone ? 'auto' : (isMobile ? 'auto' : '50px'),
+                    paddingBottom: isPhone ? '10px' : '0',
+                    zIndex: 50,
+                    flexShrink: 0, 
+                    pointerEvents: 'none'
+                 }}>
+              <h1 className="mobile-title golden-3d-text"
+                  style={{ 
+                      fontSize: isPhone ? '28px' : '36px',
+                      letterSpacing: '1px', 
+                      margin: 0, 
+                      textAlign: 'center', 
+                      lineHeight: 1.2,
+                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' 
+                  }}>
+                  {isPhone ? (
+                    <>
+                      <span style={{ display: 'block' }}>Монголын хамгийн</span>
+                      <span style={{ display: 'block' }}>том хонжворт сугалаа</span>
+                    </>
+                  ) : (
+                    "Монголын хамгийн том хонжворт сугалаа"
+                  )}
+              </h1>
                 
                 {isMobile && !isPhone && (
                     <h2 className="mobile-subtitle" style={{
@@ -292,20 +390,18 @@ const BodyContent = ({ onLottoClick }) => {
 
             {/* SWIPER CONTAINER */}
             <div className={`${isMobile ? "w-full relative swiper-container-wrapper" : "absolute w-full"}`} 
-      style={{ 
-          flexGrow: isPhone ? 0 : 0, // Утас дээр бүтэн зай эзлэхийг болиулна
-          height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), // Өндрийг auto болгоно
-          minHeight: isPhone ? '0' : 'auto', 
-          
-          top: isMobile ? '0' : '120px', 
-          // marginTop-ийг -10px-аас -60px (эсвэл таны хүссэн хэмжээ) болгож өөрчилснөөр дээшлэнэ
-          marginTop: isMobile ? (isPhone ? '-90px' : '-80px') : '0', 
-          
-          display: 'flex', 
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10
-      }}>
+                 style={{ 
+                  flexGrow: isPhone ? 0 : 0, 
+                  height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
+                  minHeight: isPhone ? '0' : 'auto', 
+                  top: isMobile ? '0' : '120px', 
+                  // Жижиг утасны хэмжээнд сугалааны картыг гарчигтай ойртуулж дээшлүүлсэн
+                  marginTop: isMobile ? (isPhone ? '-10px' : '-80px') : '0', 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 10
+                 }}>
                 
                 <Swiper
                     onSwiper={setSwiperRef}
@@ -330,35 +426,29 @@ const BodyContent = ({ onLottoClick }) => {
                     }}
                     modules={[EffectCoverflow, Pagination, Autoplay, Mousewheel]} 
                     className="custom-swiper"
-                    style={{
-                        height: '100%',
-                        width: '100%'
-                    }}
+                    style={{ height: '100%', width: '100%' }}
                 >
                     {displayList.map((item) => (
                         <SwiperSlide key={item.uniqueId}>
                             {({ isActive }) => (
-                                // Card Wrapper
                                 <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
                                      onClick={() => handlePurchaseClick(item)}
                                      style={{ 
-                                          borderRadius: isMobile ? '20px' : '40px',
-                                          boxSizing: 'border-box',
-                                          border: '2px solid #9B7A49',
-                                          height: '100%', 
-                                          minHeight: '100%',
-                                          backgroundColor: '#0f172a',
-                                          display: 'flex',       
-                                          flexDirection: 'column' 
+                                         borderRadius: isMobile ? '20px' : '40px',
+                                         boxSizing: 'border-box',
+                                         border: '2px solid #9B7A49',
+                                         height: '100%', 
+                                         minHeight: '100%',
+                                         backgroundColor: '#0f172a',
+                                         display: 'flex',       
+                                         flexDirection: 'column' 
                                      }}>
                                      
-                                     {/* ЗУРАГ ХЭСЭГ */}
                                      <div className="relative w-full overflow-hidden" 
                                           style={{
                                               flex: '1 1 auto',
                                               height: 'auto', 
                                               minHeight: 0,
-                                              
                                               borderTopLeftRadius: isMobile ? '18px' : '38px',
                                               borderTopRightRadius: isMobile ? '18px' : '38px',
                                               borderBottomLeftRadius: isActive ? '0' : (isMobile ? '18px' : '38px'),
@@ -368,13 +458,9 @@ const BodyContent = ({ onLottoClick }) => {
                                           <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                                      </div>
 
-                                     {/* CONTENT Wrapper */}
                                      {isActive && (
                                           <div className="w-full relative z-20 bg-transparent flex flex-col"
-                                               style={{ 
-                                                    flex: '0 0 auto', 
-                                                    minHeight: 0     
-                                               }}>
+                                               style={{ flex: '0 0 auto', minHeight: 0 }}>
                                                <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
                                           </div>
                                      )}
@@ -388,11 +474,7 @@ const BodyContent = ({ onLottoClick }) => {
             {/* FOOTER TEXT */}
             {isPhone && (
                 <div className="w-full text-center py-2 pb-4 shrink-0 z-50" style={{ position: 'relative' }}>
-                    <p className="golden-3d-text"
-                       style={{
-                          fontSize: '12px',
-                          margin: 0,
-                    }}>
+                    <p className="golden-3d-text" style={{ fontSize: '12px', margin: 0 }}>
                         Сангийн яамны зөвшөөрөлтэй сугалаа
                     </p>
                 </div>
@@ -421,143 +503,6 @@ const BodyContent = ({ onLottoClick }) => {
       </div>
     </>
   );
-};
-
-const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
-    const gradientId = `starGradient-${item.uniqueId}`;
-
-    const getTitleStyle = (title) => {
-        const length = title.length;
-        let fontSize;
-        
-        if (isMobile) {
-            if (length > 25) fontSize = '18px';
-            else if (length > 15) fontSize = '20px';
-            else fontSize = '24px';
-        } else {
-            if (length > 20) fontSize = '24px';
-            else fontSize = '36px';
-        }
-
-        return {
-            fontFamily: 'Roboto, sans-serif', 
-            fontWeight: 900, 
-            fontSize: fontSize, 
-            color: '#FFFFFF', 
-            margin: isMobile ? '8px 0 0 0' : '12px 0 0 0', 
-            textTransform: 'uppercase', 
-            lineHeight: '1.2', 
-            textAlign: 'center',
-            textShadow: '0px 2px 4px rgba(0,0,0,0.8)',
-            whiteSpace: 'normal', 
-            wordBreak: 'break-word',
-            width: '100%',
-            display: 'block',
-            paddingBottom: '0px' 
-        };
-    };
-
-    return (
-        <div className="w-full h-full flex flex-col items-center flex-grow">
-            
-            {/* 1. PROGRESS BAR */}
-            <div className="w-full relative z-30 bg-[#0f172a]" style={{ marginBottom: '0px', flexShrink: 0 }}>
-                <div className="w-full h-[6px] md:h-[8px] bg-white overflow-visible relative">
-                    <div style={{ 
-                             width: `${item.fillPercent}%`,
-                             background: 'linear-gradient(90deg, #A54400 0%, #FAE8B2 20%, #EFC140 40%, #C26C0D 60%, #FFE89C 80%, #A54400 100%)'
-                          }} 
-                          className="h-full relative">
-                        
-                        <div className="absolute" 
-                             style={{ 
-                                  right: '-16px', 
-                                  top: '50%', 
-                                  transform: 'translateY(-50%)', 
-                                  zIndex: 30,
-                                  filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.3))'
-                             }}>
-                             <svg width={isMobile ? "45" : "60"} height={isMobile ? "45" : "60"} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stopColor="#A54400" />
-                                        <stop offset="25%" stopColor="#FEF5BA" />
-                                        <stop offset="50%" stopColor="#C26C0D" />
-                                        <stop offset="75%" stopColor="#FDF5B9" />
-                                        <stop offset="100%" stopColor="#A54400" />
-                                    </linearGradient>
-                                </defs>
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
-                                      fill={`url(#${gradientId})`} stroke="white" strokeWidth="1"/>
-                             </svg>
-                             
-                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-[1px]">
-                                <span style={{ 
-                                    fontSize: isMobile ? '10px' : '13px', 
-                                    fontWeight: '900', 
-                                    color: '#000000' 
-                                }}>
-                                    {item.fillPercent}%
-                                </span>
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            {/* 2. МЭДЭЭЛЛИЙН ХЭСЭГ */}
-            <div className="w-full flex flex-col items-center relative z-20"
-                 style={{
-                    backgroundImage: "url('assets/background.jpg')",
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    borderBottomLeftRadius: isMobile ? '18px' : '38px',
-                    borderBottomRightRadius: isMobile ? '18px' : '38px',
-                    paddingLeft: isMobile ? '24px' : '45px',
-                    paddingRight: isMobile ? '24px' : '45px',
-                    paddingBottom: '8px', 
-                    paddingTop: '0px', 
-                    marginTop: '0px', 
-                    marginBottom: '-1px', 
-                    flexShrink: 0, 
-                    minHeight: 0 
-                 }}>
-                
-                <h3 style={getTitleStyle(item.title)}>{item.title}</h3>
-                
-                <div style={{ 
-                    width: '100%', 
-                    height: '1px', 
-                    backgroundColor: '#D9D9D9', 
-                    marginTop: '0px', 
-                    marginBottom: '4px' 
-                }}></div>
-                
-                <div className="w-full flex items-center justify-between" style={{ marginTop: '4px', marginBottom: '0' }}>
-                    <div className="flex items-center justify-center shadow-md" 
-                         style={{ 
-                             backgroundColor: '#F8BE53', 
-                             borderRadius: '8px', 
-                             padding: isMobile ? '4px 10px' : '8px 16px' 
-                         }}>
-                        <span className="font-bold text-black text-[12px] md:text-[16px]">{item.displayPrice}</span>
-                    </div>
-
-                    <button onClick={(e) => { e.stopPropagation(); handlePurchaseClick(item); }}
-                        className="flex items-center justify-center shadow-lg hover:scale-105 transition-transform" 
-                        style={{ 
-                            backgroundColor: '#FF6060',
-                            borderRadius: '8px', 
-                            padding: isMobile ? '6px 16px' : '10px 24px', 
-                            cursor: 'pointer', border: 'none',
-                            minWidth: isMobile ? '80px' : '120px'
-                        }}>
-                        <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm">Шууд оролцох</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
 };
 
 export default BodyContent;
