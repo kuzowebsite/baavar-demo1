@@ -75,15 +75,18 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                   fill={`url(#${gradientId})`} stroke="white" strokeWidth="1"/>
               </svg>
               
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-[1px]">
-                <span style={{ 
-                  fontSize: isMobile ? '10px' : '13px', 
-                  fontWeight: '900', 
-                  color: '#000000' 
-                }}>
-                  {item.fillPercent}%
-                </span>
-              </div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full h-full">
+  <span style={{ 
+      fontSize: isMobile ? '8px' : '11px', // Хэмжээг жижигрүүлсэн
+      fontWeight: '900', 
+      color: '#000000',
+      lineHeight: '1',
+      textAlign: 'center',
+      display: 'block'
+    }}>
+    {item.fillPercent}%
+  </span>
+</div>
             </div>
           </div>
         </div>
