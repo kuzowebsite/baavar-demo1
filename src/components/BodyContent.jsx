@@ -230,10 +230,17 @@ const BodyContent = ({ onLottoClick }) => {
           @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700;900&family=Roboto:wght@400;700;900&display=swap');
           
           header, .header-container {
-              animation: none !important;
-              transform: none !important;
-              top: 0 !important;
-          }
+    position: fixed !important; /* Дэлгэцийн оройд хөдөлгөөнгүй байлгах */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999 !important; /* Хамгийн өндөр утга */
+    background: #0f172a; /* Header-ийн цаана байгаа зүйл харагдахгүй байхын тулд background өгнө */
+}
+
+.mobile-title-container, .desktop-title-container {
+    z-index: 50 !important; /* Header-ээс бага утга өгнө */
+}
 
           .custom-swiper { 
             width: 100%; 
@@ -312,23 +319,27 @@ const BodyContent = ({ onLottoClick }) => {
           }
           
           @media (max-width: 1024px) and (min-width: 740px) {
-            .mobile-title-container {
-                margin-top: 140px !important; 
-                display: flex !important;
-                position: relative !important; 
-                z-index: 60 !important;
-            }
-            .swiper-container-wrapper {
-                 margin-top: 40px !important;
-            }
-            .mobile-host-container {
-                transform: translateY(-120px) !important;
-                z-index: 0 !important;
-            }
-            .mobile-host-container img {
-                height: 550px !important;
-            }
-          }
+    .mobile-title-container {
+        margin-top: 100px !important; 
+        z-index: 60 !important;
+    }
+    .swiper-container-wrapper {
+        margin-top: 20px !important;
+        z-index: 10 !important; /* Swiper-ийг доор байлгах */
+    }
+    .mobile-host-container {
+        /* Энд z-index-ийг маш өндөр болгож, absolute байрлал өгнө */
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 20px !important;
+        transform: none !important;
+        z-index: 999 !important; /* Swiper-ийн 10-аас өндөр байх ёстой */
+        pointer-events: none;
+    }
+    .mobile-host-container img {
+        height: 900px !important; /* Таблет дээрх зургийн өндөр */
+    }
+}
 
           /* iPhone SE (375px) болон жижиг дэлгэцэнд зориулсан CSS */
           @media (max-width: 380px) {
@@ -402,11 +413,19 @@ const BodyContent = ({ onLottoClick }) => {
               </h1>
             </div>
 
-            {!isMobile && (
-                <div className="absolute z-20 pointer-events-none" style={{ left: '80px', bottom: '-30px', height: 'auto', top: '140px'}}>
-                    <img src="/assets/mongolian-woman.png" alt="Host" style={{ height: '780px', width: 'auto', objectFit: 'contain', filter: 'drop-shadow(10px 10px 20px rgba(0,0,0,0.3))' }} />
-                </div>
-            )}
+           {!isMobile && (
+  <div className="absolute pointer-events-none" 
+       style={{ 
+         left: '80px', 
+         bottom: '-30px', 
+         height: 'auto', 
+         top: '140px',
+         zIndex: 9999 // Маш өндөр тоо өгөх
+       }}>
+    <img src="/assets/mongolian-woman.png" alt="Host" 
+         style={{ height: '780px', width: 'auto', objectFit: 'contain' }} />
+</div>
+)}
 
             {/* SWIPER CONTAINER */}
             <div className={`${isMobile ? "w-full relative swiper-container-wrapper" : "absolute w-full"}`} 
@@ -500,12 +519,24 @@ const BodyContent = ({ onLottoClick }) => {
             )}
 
             {isMobile && !isPhone && (
-                <div className="w-full flex justify-start items-end mt-4 relative z-0 mobile-host-container"
-                      style={{ marginTop: '1px', marginLeft: '-100px', transform: 'translateY(0px)' }}>
-                    <img src="/assets/mongolian-woman.png" alt="Host" 
-                        style={{ width: 'auto', height: '360px', objectFit: 'contain', filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' }} />
-                </div>
-            )}
+  <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
+       style={{ 
+         marginTop: '1px', 
+         marginLeft: '-100px', 
+         transform: 'translateY(0px)' 
+       }}>
+    <img 
+      src="/assets/mongolian-woman.png" 
+      alt="Host" 
+      style={{ 
+        width: 'auto', 
+        height: '360px', 
+        objectFit: 'contain', 
+        filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' 
+      }} 
+    />
+  </div>
+)}
 
           </div>
 
