@@ -170,20 +170,32 @@ const PurchaseDialog = ({
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const generateLuckyNumbers = (count) => {
-    const nums = [];
-    for(let i=0; i<count; i++) {
-        nums.push(Math.floor(100000 + Math.random() * 900000));
+  // --- NEW: Generate 6-digit alphanumeric unique codes ---
+  const generateRandomString = (length) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    return nums;
+    return result;
+  };
+
+  const generateLuckyNumbers = (count) => {
+    const nums = new Set();
+    while (nums.size < count) {
+        // Generate 6 character alphanumeric code
+        nums.add(generateRandomString(6));
+    }
+    return Array.from(nums);
   };
 
   const saveToStorage = (status = 'Paid', numbers = []) => {
     const ticketData = {
         id: Date.now(),
         phoneNumber: rawPhoneNumber,
-        title: title,
-        itemName: lotteryType,
+        lotteryName: title, // Updated key name for consistency
+        itemName: lotteryType, // Updated key name for consistency
         image: processedImage,
         luckyNumbers: numbers.length > 0 ? numbers : luckyNumbers, 
         drawDate: "2024.12.01",
@@ -220,7 +232,7 @@ const PurchaseDialog = ({
 
   // --- NAVIGATION ---
   const handleNext = () => {
-    setIsNumpadOpen(false); // Дараах руу шилжихэд гарыг хаах
+    setIsNumpadOpen(false); 
     if (currentStep === 1) {
         if (!isPhoneValid) return;
         const demoCode = "1234";
