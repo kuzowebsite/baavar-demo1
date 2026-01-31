@@ -78,33 +78,29 @@ const CheckTicketScreen = () => {
           .font-play { font-family: 'Play', sans-serif; }
           .custom-placeholder::placeholder { color: #D1D1D1; opacity: 1; }
           
-          /* Background тохиргоог зөвхөн className-д ашиглана */
+          .main-bg {
+            background-image: url('assets/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+          }
         `}
         </style>
 
-        {/* --- FIXED BACKGROUND LAYERS (SCROLL FIX) --- */}
-        <div className="fixed inset-0 z-0">
-            <img 
-                src="assets/background.jpg" 
-                alt="bg" 
-                className="w-full h-full object-cover"
-            />
-            {/* Overlay байхгүй, зураг тод харагдана */}
-        </div>
-
-        {/* --- SCROLLABLE CONTENT WRAPPER --- */}
-        <div className="w-full min-h-screen flex flex-col items-center overflow-x-hidden relative z-10 pb-40">
+        <div className="w-full min-h-screen main-bg flex flex-col items-center overflow-x-hidden relative pb-10">
             
-            {/* SEARCH SECTION - pt-24 болгож доошлуулсан */}
-            <div className="relative w-full flex flex-col items-center pt-24 pb-6">
+            {/* SEARCH SECTION */}
+            {/* pt-24 (Mobile), md:pt-32 (Tablet/iPad), lg:pt-40 (Desktop) болгож өөрчилсөн */}
+            <div className="relative z-10 w-full flex flex-col items-center pt-24 md:pt-32 lg:pt-40 pb-6">
                 <div className="w-full max-w-[500px] px-6">
                     <div 
                         className="relative flex items-center w-full h-[54px] rounded-[16px] bg-[#1a2e2a]/90 border-[1.5px] border-[#D4AF37] focus-within:border-[#D4AF37] transition-all shadow-xl backdrop-blur-sm cursor-pointer"
-                        onClick={() => setIsNumpadOpen(true)} // Input дээр дарахад Numpad нээгдэнэ
+                        onClick={() => setIsNumpadOpen(true)}
                     >
                         <input
                             type="text"
-                            readOnly // Гарнаас шивэхийг хориглож зөвхөн Numpad ашиглана
+                            readOnly
                             value={phoneNumber}
                             placeholder="Утасны дугаар оруулах"
                             className="w-full h-full bg-transparent outline-none px-6 text-white font-bold text-lg font-play tracking-widest custom-placeholder cursor-pointer"
@@ -121,7 +117,7 @@ const CheckTicketScreen = () => {
             </div>
 
             {/* RESULTS GRID */}
-            <div className="w-full max-w-[1400px] px-6 mt-8 relative">
+            <div className="w-full max-w-[1400px] px-6 mt-8 relative z-10">
                 <AnimatePresence>
                     {hasSearched && (
                         <motion.div 
@@ -147,7 +143,7 @@ const CheckTicketScreen = () => {
             {/* NUMPAD COMPONENT */}
             <Numpad 
                 isOpen={isNumpadOpen}
-                value={phoneNumber.replace(/\s/g, '')} // Хоосон зайг арилгаж дамжуулна
+                value={phoneNumber.replace(/\s/g, '')}
                 onChange={handleNumpadChange}
                 onDone={() => setIsNumpadOpen(false)}
                 maxLength={8}
@@ -202,5 +198,6 @@ const LotteryResultCard = ({ data }) => {
     </div>
   );
 };
+
 
 export default CheckTicketScreen;
