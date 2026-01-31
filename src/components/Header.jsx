@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Header = ({ onNavigate, selectedIndex, onMenuPressed }) => {
+// isMenuOpen prop-ыг нэмж авна
+const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
   const [tickerData, setTickerData] = useState([]);
 
   useEffect(() => {
@@ -18,7 +19,6 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed }) => {
     }
   }, []);
 
-  // --- MOBILE DRAWER-ТАЙ ИЖИЛ ЗАГВАРУУД ---
   const goldenTextStyle = {
       fontFamily: "'Montserrat Alternates', sans-serif",
       fontWeight: '700',
@@ -61,7 +61,17 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed }) => {
         `}
       </style>
 
-      <header className="fixed top-0 left-0 w-full z-50 shadow-sm overflow-hidden">
+      {/* header-ийг motion.header болгож, animate нэмэв */}
+      <motion.header 
+        initial={false}
+        animate={{ 
+          filter: isMenuOpen ? "blur(10px)" : "blur(0px)",
+          opacity: isMenuOpen ? 0.6 : 1,
+          scale: isMenuOpen ? 0.98 : 1 // Бага зэрэг жижигрэх эффект
+        }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
+        className="fixed top-0 left-0 w-full z-50 shadow-sm overflow-hidden"
+      >
         
         {/* BACKGROUND LAYER */}
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -90,7 +100,7 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed }) => {
               />
           </div>
 
-          {/* NAV BUTTONS - MOBILE DRAWER ЗАГВАРААР ШИНЭЧЛЭВ */}
+          {/* NAV BUTTONS */}
           <nav className="hidden md:flex items-center gap-6 xl:gap-[45px]">
               <NavButton 
                 text="БААВАР СУГАЛАА" 
@@ -142,7 +152,7 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed }) => {
                 </div>
             </div>
         )}
-      </header>
+      </motion.header>
     </>
   );
 };
@@ -156,7 +166,7 @@ const NavButton = ({ text, active, onClick, textStyle }) => (
         className="uppercase text-[13px] xl:text-[15px] transition-all duration-300 tracking-wider"
         style={{
             ...textStyle,
-            opacity: active ? 1 : 0.7, // Идэвхгүй үед бага зэрэг бүдгэрүүлнэ
+            opacity: active ? 1 : 0.7,
             filter: active ? textStyle.filter : 'none'
         }}
     >
