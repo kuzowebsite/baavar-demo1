@@ -237,7 +237,7 @@ const BodyContent = ({ onLottoClick }) => {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 9999 !important; /* Хамгийн өндөр утга */
+    z-index: 100 !important; /* Хамгийн өндөр утга */
     background: #0f172a; /* Header-ийн цаана байгаа зүйл харагдахгүй байхын тулд background өгнө */
 }
 
