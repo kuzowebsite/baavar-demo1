@@ -76,17 +76,17 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
               </svg>
               
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full h-full">
-  <span style={{ 
-      fontSize: isMobile ? '8px' : '11px', // Хэмжээг жижигрүүлсэн
-      fontWeight: '900', 
-      color: '#000000',
-      lineHeight: '1',
-      textAlign: 'center',
-      display: 'block'
-    }}>
-    {item.fillPercent}%
-  </span>
-</div>
+                <span style={{ 
+                    fontSize: isMobile ? '8px' : '11px', 
+                    fontWeight: '900', 
+                    color: '#000000',
+                    lineHeight: '1',
+                    textAlign: 'center',
+                    display: 'block'
+                  }}>
+                  {item.fillPercent}%
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
             style={{ 
               backgroundColor: '#F8BE53', 
               borderRadius: '8px', 
-              padding: isMobile ? '4px 10px' : '4px 16px', // Desktop padding багасгаж нарийн болгосон
+              padding: isMobile ? '4px 10px' : '4px 16px',
               flex: 1
             }}>
             <span className="font-bold text-black text-[12px] md:text-[18px]">{item.displayPrice}</span>
@@ -136,9 +136,9 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
             style={{ 
               backgroundColor: '#FF6060',
               borderRadius: '8px', 
-              padding: isMobile ? '0 10px' : '0 16px', // Desktop өндрийг нарийн байхаар тохируулав
+              padding: isMobile ? '0 10px' : '0 16px',
               cursor: 'pointer', border: 'none',
-              flex: 1.5 // Товчийг үнээс бага зэрэг урт харагдуулна
+              flex: 1.5 
             }}>
             <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm">Шууд оролцох</span>
           </button>
@@ -233,126 +233,120 @@ const BodyContent = ({ onLottoClick }) => {
           @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700;900&family=Roboto:wght@400;700;900&display=swap');
           
           header, .header-container {
-    position: fixed !important; /* Дэлгэцийн оройд хөдөлгөөнгүй байлгах */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100 !important; /* Хамгийн өндөр утга */
-    background: #0f172a; /* Header-ийн цаана байгаа зүйл харагдахгүй байхын тулд background өгнө */
-}
+            position: fixed !important;
+            top: 0; left: 0; width: 100%; z-index: 100 !important; background: #0f172a;
+          }
 
-.mobile-title-container, .desktop-title-container {
-    z-index: 50 !important; /* Header-ээс бага утга өгнө */
-}
+          .mobile-title-container, .desktop-title-container { z-index: 50 !important; }
 
           .custom-swiper { 
-            width: 100%; 
-            height: 100%; 
-            padding-top: 20px; 
-            padding-bottom: 20px; 
-            overflow: visible !important; 
+            width: 100%; height: 100%; padding-top: 20px; padding-bottom: 20px; overflow: visible !important; 
           }
-          .swiper-wrapper { 
-              align-items: center; 
-              transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important;
-          }
+          .swiper-wrapper { align-items: center; transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important; }
           
           .swiper-slide { 
               width: ${isMobile ? mobileSlideSize.width * 0.85 : 420}px !important; 
               height: ${isMobile ? mobileSlideSize.height * 0.85 : 420}px !important; 
               transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease, filter 0.8s ease; 
-              filter: blur(4px); 
-              opacity: 0.6; 
+              filter: blur(4px); opacity: 0.6; 
               border-radius: ${isMobile ? '20px' : '40px'} !important; 
-              overflow: hidden; 
-              user-select: none; 
-              background-color: #0f172a; 
-              z-index: 10; 
-              cursor: default; 
+              overflow: hidden; user-select: none; background-color: #0f172a; z-index: 10; cursor: default; 
           }
 
           @media (max-width: 739px) {
              .swiper-slide { filter: blur(4px); opacity: 0.5; }
              .swiper-slide-prev { opacity: 0.2 !important; filter: blur(8px) !important; }
              .swiper-slide-next {
-                opacity: 0.5 !important; 
-                filter: blur(5px) !important; 
-                z-index: 90 !important;
-                width: ${SLIDE_WIDTH_ACTIVE}px !important;
-                height: ${SLIDE_HEIGHT_ACTIVE}px !important;
+                opacity: 0.5 !important; filter: blur(5px) !important; z-index: 90 !important;
+                width: ${SLIDE_WIDTH_ACTIVE}px !important; height: ${SLIDE_HEIGHT_ACTIVE}px !important;
              }
           }
 
-          .swiper-slide img { 
-              width: 100%; height: 100%; object-fit: cover; 
-              border-radius: ${isMobile ? '20px' : '40px'} !important; 
-          }
+          .swiper-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: ${isMobile ? '20px' : '40px'} !important; }
           
           .swiper-slide-active { 
-              width: ${SLIDE_WIDTH_ACTIVE}px !important; 
-              height: ${SLIDE_HEIGHT_ACTIVE}px !important; 
+              width: ${SLIDE_WIDTH_ACTIVE}px !important; height: ${SLIDE_HEIGHT_ACTIVE}px !important; 
               filter: blur(0px) !important; opacity: 1 !important; z-index: 100 !important; 
               background-color: transparent; box-shadow: 0 15px 40px rgba(0,0,0,0.55); 
               border-radius: ${isMobile ? '20px' : '40px'} !important;
           }
-          
           .swiper-slide-active img { border-radius: 0 !important; }
           
           .golden-3d-text {
-            font-family: 'Montserrat Alternates', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #F8BE53; 
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.5); 
-            filter: drop-shadow(0px 2px 0px #7D5A12);
-            position: relative;
-            z-index: 10000;
+            font-family: 'Montserrat Alternates', sans-serif; font-weight: 900; text-transform: uppercase;
+            color: #F8BE53; text-shadow: 0px 2px 4px rgba(0,0,0,0.5); filter: drop-shadow(0px 2px 0px #7D5A12);
+            position: relative; z-index: 10000;
           }
 
           @media (max-width: 739px) {
               .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
               .mobile-title { 
-                margin-bottom: 20px; 
-                margin-top: 20px; 
-                position: relative;
-                z-index: 10 !important; opacity: 1 !important;
-                display: block !important; visibility: visible !important;
+                margin-bottom: 20px; margin-top: 20px; position: relative;
+                z-index: 10 !important; opacity: 1 !important; display: block !important; visibility: visible !important;
               }
               body, html { overflow-x: hidden; }
           }
           
-          @media (max-width: 1024px) and (min-width: 740px) {
-    .mobile-title-container {
-        margin-top: 100px !important; 
-        z-index: 60 !important;
-    }
-    .swiper-container-wrapper {
-        margin-top: 20px !important;
-        z-index: 10 !important; /* Swiper-ийг доор байлгах */
-    }
-    .mobile-host-container {
-        /* Энд z-index-ийг маш өндөр болгож, absolute байрлал өгнө */
-        position: absolute !important;
-        bottom: 0 !important;
-        left: 20px !important;
-        transform: none !important;
-        z-index: 999 !important; /* Swiper-ийн 10-аас өндөр байх ёстой */
-        pointer-events: none;
-    }
-    .mobile-host-container img {
-        height: 900px !important; /* Таблет дээрх зургийн өндөр */
-    }
-}
+          /* =========================================
+             TABLET CONFIGURATIONS (740px - 1024px)
+             ========================================= */
 
-          /* iPhone SE (375px) болон жижиг дэлгэцэнд зориулсан CSS */
+          /* Ерөнхий тохиргоо бүх Tablet-д */
+          @media (min-width: 740px) and (max-width: 1025px) {
+              .mobile-title-container {
+                  margin-top: 190px !important; display: flex !important;
+                  position: relative !important; z-index: 60 !important;
+              }
+              .swiper-container-wrapper {
+                  margin-top: 50px !important; z-index: 10 !important;
+              }
+              .mobile-host-container {
+                  position: absolute !important;
+                  transform: none !important;
+                  z-index: 999 !important;
+                  pointer-events: none;
+              }
+          }
+
+          /* 1. iPad Standard (768x1024) - Хамгийн жижиг Tablet */
+          @media (min-width: 740px) and (max-width: 815px) {
+              .mobile-host-container {
+                  bottom: -60px !important; 
+                  left: -50px !important;
+              }
+              .mobile-host-container img {
+                  height: 480px !important;
+              }
+          }
+
+          /* 2. iPad Air (820x1180) - Дундаж Tablet */
+          @media (min-width: 816px) and (max-width: 1000px) {
+              .mobile-host-container {
+                  bottom: -10px !important;
+                  left: -82px !important;
+              }
+              .mobile-host-container img {
+                  height: 620px !important;
+              }
+          }
+
+          /* 3. iPad Pro (1024x1366) - Том Tablet */
+          @media (min-width: 1001px) and (max-width: 1025px) {
+              .mobile-host-container {
+                  bottom: 100px !important;
+                  left: -40px !important;
+              }
+              .mobile-host-container img {
+                  height: 720px !important;
+              }
+              .mobile-title {
+                  font-size: 42px !important;
+              }
+          }
+
           @media (max-width: 380px) {
-            .mobile-title {
-              font-size: 20px !important;
-            }
-            .mobile-title-container {
-              margin-top: 80px !important;
-              margin-bottom: 10px !important;
-            }
+            .mobile-title { font-size: 20px !important; }
+            .mobile-title-container { margin-top: 80px !important; margin-bottom: 10px !important; }
           }
         `}
       </style>
@@ -386,8 +380,8 @@ const BodyContent = ({ onLottoClick }) => {
                }}>
             
             {/* ГАРЧИГ ХЭСЭГ */}
-            <div className={isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0 mobile-title-container" : "absolute w-full flex justify-center z-10"} 
-                  style={{ 
+            <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
+                 style={{ 
                     position: isPhone ? 'relative' : (isMobile ? 'relative' : 'absolute'),
                     marginTop: isPhone ? '80px' : '0', 
                     top: isPhone ? 'auto' : (isMobile ? 'auto' : '50px'),
@@ -395,7 +389,7 @@ const BodyContent = ({ onLottoClick }) => {
                     zIndex: 50,
                     flexShrink: 0, 
                     pointerEvents: 'none'
-                  }}>
+                 }}>
               <h1 className="mobile-title golden-3d-text"
                   style={{ 
                       fontSize: isMobile ? 'clamp(24px, 6vw, 36px)' : '36px',
@@ -416,22 +410,22 @@ const BodyContent = ({ onLottoClick }) => {
               </h1>
             </div>
 
-           {!isMobile && (
-  <div className="absolute pointer-events-none" 
-       style={{ 
-         left: '80px', 
-         bottom: '-30px', 
-         height: 'auto', 
-         top: '140px',
-         zIndex: 9999 // Маш өндөр тоо өгөх
-       }}>
-    <img src="/assets/mongolian-woman.png" alt="Host" 
-         style={{ height: '780px', width: 'auto', objectFit: 'contain' }} />
-</div>
-)}
+            {!isMobile && (
+              <div className="absolute pointer-events-none" 
+                   style={{ 
+                     left: '80px', 
+                     bottom: '-30px', 
+                     height: 'auto', 
+                     top: '140px',
+                     zIndex: 9999 
+                   }}>
+                <img src="/assets/mongolian-woman.png" alt="Host" 
+                     style={{ height: '780px', width: 'auto', objectFit: 'contain' }} />
+              </div>
+            )}
 
             {/* SWIPER CONTAINER */}
-            <div className={`${isMobile ? "w-full relative swiper-container-wrapper" : "absolute w-full"}`} 
+            <div className={`swiper-container-wrapper ${isMobile ? "w-full relative" : "absolute w-full"}`} 
                  style={{ 
                   flexGrow: isPhone ? 0 : 0, 
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
@@ -475,14 +469,14 @@ const BodyContent = ({ onLottoClick }) => {
                                 <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
                                      onClick={() => handlePurchaseClick(item)}
                                      style={{ 
-                                          borderRadius: isMobile ? '20px' : '40px',
-                                          boxSizing: 'border-box',
-                                          border: '2px solid #9B7A49',
-                                          height: '100%', 
-                                          minHeight: '100%',
-                                          backgroundColor: '#0f172a',
-                                          display: 'flex',       
-                                          flexDirection: 'column' 
+                                         borderRadius: isMobile ? '20px' : '40px',
+                                         boxSizing: 'border-box',
+                                         border: '2px solid #9B7A49',
+                                         height: '100%', 
+                                         minHeight: '100%',
+                                         backgroundColor: '#0f172a',
+                                         display: 'flex',       
+                                         flexDirection: 'column' 
                                      }}>
                                      
                                      <div className="relative w-full overflow-hidden" 
@@ -500,10 +494,10 @@ const BodyContent = ({ onLottoClick }) => {
                                      </div>
 
                                      {isActive && (
-                                          <div className="w-full relative z-20 bg-transparent flex flex-col"
-                                               style={{ flex: '0 0 auto', minHeight: 0 }}>
+                                         <div className="w-full relative z-20 bg-transparent flex flex-col"
+                                              style={{ flex: '0 0 auto', minHeight: 0 }}>
                                               <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
-                                          </div>
+                                         </div>
                                      )}
                                 </div>
                             )}
@@ -522,24 +516,24 @@ const BodyContent = ({ onLottoClick }) => {
             )}
 
             {isMobile && !isPhone && (
-  <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
-       style={{ 
-         marginTop: '1px', 
-         marginLeft: '-100px', 
-         transform: 'translateY(0px)' 
-       }}>
-    <img 
-      src="/assets/mongolian-woman.png" 
-      alt="Host" 
-      style={{ 
-        width: 'auto', 
-        height: '360px', 
-        objectFit: 'contain', 
-        filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' 
-      }} 
-    />
-  </div>
-)}
+              <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
+                   style={{ 
+                     marginTop: '1px', 
+                     marginLeft: '0px', 
+                     transform: 'translateY(0px)' 
+                   }}>
+                <img 
+                  src="/assets/mongolian-woman.png" 
+                  alt="Host" 
+                  style={{ 
+                    width: 'auto', 
+                    // Height is handled by media queries
+                    objectFit: 'contain', 
+                    filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' 
+                  }} 
+                />
+              </div>
+            )}
 
           </div>
 
