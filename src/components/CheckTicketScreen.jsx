@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Numpad from './Numpad'; // Numpad-ийг импортлох
 
 const Icons = {
   Search: ({ color = "#B4B4B4", className = "" }) => (
@@ -17,11 +18,14 @@ const CheckTicketScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [groupedTickets, setGroupedTickets] = useState([]);
+  
+  // NUMPAD STATE
+  const [isNumpadOpen, setIsNumpadOpen] = useState(false);
 
   const performSearch = async (phoneRaw) => {
     setIsLoading(true);
     setHasSearched(false);
-    setGroupedTickets([]);
+    setIsNumpadOpen(false);
 
     await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -30,17 +34,28 @@ const CheckTicketScreen = () => {
     
     const groups = myTickets.reduce((acc, ticket) => {
         const groupKey = (ticket.lotteryName || "") + (ticket.itemName || "");
+        
         if (!acc[groupKey]) {
             acc[groupKey] = {
                 lotteryName: ticket.lotteryName || "Баавар Сугалаа",
-                itemName: ticket.itemName || "Lexus RX",
-                image: ticket.image || ticket.imageUrl,
+                itemName: ticket.itemName || "Сугалаа",
+                image: ticket.image || ticket.imageUrl, 
                 winningNumber: ticket.winningNumber,
                 numbers: []
             };
         }
-        let numbers = Array.isArray(ticket.luckyNumbers) ? ticket.luckyNumbers : [ticket.luckyNumbers];
-        numbers.forEach(num => { if(num) acc[groupKey].numbers.push(num); });
+
+        let numbers = [];
+        if (Array.isArray(ticket.luckyNumbers)) numbers = ticket.luckyNumbers;
+        else if (ticket.luckyNumbers) numbers = [ticket.luckyNumbers];
+        else if (ticket.number) numbers = [ticket.number];
+
+        numbers.forEach(num => { 
+            if(num && !acc[groupKey].numbers.includes(num)) {
+                acc[groupKey].numbers.push(num); 
+            }
+        });
+
         return acc;
     }, {});
 
@@ -50,38 +65,33 @@ const CheckTicketScreen = () => {
     setStep("RESULTS");
   };
 
-  const handlePhoneChange = (e) => {
-    let raw = e.target.value.replace(/\D/g, ''); 
-    if (raw.length > 8) raw = raw.slice(0, 8); 
-    
-    let formatted = raw;
-    if (raw.length > 4) formatted = `${raw.slice(0, 4)} ${raw.slice(4)}`;
-    setPhoneNumber(formatted);
+  const handleNumpadChange = (val) => {
+    if (step === "PHONE" || step === "RESULTS") {
+      let formatted = val;
+      if (val.length > 4) formatted = `${val.slice(0, 4)} ${val.slice(4)}`;
+      setPhoneNumber(formatted);
 
-    // Шинэ дугаар бичиж эхлэхэд үр дүнг нууж, OTP алхам руу бэлдэнэ
-    if (raw.length < 8) {
-        setHasSearched(false);
-        setStep("PHONE");
-        setOtp("");
-    }
+      if (val.length < 8) {
+          setHasSearched(false);
+          setStep("PHONE");
+          setOtp("");
+      }
 
-    if (raw.length === 8) {
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            setStep("OTP");
-        }, 600);
-    }
-  };
-
-  const handleOtpChange = (e) => {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val.length > 4) val = val.slice(0, 4);
-    setOtp(val);
-
-    if (val === "1234") {
-        const rawPhone = phoneNumber.replace(/\s/g, '');
-        performSearch(rawPhone);
+      if (val.length === 8) {
+          setIsLoading(true);
+          setIsNumpadOpen(false);
+          setTimeout(() => {
+              setIsLoading(false);
+              setStep("OTP");
+              setIsNumpadOpen(true);
+          }, 600);
+      }
+    } else if (step === "OTP") {
+      setOtp(val);
+      if (val === "1234") {
+          const rawPhone = phoneNumber.replace(/\s/g, '');
+          performSearch(rawPhone);
+      }
     }
   };
 
@@ -93,37 +103,46 @@ const CheckTicketScreen = () => {
           .font-alt-bold { font-family: 'Montserrat Alternates', sans-serif; font-weight: 700; }
           .font-play { font-family: 'Play', sans-serif; }
           .custom-placeholder::placeholder { color: #AFAFAF; opacity: 1; }
-          
-          .main-bg {
-            background-image: url('assets/background.jpg') !important;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-          }
         `}
         </style>
 
-        <div className="w-full min-h-screen main-bg flex flex-col items-center overflow-x-hidden relative pb-10">
-            <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
+        {/* --- FIXED BACKGROUND LAYERS (SCROLL FIX) --- */}
+        <div className="fixed inset-0 z-0">
+            {/* Үндсэн зураг */}
+            <img 
+                src="assets/background.jpg" 
+                alt="bg" 
+                className="w-full h-full object-cover"
+            />
+            {/* Хар өнгийн overlay (Уншигдахад хялбар болгох) */}
+            <div className="absolute inset-0 bg-[#1a2e2a]/80"></div>
+            {/* Цэгэн хээ */}
+            <div className="absolute inset-0 opacity-10" 
+                 style={{backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px'}}>
+            </div>
+        </div>
+
+        {/* --- SCROLLABLE CONTENT WRAPPER --- */}
+        {/* relative z-10 өгснөөр арын зургийн дээр гарч ирнэ */}
+        <div className="w-full min-h-screen flex flex-col items-center overflow-x-hidden relative z-10 pb-40">
             
-            <div className="relative z-10 w-full flex flex-col items-center pt-26 pb-10">
+            <div className="relative w-full flex flex-col items-center pt-24 pb-10">
                 <div className="w-full max-w-[500px] px-6">
                     <AnimatePresence mode="wait">
-                        {/* Хайсны дараа ч (RESULTS үед) PHONE эсвэл OTP харагдана */}
                         {(step === "PHONE" || step === "RESULTS") && (
                             <motion.div 
                                 key="phone-input"
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="relative flex items-center w-full h-[56px] rounded-[16px] bg-[#F9F9F9] border-[1.5px] border-[#D4AF37] transition-all shadow-2xl"
+                                className="relative flex items-center w-full h-[56px] rounded-[16px] bg-[#F9F9F9] border-[1.5px] border-[#D4AF37] shadow-2xl cursor-pointer"
+                                onClick={() => setIsNumpadOpen(true)}
                             >
                                 <input
-                                    type="tel"
+                                    type="text"
+                                    readOnly
                                     value={phoneNumber}
-                                    onChange={handlePhoneChange}
                                     placeholder="Утасны дугаар"
-                                    className="w-full h-full bg-transparent outline-none px-6 text-[#1a2e2a] font-bold text-xl font-play tracking-[0.2em] custom-placeholder"
+                                    className="w-full h-full bg-transparent outline-none px-6 text-[#1a2e2a] font-bold text-xl font-play tracking-[0.2em] custom-placeholder cursor-pointer"
                                 />
                                 <div className="absolute right-5">
                                     {isLoading ? (
@@ -143,15 +162,17 @@ const CheckTicketScreen = () => {
                                 exit={{ opacity: 0, x: -20 }}
                                 className="flex flex-col items-center w-full"
                             >
-                                <p className="text-white font-play mb-4 text-sm opacity-80">(Test: 1234)</p>
-                                <div className="relative flex items-center w-full h-[56px] rounded-[16px] bg-white border-[1.5px] border-[#D4AF37] shadow-2xl">
+                                <p className="text-white font-play mb-4 text-sm opacity-80">(Түр зуурын код: 1234)</p>
+                                <div 
+                                    className="relative flex items-center w-full h-[56px] rounded-[16px] bg-white border-[1.5px] border-[#D4AF37] shadow-2xl cursor-pointer"
+                                    onClick={() => setIsNumpadOpen(true)}
+                                >
                                     <input
                                         type="text"
+                                        readOnly
                                         value={otp}
-                                        onChange={handleOtpChange}
                                         placeholder="OTP Код"
-                                        autoFocus
-                                        className="w-full h-full bg-transparent outline-none px-6 text-center text-[#1a2e2a] font-bold text-2xl font-play tracking-[0.5em] custom-placeholder"
+                                        className="w-full h-full bg-transparent outline-none px-6 text-center text-[#1a2e2a] font-bold text-2xl font-play tracking-[0.5em] custom-placeholder cursor-pointer"
                                     />
                                 </div>
                             </motion.div>
@@ -160,7 +181,7 @@ const CheckTicketScreen = () => {
                 </div>
             </div>
 
-            <div className="w-full max-w-[1400px] px-6 mt-4 relative z-10">
+            <div className="w-full max-w-[1400px] px-6 mt-4 relative">
                 <AnimatePresence>
                     {hasSearched && (
                         <motion.div 
@@ -170,7 +191,7 @@ const CheckTicketScreen = () => {
                         >
                             {groupedTickets.length === 0 ? (
                                 <div className="col-span-full text-center py-20 text-white font-play bg-black/20 backdrop-blur-sm rounded-3xl">
-                                    Сугалаа олдсонгүй
+                                    Танд одоогоор сугалаа байхгүй байна.
                                 </div>
                             ) : (
                                 groupedTickets.map((group, idx) => (
@@ -181,24 +202,32 @@ const CheckTicketScreen = () => {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* NUMPAD COMPONENT */}
+            <Numpad 
+                isOpen={isNumpadOpen}
+                value={step === "OTP" ? otp : phoneNumber.replace(/\s/g, '')}
+                onChange={handleNumpadChange}
+                onDone={() => setIsNumpadOpen(false)}
+                maxLength={step === "OTP" ? 4 : 8}
+            />
         </div>
     </>
   );
 };
 
 const LotteryResultCard = ({ data }) => {
-  // Энд тогтмол зургийн замыг зааж өгнө
-  const STATIC_IMAGE_PATH = "/suglaa/3.jpg"; 
+  const imageToShow = data.image || "/suglaa/3.jpg"; 
 
   return (
     <div className="w-full bg-white rounded-[24px] shadow-2xl overflow-hidden border-[1.5px] border-[#D4AF37] flex flex-col h-full transform transition-all duration-300 hover:scale-[1.02]">
         <div className="p-4 flex gap-4 items-center">
-            {/* Тогтмол зураг харагдах хэсэг */}
             <div className="w-[74px] h-[74px] shrink-0 rounded-[14px] overflow-hidden border-[1.2px] border-[#D4AF37] bg-gray-50">
                 <img 
-                  src={STATIC_IMAGE_PATH} 
-                  alt="Default Product" 
+                  src={imageToShow} 
+                  alt="Lottery" 
                   className="w-full h-full object-cover" 
+                  onError={(e) => { e.target.src = "/suglaa/3.jpg"; }}
                 />
             </div>
 
@@ -212,27 +241,16 @@ const LotteryResultCard = ({ data }) => {
             </div>
         </div>
 
-        <div 
-          className="w-full h-[1px]"
-          style={{
-            background: 'linear-gradient(90deg, transparent 5%, #9D9D9D 20%, #9D9D9D 80%, transparent 95%)',
-            opacity: 0.3
-          }}
-        />
+        <div className="w-full h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 5%, #9D9D9D 20%, #9D9D9D 80%, transparent 95%)', opacity: 0.3 }} />
 
         <div className="p-4 flex-grow bg-gray-50/50">
-            <div className="grid grid-cols-6 gap-2">
+            <div className="flex flex-wrap gap-2">
                 {data.numbers.map((num, i) => {
                     const isWinner = num === data.winningNumber || num.toString() === data.winningNumber?.toString();
                     return (
                         <div 
                             key={i} 
-                            className={`
-                                flex items-center justify-center py-1 rounded-[5px]
-                                font-bold font-play text-[10px] shadow-sm
-                                ${isWinner ? 'bg-[#2AFA62] ring-2 ring-[#1a9e3e] scale-110' : 'bg-[#A6ECFF]'}
-                                text-[#000000] transition-transform
-                            `}
+                            className={`flex items-center justify-center px-3 py-1 rounded-[5px] font-bold font-play text-[12px] shadow-sm min-w-[60px] ${isWinner ? 'bg-[#2AFA62] ring-2 ring-[#1a9e3e] scale-110' : 'bg-[#A6ECFF]'} text-[#000000] transition-transform`}
                         >
                             {num}
                         </div>
