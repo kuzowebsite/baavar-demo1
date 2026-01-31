@@ -430,10 +430,6 @@ const PurchaseDialog = ({
                 <span className="text-gray-900 font-bold text-right text-[12px] font-play">{lotteryType}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-800 font-medium text-[11px] font-play">Сугалааны дугаар:</span>
-                <span className="text-gray-900 font-bold text-right text-[12px] font-play">{lotteryCode}</span>
-              </div>
-              <div className="flex justify-between items-center">
                 <span className="text-gray-800 font-medium text-[11px] font-play">Тоо ширхэг:</span>
                 <span className="text-gray-900 font-bold text-right text-[12px] font-play">{quantity}</span>
               </div>
