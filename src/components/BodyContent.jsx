@@ -117,24 +117,25 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
           marginBottom: '4px' 
         }}></div>
         
-        <div className="w-full flex items-center justify-between" style={{ marginTop: '4px', marginBottom: '0' }}>
+        <div className="w-full flex items-stretch justify-between" style={{ marginTop: '4px', marginBottom: '0', gap: '8px' }}>
           <div className="flex items-center justify-center shadow-md" 
             style={{ 
               backgroundColor: '#F8BE53', 
               borderRadius: '8px', 
-              padding: isMobile ? '4px 10px' : '8px 16px' 
+              padding: isMobile ? '4px 10px' : '4px 16px', // Desktop padding багасгаж нарийн болгосон
+              flex: 1
             }}>
-            <span className="font-bold text-black text-[12px] md:text-[16px]">{item.displayPrice}</span>
+            <span className="font-bold text-black text-[12px] md:text-[18px]">{item.displayPrice}</span>
           </div>
 
           <button onClick={(e) => { e.stopPropagation(); handlePurchaseClick(item); }}
-            className="flex items-center justify-center shadow-lg hover:scale-105 transition-transform" 
+            className="flex items-center justify-center shadow-lg hover:brightness-110 transition-all active:scale-95" 
             style={{ 
               backgroundColor: '#FF6060',
               borderRadius: '8px', 
-              padding: isMobile ? '6px 16px' : '10px 24px', 
+              padding: isMobile ? '0 10px' : '0 16px', // Desktop өндрийг нарийн байхаар тохируулав
               cursor: 'pointer', border: 'none',
-              minWidth: isMobile ? '80px' : '120px'
+              flex: 1.5 // Товчийг үнээс бага зэрэг урт харагдуулна
             }}>
             <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm">Шууд оролцох</span>
           </button>
@@ -301,7 +302,6 @@ const BodyContent = ({ onLottoClick }) => {
           @media (max-width: 739px) {
               .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
               .mobile-title { 
-                font-size: 24px !important; 
                 margin-bottom: 20px; 
                 margin-top: 20px; 
                 position: relative;
@@ -309,6 +309,36 @@ const BodyContent = ({ onLottoClick }) => {
                 display: block !important; visibility: visible !important;
               }
               body, html { overflow-x: hidden; }
+          }
+          
+          @media (max-width: 1024px) and (min-width: 740px) {
+            .mobile-title-container {
+                margin-top: 140px !important; 
+                display: flex !important;
+                position: relative !important; 
+                z-index: 60 !important;
+            }
+            .swiper-container-wrapper {
+                 margin-top: 40px !important;
+            }
+            .mobile-host-container {
+                transform: translateY(-120px) !important;
+                z-index: 0 !important;
+            }
+            .mobile-host-container img {
+                height: 550px !important;
+            }
+          }
+
+          /* iPhone SE (375px) болон жижиг дэлгэцэнд зориулсан CSS */
+          @media (max-width: 380px) {
+            .mobile-title {
+              font-size: 20px !important;
+            }
+            .mobile-title-container {
+              margin-top: 80px !important;
+              margin-bottom: 10px !important;
+            }
           }
         `}
       </style>
@@ -342,20 +372,19 @@ const BodyContent = ({ onLottoClick }) => {
                }}>
             
             {/* ГАРЧИГ ХЭСЭГ */}
-            <div className={isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"} 
-                 style={{ 
+            <div className={isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0 mobile-title-container" : "absolute w-full flex justify-center z-10"} 
+                  style={{ 
                     position: isPhone ? 'relative' : (isMobile ? 'relative' : 'absolute'),
-                    // SE утасны хэмжээн дээр гарчгийг дээшлүүлсэн хэсэг
                     marginTop: isPhone ? '80px' : '0', 
                     top: isPhone ? 'auto' : (isMobile ? 'auto' : '50px'),
                     paddingBottom: isPhone ? '10px' : '0',
                     zIndex: 50,
                     flexShrink: 0, 
                     pointerEvents: 'none'
-                 }}>
+                  }}>
               <h1 className="mobile-title golden-3d-text"
                   style={{ 
-                      fontSize: isPhone ? '28px' : '36px',
+                      fontSize: isMobile ? 'clamp(24px, 6vw, 36px)' : '36px',
                       letterSpacing: '1px', 
                       margin: 0, 
                       textAlign: 'center', 
@@ -371,15 +400,6 @@ const BodyContent = ({ onLottoClick }) => {
                     "Монголын хамгийн том хонжворт сугалаа"
                   )}
               </h1>
-                
-                {isMobile && !isPhone && (
-                    <h2 className="mobile-subtitle" style={{
-                        fontFamily: 'Roboto, sans-serif', fontWeight: 900, fontSize: '20px',
-                        color: '#333333', textTransform: 'uppercase', margin: '30px 0 0 0', textAlign: 'center'
-                    }}>
-                        Сугалаанууд:
-                    </h2>
-                )}
             </div>
 
             {!isMobile && (
@@ -395,7 +415,6 @@ const BodyContent = ({ onLottoClick }) => {
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                   minHeight: isPhone ? '0' : 'auto', 
                   top: isMobile ? '0' : '120px', 
-                  // Жижиг утасны хэмжээнд сугалааны картыг гарчигтай ойртуулж дээшлүүлсэн
                   marginTop: isMobile ? (isPhone ? '-10px' : '-80px') : '0', 
                   display: 'flex', 
                   alignItems: 'center',
@@ -434,14 +453,14 @@ const BodyContent = ({ onLottoClick }) => {
                                 <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
                                      onClick={() => handlePurchaseClick(item)}
                                      style={{ 
-                                         borderRadius: isMobile ? '20px' : '40px',
-                                         boxSizing: 'border-box',
-                                         border: '2px solid #9B7A49',
-                                         height: '100%', 
-                                         minHeight: '100%',
-                                         backgroundColor: '#0f172a',
-                                         display: 'flex',       
-                                         flexDirection: 'column' 
+                                          borderRadius: isMobile ? '20px' : '40px',
+                                          boxSizing: 'border-box',
+                                          border: '2px solid #9B7A49',
+                                          height: '100%', 
+                                          minHeight: '100%',
+                                          backgroundColor: '#0f172a',
+                                          display: 'flex',       
+                                          flexDirection: 'column' 
                                      }}>
                                      
                                      <div className="relative w-full overflow-hidden" 
@@ -461,7 +480,7 @@ const BodyContent = ({ onLottoClick }) => {
                                      {isActive && (
                                           <div className="w-full relative z-20 bg-transparent flex flex-col"
                                                style={{ flex: '0 0 auto', minHeight: 0 }}>
-                                               <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
+                                              <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
                                           </div>
                                      )}
                                 </div>
