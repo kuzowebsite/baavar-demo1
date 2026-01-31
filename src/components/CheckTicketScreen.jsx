@@ -13,8 +13,6 @@ const Icons = {
 
 const CheckTicketScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [otp, setOtp] = useState("");
-  const [step, setStep] = useState("PHONE"); // PHONE, OTP, RESULTS
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [groupedTickets, setGroupedTickets] = useState([]);
@@ -25,7 +23,8 @@ const CheckTicketScreen = () => {
   const performSearch = async (phoneRaw) => {
     setIsLoading(true);
     setHasSearched(false);
-    setIsNumpadOpen(false);
+    setGroupedTickets([]);
+    setIsNumpadOpen(false); // Хайлт эхлэхэд гарыг хаах
 
     await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -34,64 +33,39 @@ const CheckTicketScreen = () => {
     
     const groups = myTickets.reduce((acc, ticket) => {
         const groupKey = (ticket.lotteryName || "") + (ticket.itemName || "");
-        
         if (!acc[groupKey]) {
             acc[groupKey] = {
                 lotteryName: ticket.lotteryName || "Баавар Сугалаа",
-                itemName: ticket.itemName || "Сугалаа",
-                image: ticket.image || ticket.imageUrl, 
+                itemName: ticket.itemName || "Lexus RX",
+                image: ticket.image || ticket.imageUrl,
                 winningNumber: ticket.winningNumber,
                 numbers: []
             };
         }
-
-        let numbers = [];
-        if (Array.isArray(ticket.luckyNumbers)) numbers = ticket.luckyNumbers;
-        else if (ticket.luckyNumbers) numbers = [ticket.luckyNumbers];
-        else if (ticket.number) numbers = [ticket.number];
-
-        numbers.forEach(num => { 
-            if(num && !acc[groupKey].numbers.includes(num)) {
-                acc[groupKey].numbers.push(num); 
-            }
-        });
-
+        let numbers = Array.isArray(ticket.luckyNumbers) ? ticket.luckyNumbers : [ticket.luckyNumbers];
+        numbers.forEach(num => { if(num) acc[groupKey].numbers.push(num); });
         return acc;
     }, {});
 
     setGroupedTickets(Object.values(groups));
     setIsLoading(false);
     setHasSearched(true);
-    setStep("RESULTS");
   };
 
+  // Numpad-аас ирэх утгыг боловсруулах
   const handleNumpadChange = (val) => {
-    if (step === "PHONE" || step === "RESULTS") {
-      let formatted = val;
-      if (val.length > 4) formatted = `${val.slice(0, 4)} ${val.slice(4)}`;
-      setPhoneNumber(formatted);
+    // Утасны дугаар форматлах (xxxx xxxx)
+    let formatted = val;
+    if (val.length > 4) {
+        formatted = val.slice(0, 4) + ' ' + val.slice(4);
+    }
+    setPhoneNumber(formatted);
 
-      if (val.length < 8) {
-          setHasSearched(false);
-          setStep("PHONE");
-          setOtp("");
-      }
-
-      if (val.length === 8) {
-          setIsLoading(true);
-          setIsNumpadOpen(false);
-          setTimeout(() => {
-              setIsLoading(false);
-              setStep("OTP");
-              setIsNumpadOpen(true);
-          }, 600);
-      }
-    } else if (step === "OTP") {
-      setOtp(val);
-      if (val === "1234") {
-          const rawPhone = phoneNumber.replace(/\s/g, '');
-          performSearch(rawPhone);
-      }
+    // 8 оронтой болмогц хайлт хийх
+    if (val.length === 8) {
+        performSearch(val);
+    } else {
+        setHasSearched(false);
     }
   };
 
@@ -102,96 +76,63 @@ const CheckTicketScreen = () => {
           @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&family=Play:wght@400;700&display=swap');
           .font-alt-bold { font-family: 'Montserrat Alternates', sans-serif; font-weight: 700; }
           .font-play { font-family: 'Play', sans-serif; }
-          .custom-placeholder::placeholder { color: #AFAFAF; opacity: 1; }
+          .custom-placeholder::placeholder { color: #D1D1D1; opacity: 1; }
+          
+          /* Background тохиргоог зөвхөн className-д ашиглана */
         `}
         </style>
 
         {/* --- FIXED BACKGROUND LAYERS (SCROLL FIX) --- */}
         <div className="fixed inset-0 z-0">
-            {/* Үндсэн зураг */}
             <img 
                 src="assets/background.jpg" 
                 alt="bg" 
                 className="w-full h-full object-cover"
             />
-            {/* Хар өнгийн overlay (Уншигдахад хялбар болгох) */}
-            <div className="absolute inset-0 bg-[#1a2e2a]/80"></div>
-            {/* Цэгэн хээ */}
-            <div className="absolute inset-0 opacity-10" 
-                 style={{backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px'}}>
-            </div>
+            {/* Overlay байхгүй, зураг тод харагдана */}
         </div>
 
         {/* --- SCROLLABLE CONTENT WRAPPER --- */}
-        {/* relative z-10 өгснөөр арын зургийн дээр гарч ирнэ */}
         <div className="w-full min-h-screen flex flex-col items-center overflow-x-hidden relative z-10 pb-40">
             
-            <div className="relative w-full flex flex-col items-center pt-24 pb-10">
+            {/* SEARCH SECTION - pt-24 болгож доошлуулсан */}
+            <div className="relative w-full flex flex-col items-center pt-24 pb-6">
                 <div className="w-full max-w-[500px] px-6">
-                    <AnimatePresence mode="wait">
-                        {(step === "PHONE" || step === "RESULTS") && (
-                            <motion.div 
-                                key="phone-input"
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="relative flex items-center w-full h-[56px] rounded-[16px] bg-[#F9F9F9] border-[1.5px] border-[#D4AF37] shadow-2xl cursor-pointer"
-                                onClick={() => setIsNumpadOpen(true)}
-                            >
-                                <input
-                                    type="text"
-                                    readOnly
-                                    value={phoneNumber}
-                                    placeholder="Утасны дугаар"
-                                    className="w-full h-full bg-transparent outline-none px-6 text-[#1a2e2a] font-bold text-xl font-play tracking-[0.2em] custom-placeholder cursor-pointer"
-                                />
-                                <div className="absolute right-5">
-                                    {isLoading ? (
-                                        <div className="w-6 h-6 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin"></div>
-                                    ) : (
-                                        <Icons.Search className="w-5 h-5" color="#D4AF37" />
-                                    )}
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {step === "OTP" && (
-                            <motion.div 
-                                key="otp-input"
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="flex flex-col items-center w-full"
-                            >
-                                <p className="text-white font-play mb-4 text-sm opacity-80">(Түр зуурын код: 1234)</p>
-                                <div 
-                                    className="relative flex items-center w-full h-[56px] rounded-[16px] bg-white border-[1.5px] border-[#D4AF37] shadow-2xl cursor-pointer"
-                                    onClick={() => setIsNumpadOpen(true)}
-                                >
-                                    <input
-                                        type="text"
-                                        readOnly
-                                        value={otp}
-                                        placeholder="OTP Код"
-                                        className="w-full h-full bg-transparent outline-none px-6 text-center text-[#1a2e2a] font-bold text-2xl font-play tracking-[0.5em] custom-placeholder cursor-pointer"
-                                    />
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <div 
+                        className="relative flex items-center w-full h-[54px] rounded-[16px] bg-[#1a2e2a]/90 border-[1.5px] border-[#D4AF37] focus-within:border-[#D4AF37] transition-all shadow-xl backdrop-blur-sm cursor-pointer"
+                        onClick={() => setIsNumpadOpen(true)} // Input дээр дарахад Numpad нээгдэнэ
+                    >
+                        <input
+                            type="text"
+                            readOnly // Гарнаас шивэхийг хориглож зөвхөн Numpad ашиглана
+                            value={phoneNumber}
+                            placeholder="Утасны дугаар оруулах"
+                            className="w-full h-full bg-transparent outline-none px-6 text-white font-bold text-lg font-play tracking-widest custom-placeholder cursor-pointer"
+                        />
+                        <div className="absolute right-5">
+                            {isLoading ? (
+                                <div className="w-5 h-5 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin"></div>
+                            ) : (
+                                <Icons.Search className="w-5 h-5" color="#D4AF37" />
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="w-full max-w-[1400px] px-6 mt-4 relative">
+            {/* RESULTS GRID */}
+            <div className="w-full max-w-[1400px] px-6 mt-8 relative">
                 <AnimatePresence>
                     {hasSearched && (
                         <motion.div 
-                            initial={{ opacity: 0, y: 20 }} 
+                            initial={{ opacity: 0, y: 10 }} 
                             animate={{ opacity: 1, y: 0 }} 
+                            exit={{ opacity: 0 }} 
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         >
                             {groupedTickets.length === 0 ? (
-                                <div className="col-span-full text-center py-20 text-white font-play bg-black/20 backdrop-blur-sm rounded-3xl">
-                                    Танд одоогоор сугалаа байхгүй байна.
+                                <div className="col-span-full text-center py-20 text-white font-play bg-black/40 rounded-3xl backdrop-blur-md border border-white/10">
+                                    Сугалаа олдсонгүй
                                 </div>
                             ) : (
                                 groupedTickets.map((group, idx) => (
@@ -206,10 +147,10 @@ const CheckTicketScreen = () => {
             {/* NUMPAD COMPONENT */}
             <Numpad 
                 isOpen={isNumpadOpen}
-                value={step === "OTP" ? otp : phoneNumber.replace(/\s/g, '')}
+                value={phoneNumber.replace(/\s/g, '')} // Хоосон зайг арилгаж дамжуулна
                 onChange={handleNumpadChange}
                 onDone={() => setIsNumpadOpen(false)}
-                maxLength={step === "OTP" ? 4 : 8}
+                maxLength={8}
             />
         </div>
     </>
