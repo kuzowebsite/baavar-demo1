@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Numpad from './Numpad';
 
 // --- ICONS ---
 const Icons = {
@@ -91,34 +92,30 @@ const PurchaseDialog = ({
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false); 
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
-  // --- ШИНЭ: Зургийг Base64 болгож хадгалах State ---
   const [processedImage, setProcessedImage] = useState(imageUrl);
+  
+  // NUMPAD STATE
+  const [isNumpadOpen, setIsNumpadOpen] = useState(false);
 
   const totalPrice = basePrice * quantity;
-  
   const rawPhoneNumber = phoneNumber.replace(/\s/g, ''); 
   const isPhoneValid = rawPhoneNumber.length === 8;
   const isOtpValid = otpInput.length === 4 && !isOtpExpired;
 
-  // --- ШИНЭ: Зураг хөрвүүлэх Logic ---
+  // --- IMAGE CONVERSION ---
   useEffect(() => {
     const processImage = async () => {
         if (!imageUrl) return;
-
-        // Хэрэв шууд URL (http..) байвал хэвээр нь үлдээнэ
         if (typeof imageUrl === 'string' && !imageUrl.startsWith('blob:')) {
             setProcessedImage(imageUrl);
             return;
         }
-
         try {
-            // Хэрэв File object байвал
             if (imageUrl instanceof File) {
                 const reader = new FileReader();
                 reader.onload = () => setProcessedImage(reader.result);
                 reader.readAsDataURL(imageUrl);
             } 
-            // Хэрэв Blob URL (RAM дээрх) байвал fetch хийж Base64 болгоно
             else if (typeof imageUrl === 'string' && imageUrl.startsWith('blob:')) {
                 const response = await fetch(imageUrl);
                 const blob = await response.blob();
@@ -127,8 +124,8 @@ const PurchaseDialog = ({
                 reader.readAsDataURL(blob);
             }
         } catch (error) {
-            console.error("Зураг хөрвүүлэхэд алдаа гарлаа:", error);
-            setProcessedImage(imageUrl); // Алдаа гарвал original-г авна
+            console.error("Image Error:", error);
+            setProcessedImage(imageUrl);
         }
     };
     processImage();
@@ -158,6 +155,11 @@ const PurchaseDialog = ({
     return () => clearInterval(timer);
   }, [currentStep, otpTimeLeft]);
 
+  // Гарнаас гадуур дарахад гарыг хаах
+  const handleOverlayClick = () => {
+    if (isNumpadOpen) setIsNumpadOpen(false);
+  };
+
   const formatTimer = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -176,38 +178,35 @@ const PurchaseDialog = ({
     return nums;
   };
 
-  const saveToStorage = (status = 'Paid') => {
+  const saveToStorage = (status = 'Paid', numbers = []) => {
     const ticketData = {
         id: Date.now(),
-        phoneNumber: rawPhoneNumber, // CheckTicketScreen-д хайлт хийхэд ашиглагдана
-        lotteryName: title,          // БААВАР СУГАЛАА эсвэл Саятан сугалаа
-        itemName: lotteryType,       // Lexus RX эсвэл 1,000,000₮
-        image: processedImage,       // Тухайн сугалааны зураг
-        luckyNumbers: luckyNumbers,  // ["AZ111", "AZ111", ...]
-        drawDate: "2024.12.01",      // Тохирол явуулах огноо
-        winningNumber: null,         // Одоогоор хожсон дугаар байхгүй
-        status: status
+        phoneNumber: rawPhoneNumber,
+        title: title,
+        itemName: lotteryType,
+        image: processedImage,
+        luckyNumbers: numbers.length > 0 ? numbers : luckyNumbers, 
+        drawDate: "2024.12.01",
+        winningNumber: null,
+        status: status,
+        timestamp: Date.now()
     };
 
     const existingData = JSON.parse(localStorage.getItem('baavar_tickets') || '[]');
     localStorage.setItem('baavar_tickets', JSON.stringify([...existingData, ticketData]));
-};
-
-  const handlePhoneInput = (e) => {
-    let raw = e.target.value.replace(/\D/g, ''); 
-    if (raw.length > 8) raw = raw.slice(0, 8); 
-    let formatted = raw;
-    if (raw.length > 4) {
-        formatted = raw.slice(0, 4) + ' ' + raw.slice(4);
-    }
-    setPhoneNumber(formatted); 
   };
 
-  const handleOtpInput = (e) => {
-    if (isOtpExpired) return; 
-    let raw = e.target.value.replace(/\D/g, ''); 
-    if (raw.length > 4) raw = raw.slice(0, 4); 
-    setOtpInput(raw); 
+  // Numpad-аас ирэх утгыг боловсруулах
+  const handleNumpadChange = (val) => {
+    if (currentStep === 1) {
+      let formatted = val;
+      if (val.length > 4) {
+          formatted = val.slice(0, 4) + ' ' + val.slice(4);
+      }
+      setPhoneNumber(formatted);
+    } else if (currentStep === 2) {
+      if (!isOtpExpired) setOtpInput(val);
+    }
   };
 
   const handleResendOtp = () => {
@@ -216,10 +215,12 @@ const PurchaseDialog = ({
       setOtpInput('');
       const demoCode = "1234";
       setGeneratedOtp(demoCode);
-      alert(`Тань руу илгээсэн баталгаажуулах код: ${demoCode}`);
+      alert(`Код: ${demoCode}`);
   };
 
+  // --- NAVIGATION ---
   const handleNext = () => {
+    setIsNumpadOpen(false); // Дараах руу шилжихэд гарыг хаах
     if (currentStep === 1) {
         if (!isPhoneValid) return;
         const demoCode = "1234";
@@ -227,18 +228,14 @@ const PurchaseDialog = ({
         setOtpTimeLeft(60); 
         setIsOtpExpired(false);
         setOtpInput('');
-        alert(`Тань руу илгээсэн баталгаажуулах код: ${demoCode}`);
+        alert(`Код: ${demoCode}`);
         setCurrentStep(2);
         return;
     }
 
     if (currentStep === 2) {
-        if (isOtpExpired) {
-            alert("Кодын хугацаа дууссан байна. Дахин код авна уу.");
-            return;
-        }
-        if (otpInput !== generatedOtp) {
-            alert("Баталгаажуулах код буруу байна!");
+        if (isOtpExpired || otpInput !== generatedOtp) {
+            alert("Код буруу эсвэл хугацаа дууссан!");
             return;
         }
         setCurrentStep(3);
@@ -253,19 +250,19 @@ const PurchaseDialog = ({
     if (currentStep === 4) {
         const nums = generateLuckyNumbers(quantity);
         setLuckyNumbers(nums);
+        
         if (isFree) {
             setIsLoading(true);
             setTimeout(() => {
                 setIsLoading(false);
                 setIsPaymentSuccess(true);
-                saveToStorage('Paid'); 
+                saveToStorage('Paid', nums); 
                 setCurrentStep(8); 
             }, 1000);
-            return;
         } else {
             setCurrentStep(5);
-            return;
         }
+        return;
     }
 
     if (currentStep === 5) {
@@ -276,12 +273,10 @@ const PurchaseDialog = ({
   };
 
   const handleBack = () => {
+    setIsNumpadOpen(false);
     if (currentStep > 1) {
-      if (currentStep === 6 || currentStep === 7) {
-        setCurrentStep(5);
-      } else {
-        setCurrentStep(prev => prev - 1);
-      }
+      if (currentStep === 6 || currentStep === 7) setCurrentStep(5);
+      else setCurrentStep(prev => prev - 1);
       setIsPaymentSuccess(false); 
     }
   };
@@ -291,12 +286,12 @@ const PurchaseDialog = ({
       setTimeout(() => {
           setIsLoading(false);
           setIsPaymentSuccess(true); 
-          saveToStorage('Paid'); 
+          saveToStorage('Paid', luckyNumbers); 
       }, 2000);
   };
 
   const handleFinish = () => {
-      saveToStorage('Pending');
+      saveToStorage('Pending', luckyNumbers);
       onClose();
   };
 
@@ -329,16 +324,14 @@ const PurchaseDialog = ({
       case 1: 
         return (
           <div className="flex flex-col items-center w-full justify-center h-full">
-            <p className="text-center mb-[6px] text-xs font-play">
-              Та өөрийн баталгаат утасны дугаарыг "ЗӨВ" оруулна уу
-            </p>
+            <p className="text-center mb-[6px] text-xs font-play">Та өөрийн дугаарыг оруулна уу</p>
             <input
               type="text"
               value={phoneNumber}
-              onChange={handlePhoneInput}
+              readOnly
+              onClick={() => setIsNumpadOpen(true)}
               placeholder="8090 1860" 
-              className="w-full max-w-[320px] h-[30px] rounded-[8px] border border-[#D9D9D9] bg-white font-play text-sm text-center outline-none text-black tracking-wide"
-              autoFocus
+              className="w-full max-w-[320px] h-[35px] rounded-[8px] border border-[#D9D9D9] bg-white font-play text-sm text-center outline-none text-black cursor-pointer"
             />
           </div>
         );
@@ -347,39 +340,25 @@ const PurchaseDialog = ({
         return (
             <div className="flex flex-col items-center w-full justify-center h-full">
                 <p className="text-center mb-[6px] text-xs font-play">
-                    Таны {phoneNumber} дугаарт илгээсэн 4 оронтой кодыг оруулна уу
+                    {phoneNumber} дугаарт илгээсэн кодыг оруулна уу
                 </p>
                 <div className="flex items-center gap-2">
                     <input
                         type="text"
                         value={otpInput}
-                        onChange={handleOtpInput}
+                        readOnly
+                        onClick={() => !isOtpExpired && setIsNumpadOpen(true)}
                         placeholder="1234"
-                        maxLength={4}
-                        disabled={isOtpExpired}
-                        className={`w-[120px] h-[35px] rounded-[8px] border bg-white font-play text-lg tracking-widest text-center outline-none text-black transition-colors ${
-                            isOtpExpired ? 'border-red-400 bg-red-50 text-red-500' : 'border-[#D9D9D9] focus:border-[#068071]'
+                        className={`w-[120px] h-[35px] rounded-[8px] border bg-white font-play text-lg text-center outline-none cursor-pointer ${
+                            isOtpExpired ? 'border-red-400 bg-red-50 text-red-500' : 'border-[#D9D9D9]'
                         }`}
-                        autoFocus
                     />
-                    <div className={`w-[60px] h-[35px] rounded-[8px] border flex items-center justify-center text-sm font-bold font-play ${
-                        isOtpExpired ? 'border-red-200 text-red-500 bg-red-50' : 'border-[#D9D9D9] text-[#068071] bg-gray-50'
-                    }`}>
+                    <div className="w-[60px] h-[35px] rounded-[8px] border flex items-center justify-center text-sm font-bold font-play">
                         {formatTimer(otpTimeLeft)}
                     </div>
                 </div>
-                {isOtpExpired ? (
-                      <div className="mt-2 flex flex-col items-center">
-                        <span className="text-[10px] text-red-500 font-play mb-1">Хугацаа дууссан!</span>
-                        <button 
-                            onClick={handleResendOtp}
-                            className="flex items-center gap-1 text-[#068071] text-[11px] font-bold font-play hover:underline"
-                        >
-                            <Icons.Refresh /> Дахин илгээх
-                        </button>
-                      </div>
-                ) : (
-                    <p className="text-[10px] text-gray-400 mt-2">Код хүчинтэй хугацаа</p>
+                {isOtpExpired && (
+                    <button onClick={handleResendOtp} className="mt-2 text-[#068071] text-[11px] font-bold">Дахин илгээх</button>
                 )}
             </div>
         );
@@ -388,59 +367,25 @@ const PurchaseDialog = ({
         return (
           <div className="flex flex-col items-center w-full justify-center h-full">
             <p className="text-center mb-[6px] text-xs font-play px-8">
-              {isFree 
-                ? "Үнэгүй сугалаа нь сард зөвхөн 1 удаа оролцох эрхтэй." 
-                : "Та сугалаа худалдан авах тасалбарын тоо ширхэгийг сонгоно уу."}
+              {isFree ? "Үнэгүй сугалаа зөвхөн 1 удаа оролцох эрхтэй." : "Та тасалбарын тоо ширхэгийг сонгоно уу."}
             </p>
             <div className="flex items-center gap-2">
-              <button 
-                onClick={() => quantity > 1 && setQuantity(q => q - 1)}
-                disabled={isFree}
-                className={`w-[40px] h-[30px] flex items-center justify-center border border-[#D9D9D9] rounded-[8px] ${isFree ? 'bg-gray-100 cursor-not-allowed text-gray-300' : 'hover:bg-gray-50 text-gray-600'}`}
-              >
-                <Icons.Minus />
-              </button>
-              <div className="w-[80px] h-[30px] flex items-center justify-center border border-[#D9D9D9] rounded-[8px] text-base font-bold text-gray-800 bg-white">
-                {quantity}
-              </div>
-              <button 
-                onClick={() => setQuantity(q => q + 1)}
-                disabled={isFree}
-                className={`w-[40px] h-[30px] flex items-center justify-center border border-[#D9D9D9] rounded-[8px] ${isFree ? 'bg-gray-100 cursor-not-allowed text-gray-300' : 'hover:bg-gray-50 text-gray-600'}`}
-              >
-                {isFree ? <Icons.Lock /> : <Icons.Plus />}
-              </button>
+              <button onClick={() => quantity > 1 && setQuantity(q => q - 1)} disabled={isFree} className="w-[40px] h-[30px] border rounded-[8px]">-</button>
+              <div className="w-[80px] h-[30px] flex items-center justify-center border rounded-[8px] font-bold">{quantity}</div>
+              <button onClick={() => setQuantity(q => q + 1)} disabled={isFree} className="w-[40px] h-[30px] border rounded-[8px]">{isFree ? <Icons.Lock /> : "+"}</button>
             </div>
-            {isFree && <span className="text-[10px] text-[#068071] mt-2 font-bold font-play">Тогтмол 1 эрх</span>}
           </div>
         );
 
       case 4: 
         return (
-          // pt-4 нэмж дээрээс нь зай авлаа
           <div className="flex flex-col w-full px-6 justify-center h-full pt-4"> 
-            {/* space-y-2 болгож мөр хоорондын зайг бага зэрэг ихэсгэв */}
-            <div className="space-y-1 w-full max-w-[320px] mx-auto">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800 font-medium text-[11px] font-play">Сугалааны нэр:</span>
-                <span className="text-gray-900 font-bold text-right text-[12px] font-play">{title}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800 font-medium text-[11px] font-play">Сугалааны төрөл:</span>
-                <span className="text-gray-900 font-bold text-right text-[12px] font-play">{lotteryType}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800 font-medium text-[11px] font-play">Тоо ширхэг:</span>
-                <span className="text-gray-900 font-bold text-right text-[12px] font-play">{quantity}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800 font-medium text-[11px] font-play">Нийт төлөх дүн:</span>
-                <span className="text-gray-900 font-bold text-right text-[12px] font-play">{isFree ? "0₮ (Үнэгүй)" : `${formatMoney(totalPrice)}₮`}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-800 font-medium text-[11px] font-play">Утасны дугаар:</span>
-                <span className="text-gray-900 font-bold text-right text-[12px] font-play">{phoneNumber}</span>
-              </div>
+            <div className="space-y-1 w-full max-w-[320px] mx-auto text-[12px] font-play">
+              <div className="flex justify-between"><span>Нэр:</span><span className="font-bold">{title}</span></div>
+              <div className="flex justify-between"><span>Төрөл:</span><span className="font-bold">{lotteryType}</span></div>
+              <div className="flex justify-between"><span>Ширхэг:</span><span className="font-bold">{quantity}</span></div>
+              <div className="flex justify-between"><span>Нийт:</span><span className="font-bold">{isFree ? "Үнэгүй" : `${formatMoney(totalPrice)}₮`}</span></div>
+              <div className="flex justify-between"><span>Дугаар:</span><span className="font-bold">{phoneNumber}</span></div>
             </div>
           </div>
         );
@@ -448,96 +393,64 @@ const PurchaseDialog = ({
       case 5: 
         return (
           <div className="flex flex-col items-center w-full justify-center h-full gap-2">
-            <button
-              onClick={() => setSelectedPaymentMethod('qpay')}
-              className={`w-full max-w-[320px] h-[30px] border rounded-[8px] px-3 flex items-center justify-center relative transition-colors ${
-                selectedPaymentMethod === 'qpay' ? 'border-[#068071]' : 'border-[#D9D9D9] hover:border-gray-400'
-              }`}
-            >
+            <button onClick={() => setSelectedPaymentMethod('qpay')} className={`w-full max-w-[320px] h-[30px] border rounded-[8px] flex items-center justify-center relative ${selectedPaymentMethod === 'qpay' ? 'border-[#068071]' : ''}`}>
               <div className="absolute left-3"><Icons.CheckSquare checked={selectedPaymentMethod === 'qpay'} /></div>
-              <span className={`font-bold text-[12px] font-play ${selectedPaymentMethod === 'qpay' ? 'text-[#068071]' : 'text-gray-700'}`}>QPay</span>
+              <span className="text-[12px] font-bold">QPay</span>
             </button>
-            <button
-              onClick={() => setSelectedPaymentMethod('bank')}
-              className={`w-full max-w-[320px] h-[30px] border rounded-[8px] px-3 flex items-center justify-center relative transition-colors ${
-                selectedPaymentMethod === 'bank' ? 'border-[#068071]' : 'border-[#D9D9D9] hover:border-gray-400'
-              }`}
-            >
+            <button onClick={() => setSelectedPaymentMethod('bank')} className={`w-full max-w-[320px] h-[30px] border rounded-[8px] flex items-center justify-center relative ${selectedPaymentMethod === 'bank' ? 'border-[#068071]' : ''}`}>
               <div className="absolute left-3"><Icons.CheckSquare checked={selectedPaymentMethod === 'bank'} /></div>
-              <span className={`font-bold text-[12px] font-play ${selectedPaymentMethod === 'bank' ? 'text-[#068071]' : 'text-gray-700'}`}>Банкаар төлөх</span>
+              <span className="text-[12px] font-bold">Банкаар төлөх</span>
             </button>
           </div>
         );
 
       case 6: 
         return (
-          <div className="flex flex-col items-center w-full pt-2 px-4 pb-4">
-            <p className="text-[10px] text-center font-play text-gray-600 mb-1">Санамсаргүй сонгогдсон таны азын дугаарууд:</p>
-            <div className="flex flex-wrap justify-center gap-1 mb-2 max-w-[320px]">
+          <div className="flex flex-col items-center w-full pt-2 pb-4">
+            <p className="text-[10px] text-gray-600 mb-1">Таны азын дугаарууд:</p>
+            <div className="flex flex-wrap justify-center gap-1 mb-2">
                 {luckyNumbers.map((num, idx) => (
-                    <span key={idx} className="bg-gray-100 text-[#068071] border border-gray-200 px-2 py-0.5 rounded text-[11px] font-bold font-play">{num}</span>
+                    <span key={idx} className="bg-gray-100 text-[#068071] border px-2 py-0.5 rounded text-[11px] font-bold">{num}</span>
                 ))}
             </div>
             {isPaymentSuccess ? (
-                <div className="bg-white p-4 rounded border border-gray-200 mb-3 flex flex-col items-center animate-pulse">
-                      <Icons.Success />
-                      <span className="text-[#068071] font-bold font-play text-sm mt-2">Төлбөр амжилттай!</span>
-                </div>
+                <div className="flex flex-col items-center animate-pulse"><Icons.Success /><span className="text-[#068071] font-bold text-sm mt-2">Амжилттай!</span></div>
             ) : (
-                <div className="bg-white p-1 rounded border border-gray-200 mb-3"><Icons.QrCode /></div>
-            )}
-            {!isPaymentSuccess && (
-                <div className="flex items-center gap-3 opacity-60">
-                    {['Khan', 'Golomt', 'TDB', 'State'].map((bank, i) => (
-                        <div key={i} className="flex flex-col items-center gap-0.5">
-                            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-500 overflow-hidden">{bank[0]}</div>
-                            <span className="text-[8px] font-play text-gray-500">{bank}</span>
-                        </div>
-                    ))}
-                </div>
+                <div className="bg-white p-1 rounded border mb-3"><Icons.QrCode /></div>
             )}
           </div>
         );
 
       case 7: 
         return (
-          <div className="flex flex-col w-full pt-2 px-6 justify-start h-full">
-            <div className="w-full flex flex-col items-center mb-4">
-                <p className="text-[10px] text-center font-play text-gray-600 mb-1">Танд хуваарилагдсан азын дугаарууд:</p>
-                <div className="flex flex-wrap justify-center gap-1 max-w-[320px]">
-                    {luckyNumbers.map((num, idx) => (
-                        <span key={idx} className="bg-gray-100 text-[#068071] border border-gray-200 px-2 py-0.5 rounded text-[11px] font-bold font-play">{num}</span>
-                    ))}
-                </div>
-            </div>
-            <div className="space-y-1 w-full max-w-[320px] mx-auto">
-              <div className="flex justify-between items-center"><span className="text-gray-800 font-medium text-[11px] font-play">Банк:</span><span className="text-gray-900 font-bold text-right text-[12px] font-play">Хаан банк</span></div>
-              <div className="flex justify-between items-center"><span className="text-gray-800 font-medium text-[11px] font-play">Дансны дугаар:</span><span className="text-gray-900 font-bold text-right text-[12px] font-play">5318101209</span></div>
-              <div className="flex justify-between items-center"><span className="text-gray-800 font-medium text-[11px] font-play">Үнийн дүн:</span><span className="text-gray-900 font-bold text-right text-[12px] font-play">{formatMoney(totalPrice)}₮</span></div>
-              <div className="flex justify-between items-center"><span className="text-gray-800 font-medium text-[11px] font-play">Гүйлгээний утга:</span><span className="text-gray-900 font-bold text-right text-[12px] font-play">{phoneNumber}</span></div>
+          <div className="flex flex-col w-full pt-2 px-6">
+            <div className="space-y-1 w-full max-w-[320px] mx-auto text-[12px] font-play">
+              <div className="flex justify-between"><span>Банк:</span><span className="font-bold">Хаан банк</span></div>
+              <div className="flex justify-between"><span>Данс:</span><span className="font-bold">5318101209</span></div>
+              <div className="flex justify-between"><span>Дүн:</span><span className="font-bold">{formatMoney(totalPrice)}₮</span></div>
+              <div className="flex justify-between"><span>Утга:</span><span className="font-bold">{phoneNumber}</span></div>
             </div>
           </div>
         );
       
       case 8: 
         return (
-            <div className="flex flex-col items-center w-full justify-center h-full pt-2 pb-4">
-                 <div className="bg-white p-4 rounded-full mb-4 flex items-center justify-center animate-bounce-short"><Icons.Success /></div>
-                 <h3 className="text-[#068071] font-bold font-play text-lg mb-2">Амжилттай!</h3>
-                 <p className="text-[11px] text-center font-play text-gray-600 mb-4 px-6">Та "BONUS SUGLAA"-д амжилттай оролцлоо. Танд амжилт хүсье!</p>
-                 <div className="w-full flex flex-col items-center bg-gray-50 py-3 w-full">
-                    <p className="text-[10px] text-center font-play text-gray-500 mb-2">Таны азын дугаар:</p>
-                    <div className="flex flex-wrap justify-center gap-1 max-w-[320px]">
+            <div className="flex flex-col items-center w-full justify-center h-full pt-2">
+                 <div className="animate-bounce-short"><Icons.Success /></div>
+                 <h3 className="text-[#068071] font-bold text-lg">Амжилттай!</h3>
+                 <p className="text-[11px] text-gray-600 mb-4 px-6 text-center">Та BONUS-д амжилттай оролцлоо!</p>
+                 <div className="w-full bg-gray-50 py-3 flex flex-col items-center">
+                    <p className="text-[10px] text-gray-500 mb-2">Азын дугаар:</p>
+                    <div className="flex flex-wrap justify-center gap-1">
                         {luckyNumbers.map((num, idx) => (
-                            <span key={idx} className="bg-white text-[#068071] border border-[#068071] px-4 py-1 rounded-[6px] text-[16px] font-bold font-play shadow-sm">{num}</span>
+                            <span key={idx} className="bg-white text-[#068071] border border-[#068071] px-4 py-1 rounded-[6px] text-[16px] font-bold shadow-sm">{num}</span>
                         ))}
                     </div>
                 </div>
             </div>
         );
 
-      default:
-        return null;
+      default: return null;
     }
   };
 
@@ -548,97 +461,70 @@ const PurchaseDialog = ({
           @import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
           .font-play { font-family: 'Play', sans-serif; }
           .animate-bounce-short { animation: bounce 1s infinite; }
-          @keyframes bounce {
-              0%, 100% { transform: translateY(-5%); }
-              50% { transform: translateY(0); }
-          }
+          @keyframes bounce { 0%, 100% { transform: translateY(-5%); } 50% { transform: translateY(0); } }
         `}
       </style>
       
-      <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 font-sans pt-[100px] px-4">
+      {/* BACKGROUND OVERLAY FOR DISMISSING NUMPAD */}
+      <div 
+        className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 pt-[100px] px-4"
+        onClick={handleOverlayClick}
+      >
         <div 
-          className="bg-white relative flex flex-col shadow-2xl overflow-hidden transition-all duration-300 ease-in-out w-full"
-          style={{
-            maxWidth: '460px', 
-            height: (currentStep === 6 || currentStep === 7 || currentStep === 8) ? 'auto' : '250px',
-            minHeight: '250px',
-            borderRadius: '20px',
-            backgroundColor: '#FFFFFF',
-            padding: '0'
-          }}
+          className="bg-white relative flex flex-col shadow-2xl overflow-hidden transition-all duration-300 w-full"
+          onClick={(e) => e.stopPropagation()} // Dialog дотор дарахад overlay ажиллахгүй
+          style={{ maxWidth: '460px', minHeight: '250px', height: (currentStep >= 6) ? 'auto' : '250px', borderRadius: '20px' }}
         >
-          <button 
-            onClick={handleCloseRequest} 
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors z-10"
-          >
-            <Icons.Close />
-          </button>
+          
+          <button onClick={handleCloseRequest} className="absolute top-3 right-3 text-gray-400 z-10"><Icons.Close /></button>
 
           {showExitConfirm && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-[20px]">
-              <div className="text-center px-6">
-                <h3 className="font-play font-bold text-lg mb-2 text-black">Итгэлтэй байна уу?</h3>
-                <p className="font-play text-xs text-gray-600 mb-4">Худалдан авалтаа цуцлах гэж байна.<br/>Үргэлжлүүлэх үү?</p>
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-sm">
+              <div className="text-center">
+                <h3 className="font-play font-bold mb-4">Цуцлах уу?</h3>
                 <div className="flex gap-3 justify-center">
-                  <button onClick={() => setShowExitConfirm(false)} className="px-4 py-1.5 rounded-lg border border-gray-300 text-xs font-play text-gray-600 hover:bg-gray-50">Үгүй</button>
-                  <button onClick={confirmClose} className="px-4 py-1.5 rounded-lg bg-[#FF6060] text-xs font-play text-white hover:bg-[#ff4040]">Тийм</button>
+                  <button onClick={() => setShowExitConfirm(false)} className="px-4 py-1 border rounded-lg text-xs">Үгүй</button>
+                  <button onClick={confirmClose} className="px-4 py-1 bg-[#FF6060] text-white rounded-lg text-xs">Тийм</button>
                 </div>
               </div>
             </div>
           )}
 
-          <div 
-            className="w-full flex justify-between items-end relative" 
-            style={{ height: '65px', padding: '0 25px 8px 25px', borderBottom: '1px solid #D9D9D9', flexShrink: 0 }}
-          >
-              <h2 className="font-play font-bold text-[18px] sm:text-[20px] leading-[100%] text-black m-0">{getStepTitle()}</h2>
-              <div className="font-play font-bold text-[18px] sm:text-[20px] leading-[100%] text-[#068071]">{formatTimer(remainingSeconds)}</div>
+          <div className="w-full flex justify-between items-end border-b px-6 pb-2" style={{ height: '65px' }}>
+              <h2 className="font-play font-bold text-[20px] text-black">{getStepTitle()}</h2>
+              <div className="font-play font-bold text-[20px] text-[#068071]">{formatTimer(remainingSeconds)}</div>
           </div>
 
-          <div className="flex-1 w-full overflow-hidden relative pb-4">
-              {renderContent()}
-          </div>
+          <div className="flex-1 w-full overflow-hidden relative pb-4">{renderContent()}</div>
 
-          <div 
-            className="w-full flex justify-between items-center relative" 
-            style={{ height: '50px', padding: '0 25px', borderTop: '1px solid #D9D9D9', flexShrink: 0 }}
-          >
-              <button
-                  onClick={handleBack}
-                  disabled={currentStep === 1 || isPaymentSuccess || currentStep === 8}
-                  style={{
-                      width: '90px', height: '30px', borderRadius: '8px', border: '1px solid #D9D9D9', backgroundColor: '#FFFFFF',
-                      fontFamily: 'Play, sans-serif', fontWeight: 400, fontSize: '12px', color: '#969696',
-                      cursor: (currentStep === 1 || isPaymentSuccess || currentStep === 8) ? 'not-allowed' : 'pointer',
-                      opacity: (currentStep === 1 || isPaymentSuccess || currentStep === 8) ? 0.6 : 1
-                  }}
-              >Өмнөх</button>
+          <div className="w-full flex justify-between items-center border-t px-6" style={{ height: '50px' }}>
+              <button onClick={handleBack} disabled={currentStep === 1 || isPaymentSuccess || currentStep === 8}
+                      className="w-[90px] h-[30px] rounded-lg border text-[12px] font-play disabled:opacity-50">Өмнөх</button>
 
-              <button
-                  onClick={() => {
-                      if (currentStep === 6) { if (isPaymentSuccess) onClose(); else handleCheckPayment(); }
-                      else if (currentStep === 7) { handleFinish(); }
-                      else if (currentStep === 8) { onClose(); }
-                      else { handleNext(); }
-                  }}
-                  disabled={(currentStep === 1 && !isPhoneValid) || (currentStep === 2 && (!isOtpValid && !isOtpExpired)) || isLoading}
-                  style={{
-                      width: (currentStep === 6) ? 'auto' : '90px', minWidth: '90px', padding: currentStep === 6 ? '0 10px' : '0',
-                      height: '30px', borderRadius: '8px', border: '1px solid #D9D9D9',
-                      backgroundColor: (isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF',
-                      fontFamily: 'Play, sans-serif', fontWeight: 400, fontSize: '12px',
-                      color: (isPaymentSuccess || currentStep === 8) ? '#FFFFFF' : '#057F71', 
-                      cursor: ((currentStep === 1 && !isPhoneValid) || (currentStep === 2 && !isOtpValid) || isLoading) ? 'not-allowed' : 'pointer',
-                      opacity: ((currentStep === 1 && !isPhoneValid) || (currentStep === 2 && !isOtpValid) || isLoading) ? 0.6 : 1,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px'
-                  }}
-              >
-                  {currentStep === 6 ? (isLoading ? <Icons.Loader /> : (isPaymentSuccess ? "Хаах" : "Төлбөр шалгах")) : 
-                   currentStep === 7 ? "Дуусгах" : currentStep === 8 ? "Хаах" : (isLoading ? <Icons.Loader /> : "Дараах")}
+              <button onClick={() => {
+                          if (currentStep === 6) { if (isPaymentSuccess) onClose(); else handleCheckPayment(); }
+                          else if (currentStep === 7) handleFinish();
+                          else if (currentStep === 8) onClose();
+                          else handleNext();
+                      }}
+                      disabled={(currentStep === 1 && !isPhoneValid) || (currentStep === 2 && !isOtpValid) || isLoading}
+                      className="min-w-[90px] h-[30px] rounded-lg border text-[12px] font-play flex items-center justify-center gap-1"
+                      style={{ backgroundColor: (isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF',
+                               color: (isPaymentSuccess || currentStep === 8) ? '#FFFFFF' : '#057F71' }}>
+                  {isLoading ? <Icons.Loader /> : (currentStep === 6 ? (isPaymentSuccess ? "Хаах" : "Төлбөр шалгах") : (currentStep >= 7 ? "Хаах" : "Дараах"))}
               </button>
           </div>
         </div>
       </div>
+
+      {/* NUMPAD COMPONENT */}
+      <Numpad 
+        isOpen={isNumpadOpen}
+        value={currentStep === 1 ? rawPhoneNumber : otpInput}
+        onChange={handleNumpadChange}
+        onDone={() => setIsNumpadOpen(false)}
+        maxLength={currentStep === 1 ? 8 : 4}
+      />
     </>
   );
 };
