@@ -187,11 +187,19 @@ const CheckTicketScreen = () => {
 };
 
 const LotteryResultCard = ({ data }) => {
+  // Энд тогтмол зургийн замыг зааж өгнө
+  const STATIC_IMAGE_PATH = "/suglaa/3.jpg"; 
+
   return (
     <div className="w-full bg-white rounded-[24px] shadow-2xl overflow-hidden border-[1.5px] border-[#D4AF37] flex flex-col h-full transform transition-all duration-300 hover:scale-[1.02]">
         <div className="p-4 flex gap-4 items-center">
+            {/* Тогтмол зураг харагдах хэсэг */}
             <div className="w-[74px] h-[74px] shrink-0 rounded-[14px] overflow-hidden border-[1.2px] border-[#D4AF37] bg-gray-50">
-                <img src={data.image} alt="Product" className="w-full h-full object-cover" />
+                <img 
+                  src={STATIC_IMAGE_PATH} 
+                  alt="Default Product" 
+                  className="w-full h-full object-cover" 
+                />
             </div>
 
             <div className="flex flex-col">
