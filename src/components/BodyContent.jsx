@@ -519,7 +519,7 @@ const BodyContent = ({ onLottoClick }) => {
              : isSmallPhone ? '-306px'           // 1. iPhone SE (Small)
              : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max (Wide)
              : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR (Mid-Wide)
-             : isPhone ? '-350px'                // 4. iPhone 12 Pro (Standard)
+             : isPhone ? '-400px'                // 4. iPhone 12 Pro (Standard)
              : (isMobile ? '-50%'                // 5. iPads (Tablet) -> Энийг тааруулна
              : '-25%'),                          // 6. Desktop -> Энийг тааруулна
 
@@ -528,7 +528,7 @@ const BodyContent = ({ onLottoClick }) => {
                : isSmallPhone ? '150vw'          // 1. iPhone SE
                : (isPhone && window.innerWidth >= 425) ? '210vw' // 2. iPhone 14 Pro Max 
                : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
-               : isPhone ? '200vw'               // 4. iPhone 12 Pro
+               : isPhone ? '180vw'               // 4. iPhone 12 Pro
                : (isMobile ? '180vw'              // 5. iPads (Tablet)
                : '200%'),                        // 6. Desktop
                
@@ -552,7 +552,7 @@ const BodyContent = ({ onLottoClick }) => {
            : isSmallPhone ? '10%'                // 1. iPhone SE
            : (isPhone && window.innerWidth >= 425) ? '15%'  // 2. iPhone 14 Pro Max
            : (isPhone && window.innerWidth >= 400) ? '13%'  // 3. iPhone XR
-           : isPhone ? '-6%'                     // 4. iPhone 12 Pro
+           : isPhone ? '-35%'                     // 4. iPhone 12 Pro
            : (isMobile ? '10%'                   // 5. iPads (Tablet) -> Энийг тааруулна
            : '40%'),                             // 6. Desktop -> Энийг тааруулна
         
@@ -643,7 +643,7 @@ const BodyContent = ({ onLottoClick }) => {
                   flexGrow: isPhone ? 0 : 0, 
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                   minHeight: isPhone ? '0' : 'auto', 
-                  top: isMobile ? '-40px' : '120px', 
+                  top: isMobile ? '-50px' : '120px', 
                   marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
                   display: 'flex', 
                   alignItems: 'center',
