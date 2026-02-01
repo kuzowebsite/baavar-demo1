@@ -536,7 +536,7 @@ const BodyContent = ({ onLottoClick }) => {
 
                : (isPhone && window.innerWidth >= 425) ? '210vw' // 2. iPhone 14 Pro Max 
                : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
-               : isPhone ? '300vw'                              // 4. iPhone 12 Pro
+               : isPhone ? '200vw'                              // 4. iPhone 12 Pro
                : (isMobile ? '180vw'                             // 5. iPads
                : '200%'),                                       // 6. Desktop
                
@@ -560,7 +560,7 @@ const BodyContent = ({ onLottoClick }) => {
            : isSmallPhone ? '10%'                               // 1. iPhone SE
 
            // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
-           : (isPhone && window.innerWidth === 428) ? '-6%'     // Энд тохируулна
+           : (isPhone && window.innerWidth === 428) ? '-2%'     // Энд тохируулна
 
            : (isPhone && window.innerWidth >= 425) ? '15%'      // 2. iPhone 14 Pro Max
            : (isPhone && window.innerWidth >= 400) ? '13%'      // 3. iPhone XR
@@ -659,7 +659,7 @@ const BodyContent = ({ onLottoClick }) => {
                   flexGrow: isPhone ? 0 : 0, 
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                   minHeight: isPhone ? '0' : 'auto', 
-                  top: isMobile ? '0' : '120px', 
+                  top: isMobile ? '-50px' : '120px', 
                   marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
                   display: 'flex', 
                   alignItems: 'center',
