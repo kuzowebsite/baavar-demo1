@@ -416,14 +416,32 @@ const BodyContent = ({ onLottoClick }) => {
           @media (max-width: 380px) {
             .mobile-title { font-size: 20px !important; }
             .mobile-title-container { 
-               mmargin-top: 85px !important;
+               /* FIXED болгож байгаа тул энд margin өөрчлөлт хамаарахгүй байж болно, гэхдээ үлдээлээ */
+               /* margin-top: 85px !important; */
                margin-bottom: 10px !important; 
             }
           }
         `}
       </style>
 
-      {/* Main Container */}
+      {/* --- ШИНЭ ХЭСЭГ: FIXED BACKGROUND (Зөвхөн арын зураг, бүх төхөөрөмж дээр fixed байна) --- */}
+      <div 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundImage: "url('assets/background.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 0, // Бүх юмны ард
+          pointerEvents: 'none' // Mouse click-д саад болохгүй
+        }}
+      />
+
+      {/* Main Container (Background-ийг эндээс авсан) */}
       <div className={`w-full relative flex`} 
            style={{ 
                height: isPhone ? '100vh' : '100%', 
@@ -433,10 +451,7 @@ const BodyContent = ({ onLottoClick }) => {
                alignItems: 'center',
                paddingTop: isMobile ? '0px' : '0',
                overflow: 'hidden',
-               backgroundImage: "url('assets/background.jpg')",
-               backgroundSize: 'cover',
-               backgroundPosition: 'center',
-               backgroundRepeat: 'no-repeat',
+               // Background-ийг дээд талын тусдаа div руу шилжүүлсэн тул энд transparent байна
                backgroundColor: 'transparent' 
            }}>
           
@@ -453,19 +468,23 @@ const BodyContent = ({ onLottoClick }) => {
                    position: 'relative'
                }}>
             
-            {/* ГАРЧИГ ХЭСЭГ */}
+            {/* ГАРЧИГ / EFFECT IMAGE ХЭСЭГ */}
             <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
-      style={{ 
-        position: isPhone ? 'relative' : (isMobile ? 'relative' : 'absolute'),
-        // ЗАСВАР 3: Desktop дээр эффект зургийг дээшлүүлэв (-80px -> -140px)
-        marginTop: isSmallPhone ? '45px' : (isPhone ? '30px' : (isMobile ? '100px' : '-140px')), 
-        top: isPhone ? 'auto' : (isMobile ? 'auto' : '50px'),
-        marginBottom: isPhone ? '-40px' : '0', 
-        paddingBottom: isPhone ? '0px' : '0',
-        zIndex: 110, 
-        flexShrink: 0, 
-        pointerEvents: 'none'
-      }}>
+                style={{ 
+                    // ШИНЭЧЛЭЛ: isPhone үед FIXED байрлалтай болгож байна.
+                    position: isPhone ? 'fixed' : (isMobile ? 'relative' : 'absolute'),
+                    // FIXED үед дээд талаас авах зайг энд зааж өгнө. Scroll хийхэд хөдлөхгүй.
+                    top: isPhone ? (isSmallPhone ? '35px' : '50px') : (isMobile ? 'auto' : '50px'),
+                    marginTop: isPhone ? '0' : (isSmallPhone ? '45px' : (isMobile ? '100px' : '-140px')), 
+                    marginBottom: isPhone ? '-40px' : '0', 
+                    paddingBottom: isPhone ? '0px' : '0',
+                    zIndex: 110, 
+                    flexShrink: 0, 
+                    pointerEvents: 'none',
+                    // FIXED үед төвд байрлуулах
+                    left: isPhone ? 0 : 'auto',
+                    width: '100%'
+                }}>
   
   <img 
     src="assets/effect.png" 
@@ -503,7 +522,7 @@ const BodyContent = ({ onLottoClick }) => {
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                   minHeight: isPhone ? '0' : 'auto', 
                   top: isMobile ? '0' : '120px', 
-                  marginTop: isMobile ? (isSmallPhone ? '-120px' : (isPhone ? '-250px' : '-8px')) : '0', 
+                  marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '-50px' : '-8px')) : '0', 
                   display: 'flex', 
                   alignItems: 'center',
                   justifyContent: 'center',
