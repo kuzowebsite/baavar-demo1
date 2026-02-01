@@ -178,6 +178,8 @@ const BodyContent = ({ onLottoClick }) => {
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [selectedLotto, setSelectedLotto] = useState(null);
   const [mobileSlideSize, setMobileSlideSize] = useState({ width: 340, height: 500 });
+  // Tablet дээр гүйлгэх үед товчийг нуух state
+  const [isInteracting, setIsInteracting] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -224,11 +226,11 @@ const BodyContent = ({ onLottoClick }) => {
   }, []);
 
   const baseLottoList = [
-    { id: 1, title: "LEXUS RX 2026", price: "30,000₮", displayPrice: "30,000₮", imageUrl: "/suglaa/1.png", code: "BS001", type: "Баавар сугалаа", fillPercent: 90 },
-    { id: 2, title: "IPHONE 17 PRO MAX", price: "5,000₮", displayPrice: "5,000₮", imageUrl: "/suglaa/1.png", code: "NS001", type: "Нүнжиг сугалаа", fillPercent: 45 },
-    { id: 3, title: "LAND CRUISER 300", price: "20,000₮", displayPrice: "20,000₮", imageUrl: "/suglaa/3.jpg", code: "SS001", type: "Сүншиг сугалаа", fillPercent: 70 },
-    { id: 4, title: "3 ӨРӨӨ БАЙР", price: "50,000₮", displayPrice: "50,000₮", imageUrl: "/suglaa/1.png", code: "BS002", type: "Баавар сугалаа", fillPercent: 20 },
-    { id: 5, title: "BONUS SUGLAA", price: "0₮", displayPrice: "Үнэгүй", imageUrl: "/suglaa/3.jpg", code: "FR001", type: "Үнэгүй сугалаа", fillPercent: 10 },
+    { id: 1, title: "LEXUS RX", price: "30,000₮", displayPrice: "30,000₮", imageUrl: "/suglaa/1.png", type: "Баавар сугалаа", fillPercent: 90 },
+    { id: 2, title: "ХУРДАН МОРЬ", price: "5,000₮", displayPrice: "5,000₮", imageUrl: "/suglaa/2.png", type: "Монгол сугалаа", fillPercent: 45 },
+    { id: 3, title: "9.999.999₮", price: "20,000₮", displayPrice: "20,000₮", imageUrl: "/suglaa/3.png", type: "Саятан сугалаа", fillPercent: 70 },
+    { id: 4, title: "IPHONE 17", price: "10,000₮", displayPrice: "10,000₮", imageUrl: "/suglaa/4.png", type: "iPhone сугалаа", fillPercent: 20 },
+    { id: 5, title: "1.000.000₮", price: "0₮", displayPrice: "Үнэгүй", imageUrl: "/suglaa/5.png", type: "Үнэгүй сугалаа", fillPercent: 10 },
   ];
 
   const displayList = useMemo(() => {
@@ -327,7 +329,7 @@ const BodyContent = ({ onLottoClick }) => {
              .swiper-slide {
                 filter: blur(2px);
                 opacity: 0.8;
-             }
+              }
              .swiper-slide-prev { 
                 opacity: 0 !important; 
                 visibility: hidden !important;
@@ -476,33 +478,150 @@ const BodyContent = ({ onLottoClick }) => {
             
             {/* ГАРЧИГ / EFFECT IMAGE ХЭСЭГ */}
             <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
-                 style={{ 
-                    position: isPhone ? 'fixed' : (isMobile ? 'relative' : 'absolute'),
-                    top: isPhone ? (isSmallPhone ? '35px' : '50px') : (isMobile ? 'auto' : '50px'),
-                    marginTop: isPhone ? '0' : (isSmallPhone ? '45px' : (isMobile ? '100px' : '-140px')), 
-                    marginBottom: isPhone ? '-40px' : '0', 
-                    paddingBottom: isPhone ? '0px' : '0',
-                    zIndex: 110, 
-                    flexShrink: 0, 
-                    pointerEvents: 'none',
-                    left: isPhone ? 0 : 'auto',
-                    width: '100%'
-                 }}>
-  
-  <img 
-    src="assets/effect.png" 
-                alt="Lottery Effect"
-                className="effect-image"
-                style={{
-                  width: 'auto',
-                  maxWidth: isMobile ? '95%' : '100%',
-                  height: isSmallPhone ? '160px' : (isPhone ? '200px' : (isMobile ? '180px' : '240px')),
-                  objectFit: 'contain',
-                  mixBlendMode: 'screen'
-                }}
-              />
-              
-            </div>
+     style={{ 
+        position: isPhone ? 'fixed' : (isMobile ? 'relative' : 'absolute'),
+        top: isPhone ? (isSmallPhone ? '35px' : '50px') : (isMobile ? 'auto' : '50px'),
+        marginTop: isPhone ? '0' : (isSmallPhone ? '45px' : (isMobile ? '100px' : '-140px')), 
+        marginBottom: isPhone ? '-40px' : '0', 
+        paddingBottom: isPhone ? '0px' : '0',
+        zIndex: 110, 
+        flexShrink: 0, 
+        pointerEvents: 'none',
+        left: isPhone ? 0 : 'auto',
+        width: '100%'
+     }}>
+
+  {/* Image Container */}
+  <div style={{
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '300%',
+    maxWidth: isMobile ? '200%' : '100%',
+    height: isSmallPhone ? '160px' : (isPhone ? '200px' : (isMobile ? '180px' : '180px')),
+  }}>
+    
+    {/* Bloom - Behind */}
+    <img 
+        src="assets/Bloom.png"
+        alt="Bloom"
+        style={{
+          position: 'absolute',
+          
+          height: isPhone ? '200vw' : '180%', 
+          
+          left: '50%', 
+          transform: 'translateX(-50%)', 
+          
+          // --- BLOOM POSITION (TOP) ---
+          top: (isPhone && window.innerWidth < 360) ? '-256px' // 0. Galaxy Z Fold 5 (344px - Very Narrow) -> Энийг тааруулна
+             : isSmallPhone ? '-306px'           // 1. iPhone SE (Small)
+             : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max (Wide)
+             : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR (Mid-Wide)
+             : isPhone ? '-300px'                // 4. iPhone 12 Pro (Standard)
+             : (isMobile ? '-50%'                // 5. iPads (Tablet) -> Энийг тааруулна
+             : '-25%'),                          // 6. Desktop -> Энийг тааруулна
+
+          // --- BLOOM SIZE (WIDTH) ---
+          width: (isPhone && window.innerWidth < 360) ? '170vw' // 0. Galaxy Z Fold 5 (Нарийн дэлгэц тул багасгав)
+               : isSmallPhone ? '150vw'          // 1. iPhone SE
+               : (isPhone && window.innerWidth >= 425) ? '210vw' // 2. iPhone 14 Pro Max 
+               : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
+               : isPhone ? '200vw'               // 4. iPhone 12 Pro
+               : (isMobile ? '180vw'              // 5. iPads (Tablet)
+               : '200%'),                        // 6. Desktop
+               
+          objectFit: 'contain',
+          mixBlendMode: 'screen',
+          zIndex: 1,
+          pointerEvents: 'none'
+        }}
+    />
+
+    {/* Effect - Front */}
+    <img 
+      src="assets/effect.png" 
+      alt="Lottery Effect"
+      className="effect-image"
+      style={{
+        position: 'relative',
+        
+        // --- EFFECT POSITION (TOP) ---
+        top: (isPhone && window.innerWidth < 360) ? '8%'       // 0. Galaxy Z Fold 5 (344px) -> Энийг тааруулна
+           : isSmallPhone ? '10%'                // 1. iPhone SE
+           : (isPhone && window.innerWidth >= 425) ? '15%'  // 2. iPhone 14 Pro Max
+           : (isPhone && window.innerWidth >= 400) ? '13%'  // 3. iPhone XR
+           : isPhone ? '12%'                     // 4. iPhone 12 Pro
+           : (isMobile ? '10%'                   // 5. iPads (Tablet) -> Энийг тааруулна
+           : '40%'),                             // 6. Desktop -> Энийг тааруулна
+        
+        // --- EFFECT SIZE (WIDTH) ---
+        width: (isPhone && window.innerWidth < 360) ? '95vw'  // 0. Galaxy Z Fold 5 (Нарийн дэлгэц)
+             : isPhone ? '100vw'                 // Phones
+             : (isMobile ? '40%'                // 5. iPads (Tablet) -> Энийг тааруулна
+             : '35%'),                          // 6. Desktop -> Энийг тааруулна
+
+        height: isPhone ? '100vw' : '180%',
+        objectFit: 'contain',
+        zIndex: 2,
+        mixBlendMode: 'normal'
+      }}
+    />
+
+    {/* Desktop Navigation Buttons (Only Desktop) */}
+    {!isMobile && (
+      <div style={{
+        position: 'absolute',
+        right: '200px', 
+        top: '90%',
+        transform: 'translateY(-50%)',
+        zIndex: 20,
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '10px',
+        pointerEvents: 'auto'
+      }}>
+        <button 
+          onClick={() => swiperRef?.slidePrev()}
+          style={{
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.3s'
+          }}
+          className="hover:bg-white/20 hover:scale-110"
+        >
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button 
+          onClick={() => swiperRef?.slideNext()}
+          style={{
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.3s'
+          }}
+          className="hover:bg-white/20 hover:scale-110"
+        >
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    )}
+  </div>
+</div>
 
             {!isMobile && (
               <div className="absolute pointer-events-none" 
@@ -532,6 +651,58 @@ const BodyContent = ({ onLottoClick }) => {
                   zIndex: 10
                  }}>
                 
+                {/* Tablet Navigation Buttons (Sides of active slide) */}
+                {isMobile && !isPhone && (
+                  <>
+                    <button 
+                      onClick={() => swiperRef?.slidePrev()}
+                      style={{
+                        position: 'absolute',
+                        left: '20px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 200,
+                        opacity: isInteracting ? 0 : 1, // Interact хийхэд алга болно
+                        transition: 'opacity 0.3s ease',
+                        background: 'rgba(0,0,0,0.3)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '50px',
+                        height: '50px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                      }}
+                    >
+                       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button 
+                      onClick={() => swiperRef?.slideNext()}
+                      style={{
+                        position: 'absolute',
+                        right: '20px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 200,
+                        opacity: isInteracting ? 0 : 1, // Interact хийхэд алга болно
+                        transition: 'opacity 0.3s ease',
+                        background: 'rgba(0,0,0,0.3)',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '50px',
+                        height: '50px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer'
+                      }}
+                    >
+                       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                  </>
+                )}
+
                 <Swiper
                     onSwiper={setSwiperRef}
                     direction={isPhone ? 'vertical' : 'horizontal'} 
@@ -546,6 +717,8 @@ const BodyContent = ({ onLottoClick }) => {
                     spaceBetween={isPhone ? 0 : 80}
                     slideToClickedSlide={true}
                     autoplay={{ delay: 10000, disableOnInteraction: false }}
+                    onTouchMove={() => setIsInteracting(true)} // Tablet feature
+                    onTouchEnd={() => setTimeout(() => setIsInteracting(false), 500)} // Tablet feature
                     coverflowEffect={{ 
                         rotate: 0, 
                         stretch: isPhone ? -320 : 0, 
@@ -603,33 +776,173 @@ const BodyContent = ({ onLottoClick }) => {
                 </Swiper>
             </div>
 
-            {isPhone && (
-                <div className="w-full flex items-center justify-center shrink-0 z-50" 
-                     style={{ 
-                          position: 'absolute', 
-                          bottom: isSmallPhone ? '50px' : '140px',
-                          left: '0',
-                          width: '100%',
-                          pointerEvents: 'none', 
-                          gap: '8px'
-                     }}>
-                    
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
-                    </svg>
+            {(isPhone || window.innerWidth > 450) && (
+  <div className="w-full flex items-center justify-center shrink-0" 
+      style={{ 
+          position: 'absolute', 
+          zIndex: 100, 
+          
+          // --- 1. CONTAINER POSITION (BOTTOM) ---
+          // Desktop (1024)-ийг хасаж, зөвхөн Tablet (768)-аас дээш гэдгийг үлдээв
+          bottom: (window.innerWidth >= 768) ? '50px'             // Tablet & Desktop (Common)
+                
+                // --- Phone Logic ---
+                : (isPhone && window.innerWidth < 360) ? '10px'  
+                : isSmallPhone ? '10px'                           
+                : (isPhone && window.innerWidth >= 425) ? '10px' 
+                : (isPhone && window.innerWidth >= 400) ? '10px' 
+                : (isPhone) ? '-8px'                              
+                : '10px',
 
-                    <p style={{ 
-                        fontFamily: "'Montserrat Alternates', sans-serif", 
-                        fontSize: '15px', 
-                        fontWeight: '300', 
-                        color: '#FFFFFF', 
-                        margin: 0,
-                        textShadow: '0 1px 3px rgba(0,0,0,0.6)' 
-                    }}>
-                        Сангийн яамны зөвшөөрөлтэй
-                    </p>
-                </div>
-            )}
+          // --- CONTAINER POSITION (LEFT) ---
+          // Tablet & Desktop дээр 0px (Голлуулна)
+          left: (window.innerWidth >= 768) ? '0px'            
+              
+              // --- Phone Logic ---
+              : (isSmallPhone) ? '-60px' 
+              : (isPhone && window.innerWidth === 375) ? '-90px' 
+              : (isPhone && window.innerWidth === 414) ? '-80px' 
+              : (isPhone) ? '-80px'
+              : '-80px',
+          
+          width: '100%',
+          pointerEvents: 'none', 
+          
+          // --- GAP ADJUSTMENT ---
+          gap: (window.innerWidth >= 768) ? '10px'
+             : (isPhone && window.innerWidth < 360) ? '6px' 
+             : '8px'
+      }}>
+    
+    {/* Mongolian Woman Image (BEHIND) */}
+    <img 
+       src="/assets/mongolian-woman.png" 
+       alt="Host" 
+       style={{ 
+         position: 'relative', 
+         zIndex: 10, 
+
+         // --- IMAGE VISIBILITY ---
+         // Tablet & Desktop дээр зургийг харуулахгүй
+         display: (window.innerWidth >= 768) ? 'none' : 'block',
+
+         // --- IMAGE SIZE (HEIGHT) ---
+         height: (isPhone && window.innerWidth < 360) ? '330px'  
+               : isSmallPhone ? '200px'                           
+               : (isPhone && window.innerWidth >= 425) ? '350px'  
+               : (isPhone && window.innerWidth === 414) ? '250px'
+               : (isPhone && window.innerWidth >= 400) ? '325px'  
+               : (isPhone) ? '330px'
+               : '330px', 
+         
+         width: 'auto', 
+         objectFit: 'contain',
+         transform: 'translateY(10px)' 
+       }} 
+    />
+
+    {/* SVG ICON (FRONT) */}
+    <svg 
+  width="20" 
+  height="20" 
+  viewBox="0 0 24 24" 
+  fill="none" 
+  xmlns="http://www.w3.org/2000/svg"
+  style={{
+      position: 'relative',
+      zIndex: 20, 
+
+      // --- ICON POSITION: MARGIN TOP ---
+      // ЗӨВХӨН iPad (Mini, Air, Pro) дээр 0px
+      // (768px-ээс их БА 1024px-ээс бага буюу тэнцүү үед)
+      marginTop: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
+
+               // --- Phone & Desktop Logic (Desktop доошоо орно) ---
+               : (isPhone && window.innerWidth < 360) ? '-180px'   
+               : (isPhone && window.innerWidth === 360) ? '40px'    
+               : isSmallPhone ? '30px'                              
+               : (isPhone && window.innerWidth === 375) ? '-130px'  
+               : (isPhone && window.innerWidth >= 425) ? '-150px'  
+               : (isPhone && window.innerWidth === 414) ? '20px'   
+               : (isPhone && window.innerWidth >= 400) ? '-150px'  
+               : '-140px',
+
+      // --- ICON POSITION: MARGIN LEFT ---
+      // ЗӨВХӨН iPad (Mini, Air, Pro) дээр 0px
+      marginLeft: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'          
+
+                // --- Phone & Desktop Logic ---
+                : (isPhone && window.innerWidth < 360) ? '-120px'  
+                : (isPhone && window.innerWidth === 360) ? '-50px' 
+                : isSmallPhone ? '-40px' 
+                : (isPhone && window.innerWidth === 375) ? '-104px' 
+                : (isPhone && window.innerWidth >= 425) ? '-110px' 
+                : (isPhone && window.innerWidth === 414) ? '-40px' 
+                : (isPhone && window.innerWidth >= 400) ? '-106px' 
+                : '-104px',
+
+      marginBottom: '0px',
+      marginRight: '0px',
+      transform: 'translateY(0px)' 
+  }}
+>
+  <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
+</svg>
+
+    {/* Text: Сангийн яамны зөвшөөрөлтэй */}
+    <p style={{ 
+    position: 'relative',
+    zIndex: 20, 
+
+    fontFamily: "'Montserrat Alternates', sans-serif", 
+    fontWeight: '300', 
+    color: '#FFFFFF', 
+    textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+
+    // --- FONT SIZE ---
+    // Зөвхөн iPad (768px - 1024px) дээр 16px
+    fontSize: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '16px'
+            // Phone Logic
+            : (isPhone && window.innerWidth < 360) ? '11px' 
+            : isSmallPhone ? '12px' 
+            : (isPhone && window.innerWidth >= 425) ? '13px' 
+            : '11px',
+
+    // --- TEXT POSITION: MARGIN TOP ---
+    // Зөвхөн iPad (768px - 1024px) дээр 0px
+    marginTop: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
+
+             // --- Phone Logic ---
+             : (isPhone && window.innerWidth < 360) ? '-180px'  
+             : (isPhone && window.innerWidth === 360) ? '40px' 
+             : isSmallPhone ? '30px' 
+             : (isPhone && window.innerWidth === 375) ? '-130px' 
+             : (isPhone && window.innerWidth >= 425) ? '-150px' 
+             : (isPhone && window.innerWidth === 414) ? '20px' 
+             : (isPhone && window.innerWidth >= 400) ? '-150px' 
+             : '-140px',
+
+    // --- TEXT POSITION: MARGIN LEFT ---
+    // Зөвхөн iPad (768px - 1024px) дээр 0px
+    marginLeft: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
+
+              // --- Phone Logic ---
+              : (isPhone && window.innerWidth < 360) ? '-6px'  
+              : (isPhone && window.innerWidth === 360) ? '-7px'  
+              : isSmallPhone ? '-8px' 
+              : (isPhone && window.innerWidth === 375) ? '-7px' 
+              : (isPhone && window.innerWidth >= 425) ? '-6px' 
+              : (isPhone && window.innerWidth === 414) ? '-4px' 
+              : (isPhone && window.innerWidth >= 400) ? '-4px' 
+              : '-7px',
+
+    marginRight: '0',
+    marginBottom: '0',
+}}>
+    Сангийн яамны зөвшөөрөлтэй
+</p>
+</div>
+)}
 
             {isMobile && !isPhone && (
               <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
