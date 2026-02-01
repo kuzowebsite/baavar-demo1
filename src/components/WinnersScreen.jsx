@@ -81,19 +81,35 @@ const WinnersScreen = () => {
 const WinnerSection = ({ title }) => {
   const sliderRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
-  const scrollTimeout = useRef(null); // Scroll зогсолтыг хянах timer
+  
+  // Баруун зүүн тийш гүйлгэх боломжтой эсэхийг хадгалах
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Scroll хөдөлгөөнийг хянах функц (Mobile & Desktop аль алинд нь ажиллана)
+  const scrollTimeout = useRef(null);
+
+  // Scroll хийх боломжтой эсэхийг шалгах функц
+  const checkScrollPosition = () => {
+    if (sliderRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+      // Зүүн талд зай байгаа эсэх (> 0)
+      setCanScrollLeft(scrollLeft > 0);
+      // Баруун талд зай байгаа эсэх (1px-ийн зөрүүг тооцохгүй)
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
+    }
+  };
+
   const handleScrollEvent = () => {
-    // Хөдөлж эхлэнгүүт нууна
+    // 1. Scroll хийгдэх бүрт товч харагдах эсэхийг шалгана
+    checkScrollPosition();
+
+    // 2. Drag/Scroll хийж байхад товчийг түр нуух логик
     setIsDragging(true);
 
-    // Өмнөх timer-ийг устгана (хэрвээ дахин scroll хийгдвэл)
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
     }
 
-    // 150ms-ийн дараа хөдөлгөөн зогссон гэж үзээд товчийг гаргана
     scrollTimeout.current = setTimeout(() => {
       setIsDragging(false);
     }, 150);
@@ -103,11 +119,15 @@ const WinnerSection = ({ title }) => {
     const slider = sliderRef.current;
     if (!slider) return;
 
+    // Эхлэх үед товч харагдах эсэхийг шалгах
+    checkScrollPosition();
+    // Цонхны хэмжээ өөрчлөгдөхөд дахин шалгах
+    window.addEventListener('resize', checkScrollPosition);
+
     let isDown = false;
     let startX;
     let scrollLeft;
 
-    // Desktop Mouse Events
     const onMouseDown = (e) => {
       if (window.innerWidth < 768) return;
       isDown = true;
@@ -117,19 +137,16 @@ const WinnerSection = ({ title }) => {
       scrollLeft = slider.scrollLeft;
       slider.style.userSelect = 'none';
       
-      // Drag хийж байхад timer-ийг цуцлах (гараар чирж байхад алга болохгүй байхгүйн тулд)
       if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     };
 
     const onMouseLeave = () => {
       isDown = false;
-      // Mouse гарсан үед шууд харуулахгүй, scroll дуусахыг хүлээнэ (handleScrollEvent зохицуулна)
       slider.style.cursor = 'grab';
     };
 
     const onMouseUp = () => {
       isDown = false;
-      // Mouse тавьсан үед шууд харуулахгүй, scroll дуусахыг хүлээнэ
       slider.style.cursor = 'grab';
     };
 
@@ -147,6 +164,7 @@ const WinnerSection = ({ title }) => {
     slider.addEventListener('mousemove', onMouseMove);
 
     return () => {
+      window.removeEventListener('resize', checkScrollPosition);
       slider.removeEventListener('mousedown', onMouseDown);
       slider.removeEventListener('mouseleave', onMouseLeave);
       slider.removeEventListener('mouseup', onMouseUp);
@@ -178,8 +196,12 @@ const WinnerSection = ({ title }) => {
         {/* Left Button */}
         <button 
           onClick={() => scroll('left')}
-          className={`absolute left-2 md:left-4 xl:left-[190px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all shadow-lg
-            ${isDragging ? 'opacity-0 pointer-events-none duration-200' : 'md:opacity-0 md:group-hover:opacity-100 duration-300'}
+          // z-index-ийг z-30 болгосон (зургийн урд гаргахын тулд)
+          // !canScrollLeft үед бүр мөсөн нуух (opacity-0 pointer-events-none)
+          className={`absolute left-2 md:left-4 xl:left-[190px] top-1/2 -translate-y-1/2 z-30 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all shadow-lg
+            ${(!canScrollLeft || isDragging) 
+              ? 'opacity-0 pointer-events-none duration-200' 
+              : 'md:opacity-0 md:group-hover:opacity-100 duration-300'}
           `}
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,15 +211,14 @@ const WinnerSection = ({ title }) => {
 
         <div 
           ref={sliderRef}
-          // Энд onScroll ашигласан нь хамгийн найдвартай арга
           onScroll={handleScrollEvent}
-          // Touch эхлэхэд шууд нуух (илүү хурдан хариу үйлдэл үзүүлэхийн тулд)
           onTouchStart={() => setIsDragging(true)}
           className="flex overflow-x-auto gap-5 pt-4 pb-8 px-8 md:px-0 scrollbar-hide snap-container select-none cursor-grab active:cursor-grabbing"
         >
           {WINNERS_DATA.map((_, i) => (
             <div 
               key={i} 
+              // Картын hover z-index нь 20 байгаа. Тиймээс товч нь z-30 байх хэрэгтэй.
               className="snap-item shrink-0 gold-card-outer w-[140px] md:w-[150px] xl:w-[200px]" 
               style={{ aspectRatio: '222/280' }}
             >
@@ -216,8 +237,12 @@ const WinnerSection = ({ title }) => {
         {/* Right Button */}
         <button 
           onClick={() => scroll('right')}
-          className={`absolute right-2 md:right-4 xl:right-[190px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all shadow-lg
-            ${isDragging ? 'opacity-0 pointer-events-none duration-200' : 'md:opacity-0 md:group-hover:opacity-100 duration-300'}
+          // z-index-ийг z-30 болгосон
+          // !canScrollRight үед бүр мөсөн нуух
+          className={`absolute right-2 md:right-4 xl:right-[190px] top-1/2 -translate-y-1/2 z-30 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all shadow-lg
+            ${(!canScrollRight || isDragging)
+              ? 'opacity-0 pointer-events-none duration-200' 
+              : 'md:opacity-0 md:group-hover:opacity-100 duration-300'}
           `}
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
