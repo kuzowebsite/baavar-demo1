@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-// isMenuOpen prop-ыг нэмж авна
 const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
   const [tickerData, setTickerData] = useState([]);
 
@@ -61,13 +60,12 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
         `}
       </style>
 
-      {/* header-ийг motion.header болгож, animate нэмэв */}
       <motion.header 
         initial={false}
         animate={{ 
           filter: isMenuOpen ? "blur(10px)" : "blur(0px)",
           opacity: isMenuOpen ? 0.6 : 1,
-          scale: isMenuOpen ? 0.98 : 1 // Бага зэрэг жижигрэх эффект
+          scale: isMenuOpen ? 0.98 : 1 
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
         className="fixed top-0 left-0 w-full z-50 shadow-sm overflow-hidden"
@@ -87,7 +85,7 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
         {/* CONTENT LAYER */}
         <div className="relative z-10 w-full max-w-[1920px] mx-auto h-[70px] md:h-[100px] flex items-center justify-between px-5 md:px-8 xl:px-[120px]">
           
-          {/* LOGO */}
+          {/* LOGO - 3D SHADOW EFFECT */}
           <div 
             className="cursor-pointer active:scale-95 transition-transform" 
             onClick={() => onNavigate(0)}
@@ -95,8 +93,15 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
               <img 
                 src="/assets/logo.png" 
                 alt="Baavar Logo" 
-                className="w-[110px] md:w-[160px] xl:w-[190px] h-auto object-contain drop-shadow-2xl"
-                style={{ imageRendering: 'auto' }} 
+                // drop-shadow-2xl классыг хасаад оронд нь доорх style-ийг бичлээ
+                className="w-[110px] md:w-[160px] xl:w-[190px] h-auto object-contain"
+                style={{ 
+                    imageRendering: 'auto',
+                    // 3D МЭТ СҮҮДЭР: 
+                    // 1. Ойрын, тод сүүдэр (0px 4px 5px) -> Биетийг тодруулна
+                    // 2. Холын, бүдэг сүүдэр (0px 10px 20px) -> Гүнзгий (Depth) харагдуулна
+                    filter: 'drop-shadow(0px 4px 5px rgba(0,0,0,0.8)) drop-shadow(0px 15px 25px rgba(0,0,0,0.5))'
+                }} 
               />
           </div>
 
