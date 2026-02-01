@@ -1,0 +1,653 @@
+// src/components/BodyContent.jsx
+import React, { useState, useEffect, useMemo } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination, Autoplay, Mousewheel } from 'swiper/modules'; 
+import PurchaseDialog from './PurchaseDialog'; 
+
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+
+const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
+  const gradientId = `starGradient-${item.uniqueId}`;
+
+  const getTitleStyle = (title) => {
+    const length = title.length;
+    let fontSize;
+    
+    // Гарчгийн фонтны хэмжээний тохиргоо (Phone & Tablet)
+    if (isMobile) {
+      if (length > 25) fontSize = '16px'; 
+      else if (length > 15) fontSize = '20px'; 
+      else fontSize = '24px'; 
+    } else {
+      // Desktop
+      if (length > 20) fontSize = '24px';
+      else fontSize = '36px';
+    }
+
+    return {
+      fontFamily: 'Roboto, sans-serif', 
+      fontWeight: 900, 
+      fontSize: fontSize, 
+      color: '#FFFFFF', 
+      margin: isMobile ? '8px 0 0 0' : '12px 0 0 0', 
+      textTransform: 'uppercase', 
+      lineHeight: '1.2', 
+      textAlign: 'center',
+      textShadow: '0px 2px 4px rgba(0,0,0,0.8)',
+      whiteSpace: 'normal', 
+      wordBreak: 'break-word',
+      width: '100%',
+      display: 'block',
+      paddingBottom: '0px' 
+    };
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col items-center flex-grow">
+      {/* 1. PROGRESS BAR */}
+      <div className="w-full relative z-30 bg-[#0f172a]" style={{ marginBottom: '0px', flexShrink: 0 }}>
+        <div className="w-full h-[6px] md:h-[8px] bg-white overflow-visible relative">
+          <div style={{ 
+              width: `${item.fillPercent}%`,
+              background: 'linear-gradient(90deg, #A54400 0%, #FAE8B2 20%, #EFC140 40%, #C26C0D 60%, #FFE89C 80%, #A54400 100%)'
+            }} 
+            className="h-full relative">
+            
+            <div className="absolute" 
+              style={{ 
+                right: '-16px', 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                zIndex: 30,
+                filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.3))'
+              }}>
+              <svg width={isMobile ? "45" : "60"} height={isMobile ? "45" : "60"} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#A54400" />
+                    <stop offset="25%" stopColor="#FEF5BA" />
+                    <stop offset="50%" stopColor="#C26C0D" />
+                    <stop offset="75%" stopColor="#FDF5B9" />
+                    <stop offset="100%" stopColor="#A54400" />
+                  </linearGradient>
+                </defs>
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
+                  fill={`url(#${gradientId})`} stroke="white" strokeWidth="1"/>
+              </svg>
+              
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full h-full">
+                <span style={{ 
+                    fontSize: isMobile ? '8px' : '11px', 
+                    fontWeight: '900', 
+                    color: '#000000', 
+                    lineHeight: '1', 
+                    textAlign: 'center',
+                    display: 'block'
+                  }}>
+                  {item.fillPercent}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* 2. МЭДЭЭЛЛИЙН ХЭСЭГ */}
+      <div className="w-full relative z-20 flex flex-col items-center overflow-hidden"
+        style={{
+          borderBottomLeftRadius: isMobile ? '18px' : '38px',
+          borderBottomRightRadius: isMobile ? '18px' : '38px',
+          marginTop: '0px', 
+          marginBottom: '-1px', 
+          flexShrink: 0, 
+          minHeight: 0 
+        }}>
+        
+        {/* АРЫН ФОН - ЗАСВАР 1: Opacity 1 болгож, mixBlendMode арилгав */}
+        <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: "url('assets/background.jpg')",
+            backgroundColor: '#ffffff',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 1, 
+            mixBlendMode: 'normal',
+            zIndex: 0
+        }}></div>
+
+        {/* ҮНДСЭН КОНТЕНТ */}
+        <div className="w-full flex flex-col items-center relative z-10"
+             style={{
+               paddingLeft: isMobile ? '24px' : '45px',
+               paddingRight: isMobile ? '24px' : '45px',
+               paddingBottom: '8px', 
+               paddingTop: '0px',
+             }}>
+          
+            <h3 style={getTitleStyle(item.title)}>{item.title}</h3>
+            
+            <div style={{ 
+              width: '100%', 
+              height: '1px', 
+              backgroundColor: '#D9D9D9', 
+              marginTop: '0px', 
+              marginBottom: '4px' 
+            }}></div>
+            
+            <div className="w-full flex items-stretch justify-between" style={{ marginTop: '4px', marginBottom: '0', gap: '8px' }}>
+              <div className="flex items-center justify-center shadow-md" 
+                style={{ 
+                  backgroundColor: '#F8BE53', 
+                  borderRadius: '8px', 
+                  padding: isMobile ? '4px 10px' : '4px 16px',
+                  flex: 1
+                }}>
+                <span className="font-bold text-black text-[12px] md:text-[18px]">{item.displayPrice}</span>
+              </div>
+
+              <button onClick={(e) => { e.stopPropagation(); handlePurchaseClick(item); }}
+                className="flex items-center justify-center shadow-lg hover:brightness-110 transition-all active:scale-95" 
+                style={{ 
+                  backgroundColor: '#FF6060',
+                  borderRadius: '8px', 
+                  padding: isMobile ? '0 10px' : '0 16px',
+                  cursor: 'pointer', border: 'none',
+                  flex: 1.5 
+                }}>
+                <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm">Шууд оролцох</span>
+              </button>
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BodyContent = ({ onLottoClick }) => { 
+  const [swiperRef, setSwiperRef] = useState(null);
+  const [scale, setScale] = useState(1);
+  const [isMobile, setIsMobile] = useState(false); 
+  const [isPhone, setIsPhone] = useState(false);
+  const [isSmallPhone, setIsSmallPhone] = useState(false);
+  const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
+  const [selectedLotto, setSelectedLotto] = useState(null);
+  const [mobileSlideSize, setMobileSlideSize] = useState({ width: 340, height: 500 });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const designWidth = 1920;
+      const designHeight = 1080;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      // Mobile check (Phone + Tablet)
+      const mobileCheck = windowWidth <= 1024;
+      setIsMobile(mobileCheck);
+
+      // Phone check (Only Phone)
+      const phoneCheck = windowWidth < 740;
+      setIsPhone(phoneCheck);
+
+      // Small Phone check (iPhone SE etc.)
+      const smallPhoneCheck = windowWidth <= 400 && windowHeight <= 750;
+      setIsSmallPhone(smallPhoneCheck);
+
+      if (mobileCheck) {
+        setScale(1); 
+        if (windowWidth >= 740) {
+          // Tablet Size
+          setMobileSlideSize({ width: 330, height: 420 });
+        } else {
+          // Phone Size
+          const mWidth = Math.min(windowWidth * 0.65, 260); 
+          const mHeight = mWidth * 1.35; 
+          setMobileSlideSize({ width: mWidth, height: mHeight });
+        }
+      } else {
+        // Desktop Scale
+        const widthScale = windowWidth / designWidth;
+        const heightScale = windowHeight / designHeight;
+        const finalScale = Math.min(widthScale, heightScale) * (windowWidth < 1500 ? 0.95 : 0.9); 
+        setScale(finalScale);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const baseLottoList = [
+    { id: 1, title: "LEXUS RX 2026", price: "30,000₮", displayPrice: "30,000₮", imageUrl: "/suglaa/1.png", code: "BS001", type: "Баавар сугалаа", fillPercent: 90 },
+    { id: 2, title: "IPHONE 17 PRO MAX", price: "5,000₮", displayPrice: "5,000₮", imageUrl: "/suglaa/1.png", code: "NS001", type: "Нүнжиг сугалаа", fillPercent: 45 },
+    { id: 3, title: "LAND CRUISER 300", price: "20,000₮", displayPrice: "20,000₮", imageUrl: "/suglaa/3.jpg", code: "SS001", type: "Сүншиг сугалаа", fillPercent: 70 },
+    { id: 4, title: "3 ӨРӨӨ БАЙР", price: "50,000₮", displayPrice: "50,000₮", imageUrl: "/suglaa/1.png", code: "BS002", type: "Баавар сугалаа", fillPercent: 20 },
+    { id: 5, title: "BONUS SUGLAA", price: "0₮", displayPrice: "Үнэгүй", imageUrl: "/suglaa/3.jpg", code: "FR001", type: "Үнэгүй сугалаа", fillPercent: 10 },
+  ];
+
+  const displayList = useMemo(() => {
+    return [...baseLottoList, ...baseLottoList, ...baseLottoList].map((item, index) => ({
+      ...item,
+      uniqueId: `${item.id}-${index}`
+    }));
+  }, []);
+
+  // Desktop дээр слайдыг өргөн (fatter) болгов.
+  // 540px өргөн болгосноор сугалааны мэдээлэл илүү тод харагдана.
+  const DESKTOP_SLIDE_WIDTH = 540; 
+  const DESKTOP_SLIDE_HEIGHT = 650;
+  
+  const SLIDE_WIDTH_ACTIVE = isMobile ? mobileSlideSize.width : DESKTOP_SLIDE_WIDTH;
+  const SLIDE_HEIGHT_ACTIVE = isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT;
+  const CONTAINER_HEIGHT = 760;
+
+  const handlePurchaseClick = (item) => {
+    sessionStorage.setItem('currentLottoType', item.type);
+    sessionStorage.setItem('currentLottoTitle', item.title);
+    sessionStorage.setItem('currentLottoImage', item.imageUrl);
+    setSelectedLotto(item);
+    setShowPurchaseDialog(true);
+  };
+
+  const closePurchaseDialog = () => {
+    setShowPurchaseDialog(false);
+    setSelectedLotto(null);
+  };
+
+  return (
+    <>
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700;900&family=Roboto:wght@400;700;900&display=swap');
+          
+          header, .header-container {
+            position: fixed !important;
+            top: 0; left: 0; width: 100%; z-index: 100 !important; background: #0f172a;
+          }
+
+          /* === ANIMATION KEYFRAMES НЭМСЭН === */
+          @keyframes goldGlowPulse {
+            0% { 
+              transform: scale(1); 
+              filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) brightness(1); 
+            }
+            50% { 
+              transform: scale(1.05); 
+              filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) brightness(1.2); 
+            }
+            100% { 
+              transform: scale(1); 
+              filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) brightness(1); 
+            }
+          }
+
+          .mobile-title-container, .desktop-title-container { 
+            /* Header (z-index: 100) дээр гаргах бол 100-аас дээш утга */
+            z-index: 110 !important; 
+          }
+
+          .custom-swiper { 
+            width: 100%; height: 100%; padding-top: 20px; padding-bottom: 20px; overflow: visible !important; 
+          }
+          .swiper-wrapper { align-items: center; transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important; }
+          
+          .swiper-slide { 
+              width: ${isMobile ? mobileSlideSize.width : DESKTOP_SLIDE_WIDTH}px !important; 
+              height: ${isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT}px !important; 
+              transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, filter 0.4s ease; 
+              border-radius: ${isMobile ? '20px' : '40px'} !important; 
+              overflow: hidden; user-select: none; background-color: #0f172a; z-index: 10; cursor: default; 
+          }
+
+          @media (max-width: 739px) {
+             .swiper-slide-active { 
+                filter: blur(0px) !important; 
+                opacity: 1 !important; 
+                z-index: 100 !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+             }
+             .swiper-slide {
+                filter: blur(2px);
+                opacity: 0.8;
+             }
+             .swiper-slide-prev { 
+                opacity: 0 !important; 
+                visibility: hidden !important;
+                transition: opacity 0.1s !important;
+                pointer-events: none !important;
+                transform: translateY(-500%) !important;
+                z-index: -100 !important;
+             }
+             .swiper-slide-next {
+                opacity: 0.6 !important; 
+                filter: blur(4px) !important; 
+                z-index: 50 !important;
+                visibility: visible !important;
+             }
+             .swiper-slide-next ~ .swiper-slide {
+                opacity: 0 !important; 
+                visibility: hidden !important;
+             }
+          }
+
+          @media (min-width: 740px) {
+             /* ЗАСВАР 2: Хажуугийн слайдуудыг бүрсгэр (blurry) болгов */
+             .swiper-slide {
+                filter: blur(5px) !important;
+                opacity: 0.9 !important;
+                transform: scale(1) !important;
+             }
+             
+             .swiper-slide-active {
+                filter: blur(0px) !important;
+                opacity: 1 !important;
+                z-index: 150 !important; 
+                box-shadow: 0 15px 40px rgba(0,0,0,0.55);
+             }
+
+             .swiper-slide-prev, .swiper-slide-next {
+                opacity: 0.8 !important;
+             }
+          }
+
+          .swiper-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: ${isMobile ? '20px' : '40px'} !important; }
+          
+          .swiper-slide-active { 
+              width: ${SLIDE_WIDTH_ACTIVE}px !important; height: ${SLIDE_HEIGHT_ACTIVE}px !important; 
+              filter: blur(0px) !important; opacity: 1 !important; z-index: 100 !important; 
+              background-color: transparent; box-shadow: 0 15px 40px rgba(0,0,0,0.55); 
+              border-radius: ${isMobile ? '20px' : '40px'} !important;
+          }
+          .swiper-slide-active img { border-radius: 0 !important; }
+
+          .effect-image {
+            /* Animation-ийг зогсоов */
+            animation: none;
+            display: block;
+            object-fit: contain;
+            mix-blend-mode: screen;
+          }
+
+          @media (max-width: 739px) {
+              .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
+              body, html { overflow-x: hidden; }
+          }
+          
+          @media (min-width: 740px) and (max-width: 1025px) {
+              .mobile-title-container {
+                  margin-top: 100px !important; 
+                  display: flex !important;
+                  position: relative !important; z-index: 60 !important;
+              }
+              .swiper-container-wrapper {
+                  margin-top: 20px !important; 
+                  z-index: 10 !important;
+              }
+              .mobile-host-container {
+                  position: absolute !important;
+                  transform: none !important;
+                  z-index: 999 !important;
+                  pointer-events: none;
+              }
+          }
+
+          @media (min-width: 740px) and (max-width: 815px) {
+              .mobile-host-container { bottom: -60px !important; left: -50px !important; }
+              .mobile-host-container img { height: 480px !important; }
+          }
+
+          @media (min-width: 816px) and (max-width: 1000px) {
+              .mobile-host-container { bottom: -10px !important; left: -82px !important; }
+              .mobile-host-container img { height: 620px !important; }
+          }
+
+          @media (min-width: 1001px) and (max-width: 1025px) {
+              .mobile-host-container { bottom: 100px !important; left: -40px !important; }
+              .mobile-host-container img { height: 720px !important; }
+              .mobile-title { font-size: 42px !important; }
+          }
+
+          @media (max-width: 380px) {
+            .mobile-title { font-size: 20px !important; }
+            .mobile-title-container { 
+               mmargin-top: 85px !important;
+               margin-bottom: 10px !important; 
+            }
+          }
+        `}
+      </style>
+
+      {/* Main Container */}
+      <div className={`w-full relative flex`} 
+           style={{ 
+               height: isPhone ? '100vh' : '100%', 
+               minHeight: isMobile ? '100vh' : '600px', 
+               flexDirection: 'column', 
+               justifyContent: isPhone ? 'flex-start' : (isMobile ? 'flex-start' : 'center'), 
+               alignItems: 'center',
+               paddingTop: isMobile ? '0px' : '0',
+               overflow: 'hidden',
+               backgroundImage: "url('assets/background.jpg')",
+               backgroundSize: 'cover',
+               backgroundPosition: 'center',
+               backgroundRepeat: 'no-repeat',
+               backgroundColor: 'transparent' 
+           }}>
+          
+          <div className="relative" 
+               style={{ 
+                   width: isMobile ? '100%' : '1920px', 
+                   height: isPhone ? '100%' : (isMobile ? '100%' : `${CONTAINER_HEIGHT}px`), 
+                   transform: isMobile ? 'none' : `scale(${scale})`, 
+                   transformOrigin: 'center center',
+                   display: isPhone ? 'flex' : (isMobile ? 'flex' : 'block'),
+                   flexDirection: isMobile ? 'column' : 'row',
+                   alignItems: 'center',
+                   zIndex: isMobile ? 'auto' : 1200,
+                   position: 'relative'
+               }}>
+            
+            {/* ГАРЧИГ ХЭСЭГ */}
+            <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
+      style={{ 
+        position: isPhone ? 'relative' : (isMobile ? 'relative' : 'absolute'),
+        // ЗАСВАР 3: Desktop дээр эффект зургийг дээшлүүлэв (-80px -> -140px)
+        marginTop: isSmallPhone ? '45px' : (isPhone ? '30px' : (isMobile ? '100px' : '-140px')), 
+        top: isPhone ? 'auto' : (isMobile ? 'auto' : '50px'),
+        marginBottom: isPhone ? '-40px' : '0', 
+        paddingBottom: isPhone ? '0px' : '0',
+        zIndex: 110, 
+        flexShrink: 0, 
+        pointerEvents: 'none'
+      }}>
+  
+  <img 
+    src="assets/effect.png" 
+                alt="Lottery Effect"
+                className="effect-image"
+                style={{
+                  width: 'auto',
+                  maxWidth: isMobile ? '95%' : '100%',
+                  height: isSmallPhone ? '160px' : (isPhone ? '200px' : (isMobile ? '180px' : '240px')),
+                  objectFit: 'contain',
+                  mixBlendMode: 'screen'
+                }}
+              />
+              
+            </div>
+
+            {!isMobile && (
+              <div className="absolute pointer-events-none" 
+                   style={{ 
+                      left: '80px', 
+                      bottom: '-30px', 
+                      height: 'auto', 
+                      top: '140px',
+                      zIndex: 9999 
+                   }}>
+                <img src="/assets/mongolian-woman.png" alt="Host" 
+                     style={{ height: '780px', width: 'auto', objectFit: 'contain' }} />
+              </div>
+            )}
+
+            {/* SWIPER CONTAINER */}
+            <div className={`swiper-container-wrapper ${isMobile ? "w-full relative" : "absolute w-full"}`} 
+                 style={{ 
+                  flexGrow: isPhone ? 0 : 0, 
+                  height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
+                  minHeight: isPhone ? '0' : 'auto', 
+                  top: isMobile ? '0' : '120px', 
+                  marginTop: isMobile ? (isSmallPhone ? '-120px' : (isPhone ? '-250px' : '-8px')) : '0', 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 10
+                 }}>
+                
+                <Swiper
+                    onSwiper={setSwiperRef}
+                    direction={isPhone ? 'vertical' : 'horizontal'} 
+                    effect={'coverflow'}
+                    grabCursor={true}
+                    centeredSlides={true}
+                    centeredSlidesBounds={true}
+                    slidesPerView={'auto'}
+                    loop={true}
+                    speed={500}
+                    mousewheel={isPhone ? true : false} 
+                    spaceBetween={isPhone ? 0 : 80} // Desktop дээр зайг нэмэв
+                    slideToClickedSlide={true}
+                    autoplay={{ delay: 10000, disableOnInteraction: false }}
+                    coverflowEffect={{ 
+                        rotate: 0, 
+                        stretch: isPhone ? -320 : 0, 
+                        depth: isPhone ? 150 : 100, 
+                        modifier: 1, 
+                        slideShadows: false,
+                        scale: isPhone ? 0.9 : 1 
+                    }}
+                    modules={[EffectCoverflow, Pagination, Autoplay, Mousewheel]} 
+                    className="custom-swiper"
+                    style={{ height: '100%', width: '100%' }}
+                >
+                    {displayList.map((item) => (
+                        <SwiperSlide key={item.uniqueId}>
+                            {({ isActive }) => (
+                                <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
+                                     onClick={() => handlePurchaseClick(item)}
+                                     style={{ 
+                                          borderRadius: isMobile ? '20px' : '40px',
+                                          boxSizing: 'border-box',
+                                          border: '2px solid #9B7A49',
+                                          height: '100%', 
+                                          minHeight: '100%',
+                                          backgroundColor: '#0f172a',
+                                          display: 'flex',       
+                                          flexDirection: 'column' 
+                                     }}>
+                                     
+                                     <div className="relative w-full overflow-hidden" 
+                                          style={{
+                                              flex: '1 1 auto',
+                                              height: 'auto', 
+                                              minHeight: 0,
+                                              borderTopLeftRadius: isMobile ? '18px' : '38px',
+                                              borderTopRightRadius: isMobile ? '18px' : '38px',
+                                              // Desktop дээр доод булангууд үргэлж тэгш өнцөгтэй байна (мэдээлэл үргэлж харагдах тул)
+                                              borderBottomLeftRadius: isMobile ? '0' : '0', 
+                                              borderBottomRightRadius: isMobile ? '0' : '0',
+                                              transition: 'border-radius 0.3s ease'
+                                          }}>
+                                          <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                                     </div>
+
+                                     <div className="w-full relative z-20 bg-transparent flex flex-col"
+                                          style={{ 
+                                              flex: '0 0 auto', 
+                                              minHeight: 0,
+                                              // Desktop дээр бүх сугалааны мэдээлэл харагдана (isActive хамаарахгүй)
+                                              display: 'flex'
+                                          }}>
+                                          <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
+                                     </div>
+                                </div>
+                            )}
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
+
+            {isPhone && (
+                <div className="w-full flex items-center justify-center shrink-0 z-50" 
+                     style={{ 
+                          position: 'absolute', 
+                          bottom: isSmallPhone ? '50px' : '140px',
+                          left: '0',
+                          width: '100%',
+                          pointerEvents: 'none', 
+                          gap: '8px'
+                     }}>
+                    
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
+                    </svg>
+
+                    <p style={{ 
+                        fontFamily: "'Montserrat Alternates', sans-serif", 
+                        fontSize: '15px', 
+                        fontWeight: '300', 
+                        color: '#FFFFFF', 
+                        margin: 0,
+                        textShadow: '0 1px 3px rgba(0,0,0,0.6)' 
+                    }}>
+                        Сангийн яамны зөвшөөрөлтэй
+                    </p>
+                </div>
+            )}
+
+            {isMobile && !isPhone && (
+              <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
+                   style={{ 
+                      marginTop: '1px', 
+                      marginLeft: '0px', 
+                      transform: 'translateY(0px)' 
+                   }}>
+                <img 
+                  src="/assets/mongolian-woman.png" 
+                  alt="Host" 
+                  style={{ 
+                    width: 'auto', 
+                    objectFit: 'contain', 
+                    filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' 
+                  }} 
+                />
+              </div>
+            )}
+
+          </div>
+
+          {/* ЗАСВАР 4: PurchaseDialog-ийг маш өндөр z-index-тай container-т хийж, бусад element-ийн наана гаргав */}
+          <div style={{ position: 'relative', zIndex: 99999 }}>
+            {showPurchaseDialog && selectedLotto && (
+                <PurchaseDialog 
+                    title={selectedLotto.title}
+                    lotteryCode={selectedLotto.code}
+                    lotteryType={selectedLotto.type}
+                    basePrice={parseInt(selectedLotto.price.replace(/[^0-9]/g, '')) || 0} 
+                    onClose={closePurchaseDialog}
+                />
+            )}
+          </div>
+
+      </div>
+    </>
+  );
+};
+
+export default BodyContent;
