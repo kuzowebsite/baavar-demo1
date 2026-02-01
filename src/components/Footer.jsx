@@ -16,7 +16,7 @@ const Footer = () => {
   return (
     <footer className="relative w-full py-12 overflow-hidden">
       <style>
-        {`@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap');`}
+        {`@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700&display=swap');`}
       </style>
       
       {/* BACKGROUND LAYER */}
@@ -29,12 +29,40 @@ const Footer = () => {
           <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
-      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-8 md:gap-0">
+      {/* --- ШИНЭЧЛЭЛ: САНГИЙН ЯАМНЫ ЗӨВШӨӨРӨЛ (TOP CENTER) --- */}
+      {/* top-1 болгож дээш нь тулгав */}
+      <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-20 opacity-100 py-2">
+          {/* ICON - Хэмжээг 18 болгож томруулав */}
+          <svg 
+            width="18" 
+            height="18" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
+          </svg>
+          
+          {/* TEXT - Хэмжээг томруулав (Mobile: 12px, PC: 14px) */}
+          <span 
+            className="text-[12px] md:text-[14px] text-white tracking-wide whitespace-nowrap"
+            style={{ 
+                fontFamily: "'Montserrat Alternates', sans-serif", 
+                fontWeight: '400',
+                textShadow: '0 1px 3px rgba(0,0,0,0.9)'
+            }}
+          >
+            Сангийн яамны зөвшөөрөлтэй
+          </span>
+      </div>
+
+      {/* MAIN CONTENT */}
+      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-8 md:gap-0 mt-8">
         
         {/* --- ЗҮҮН ТАЛ: Social Icons & Copyright --- */}
         <div className="flex flex-col items-center md:items-start gap-5">
             
-            {/* Social Icons - Drawer-тэй яг адилхан загвар */}
+            {/* Social Icons */}
             <div className="flex gap-4">
                 <FooterSocialIcon icon={<FacebookIcon />} />
                 <FooterSocialIcon icon={<InstagramIcon />} />
@@ -63,7 +91,7 @@ const Footer = () => {
   );
 };
 
-// --- ТУСЛАХ КОМПОНЕНТУУД (MobileDrawer-аас хуулсан) ---
+// --- ТУСЛАХ КОМПОНЕНТУУД ---
 
 const FooterSocialIcon = ({ icon }) => (
     <div className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shadow-sm group"
