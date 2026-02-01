@@ -81,6 +81,23 @@ const WinnersScreen = () => {
 const WinnerSection = ({ title }) => {
   const sliderRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const scrollTimeout = useRef(null); // Scroll зогсолтыг хянах timer
+
+  // Scroll хөдөлгөөнийг хянах функц (Mobile & Desktop аль алинд нь ажиллана)
+  const handleScrollEvent = () => {
+    // Хөдөлж эхлэнгүүт нууна
+    setIsDragging(true);
+
+    // Өмнөх timer-ийг устгана (хэрвээ дахин scroll хийгдвэл)
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+
+    // 150ms-ийн дараа хөдөлгөөн зогссон гэж үзээд товчийг гаргана
+    scrollTimeout.current = setTimeout(() => {
+      setIsDragging(false);
+    }, 150);
+  };
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -92,26 +109,27 @@ const WinnerSection = ({ title }) => {
 
     // Desktop Mouse Events
     const onMouseDown = (e) => {
-      // Гар утсан дээр Mouse event-ийг болиулж, доорх Touch event-ийг ашиглана
       if (window.innerWidth < 768) return;
-      
       isDown = true;
       setIsDragging(true);
       slider.style.cursor = 'grabbing';
       startX = e.clientX;
       scrollLeft = slider.scrollLeft;
       slider.style.userSelect = 'none';
+      
+      // Drag хийж байхад timer-ийг цуцлах (гараар чирж байхад алга болохгүй байхгүйн тулд)
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     };
 
     const onMouseLeave = () => {
       isDown = false;
-      setIsDragging(false);
+      // Mouse гарсан үед шууд харуулахгүй, scroll дуусахыг хүлээнэ (handleScrollEvent зохицуулна)
       slider.style.cursor = 'grab';
     };
 
     const onMouseUp = () => {
       isDown = false;
-      setIsDragging(false);
+      // Mouse тавьсан үед шууд харуулахгүй, scroll дуусахыг хүлээнэ
       slider.style.cursor = 'grab';
     };
 
@@ -133,6 +151,7 @@ const WinnerSection = ({ title }) => {
       slider.removeEventListener('mouseleave', onMouseLeave);
       slider.removeEventListener('mouseup', onMouseUp);
       slider.removeEventListener('mousemove', onMouseMove);
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
     };
   }, []);
 
@@ -154,7 +173,6 @@ const WinnerSection = ({ title }) => {
         {title}
       </h2>
       
-      {/* Wrapper */}
       <div className="relative w-full md:px-8 xl:px-[232px] group">
         
         {/* Left Button */}
@@ -171,9 +189,10 @@ const WinnerSection = ({ title }) => {
 
         <div 
           ref={sliderRef}
-          // Mobile Touch Logic - Энд гар утасны локигийг нэмлээ
+          // Энд onScroll ашигласан нь хамгийн найдвартай арга
+          onScroll={handleScrollEvent}
+          // Touch эхлэхэд шууд нуух (илүү хурдан хариу үйлдэл үзүүлэхийн тулд)
           onTouchStart={() => setIsDragging(true)}
-          onTouchEnd={() => setIsDragging(false)}
           className="flex overflow-x-auto gap-5 pt-4 pb-8 px-8 md:px-0 scrollbar-hide snap-container select-none cursor-grab active:cursor-grabbing"
         >
           {WINNERS_DATA.map((_, i) => (
