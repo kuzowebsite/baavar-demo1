@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Numpad from './Numpad'; // Numpad-ийг импортлох
+import Numpad from './Numpad'; 
 
 const Icons = {
   Search: ({ color = "#B4B4B4", className = "" }) => (
@@ -17,14 +17,13 @@ const CheckTicketScreen = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [groupedTickets, setGroupedTickets] = useState([]);
   
-  // NUMPAD STATE
   const [isNumpadOpen, setIsNumpadOpen] = useState(false);
 
   const performSearch = async (phoneRaw) => {
     setIsLoading(true);
     setHasSearched(false);
     setGroupedTickets([]);
-    setIsNumpadOpen(false); // Хайлт эхлэхэд гарыг хаах
+    setIsNumpadOpen(false);
 
     await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -52,16 +51,13 @@ const CheckTicketScreen = () => {
     setHasSearched(true);
   };
 
-  // Numpad-аас ирэх утгыг боловсруулах
   const handleNumpadChange = (val) => {
-    // Утасны дугаар форматлах (xxxx xxxx)
     let formatted = val;
     if (val.length > 4) {
         formatted = val.slice(0, 4) + ' ' + val.slice(4);
     }
     setPhoneNumber(formatted);
 
-    // 8 оронтой болмогц хайлт хийх
     if (val.length === 8) {
         performSearch(val);
     } else {
@@ -77,22 +73,26 @@ const CheckTicketScreen = () => {
           .font-alt-bold { font-family: 'Montserrat Alternates', sans-serif; font-weight: 700; }
           .font-play { font-family: 'Play', sans-serif; }
           .custom-placeholder::placeholder { color: #D1D1D1; opacity: 1; }
-          
-          .main-bg {
-            background-image: url('assets/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-          }
         `}
         </style>
 
-        <div className="w-full min-h-screen main-bg flex flex-col items-center overflow-x-hidden relative pb-10">
+        {/* 1. BACKGROUND LAYER - Энэ хэсэг хөдөлгөөнгүй байна */}
+        <div 
+            className="fixed inset-0 z-0"
+            style={{
+                backgroundImage: "url('assets/background.jpg')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}
+        />
+
+        {/* 2. CONTENT LAYER - Энэ хэсэг дээш доош гүйнэ */}
+        {/* main-bg классыг хассан, relative болон z-10 нэмсэн */}
+        <div className="relative z-10 w-full min-h-screen flex flex-col items-center overflow-x-hidden pb-10">
             
             {/* SEARCH SECTION */}
-            {/* pt-24 (Mobile), md:pt-32 (Tablet/iPad), lg:pt-40 (Desktop) болгож өөрчилсөн */}
-            <div className="relative z-10 w-full flex flex-col items-center pt-24 md:pt-32 lg:pt-40 pb-6">
+            <div className="w-full flex flex-col items-center pt-24 md:pt-32 lg:pt-40 pb-6">
                 <div className="w-full max-w-[500px] px-6">
                     <div 
                         className="relative flex items-center w-full h-[54px] rounded-[16px] bg-[#1a2e2a]/90 border-[1.5px] border-[#D4AF37] focus-within:border-[#D4AF37] transition-all shadow-xl backdrop-blur-sm cursor-pointer"
@@ -117,7 +117,7 @@ const CheckTicketScreen = () => {
             </div>
 
             {/* RESULTS GRID */}
-            <div className="w-full max-w-[1400px] px-6 mt-8 relative z-10">
+            <div className="w-full max-w-[1400px] px-6 mt-8">
                 <AnimatePresence>
                     {hasSearched && (
                         <motion.div 
@@ -198,6 +198,5 @@ const LotteryResultCard = ({ data }) => {
     </div>
   );
 };
-
 
 export default CheckTicketScreen;
