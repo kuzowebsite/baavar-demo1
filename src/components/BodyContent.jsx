@@ -525,7 +525,7 @@ const BodyContent = ({ onLottoClick }) => {
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                   minHeight: isPhone ? '0' : 'auto', 
                   top: isMobile ? '0' : '120px', 
-                  marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '-50px' : '-8px')) : '0', 
+                  marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '1px' : '-8px')) : '0', 
                   display: 'flex', 
                   alignItems: 'center',
                   justifyContent: 'center',
