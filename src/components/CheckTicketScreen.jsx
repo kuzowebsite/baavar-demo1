@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Numpad from './Numpad'; 
 
@@ -9,24 +9,73 @@ const Icons = {
       <line x1="21" y1="21" x2="16.65" y2="16.65"></line> 
     </svg>
   ),
+  ArrowRight: ({ color = "#B4B4B4", className = "" }) => (
+    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+  ),
+  Back: ({ color = "#B4B4B4", className = "" }) => (
+    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  ),
+  X: ({ color = "#B4B4B4", className = "" }) => (
+    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  )
 };
 
 const CheckTicketScreen = () => {
+  const [step, setStep] = useState('PHONE'); // 'PHONE' | 'OTP' | 'RESULT'
+  
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  
   const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
   const [groupedTickets, setGroupedTickets] = useState([]);
   
   const [isNumpadOpen, setIsNumpadOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const performSearch = async (phoneRaw) => {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // --- 1. OTP ИЛГЭЭХ (MOCK) ---
+  const handleRequestOtp = async () => {
+    if (phoneNumber.replace(/\s/g, '').length < 8) return; 
+
     setIsLoading(true);
-    setHasSearched(false);
-    setGroupedTickets([]);
-    setIsNumpadOpen(false);
+    await new Promise(resolve => setTimeout(resolve, 1000)); 
+    
+    setIsLoading(false);
+    setStep('OTP'); 
+    setOtpCode(""); 
+    if (isMobile) setIsNumpadOpen(true); 
+  };
 
+  // --- 2. OTP БАТАЛГААЖУУЛАХ (MOCK) ---
+  const handleVerifyOtp = async () => {
+    if (otpCode.length < 4) return;
+
+    setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 800));
 
+    performSearch(phoneNumber.replace(/\s/g, ''));
+  };
+
+  // --- 3. СУГАЛАА ХАЙХ ---
+  const performSearch = (phoneRaw) => {
     const allTickets = JSON.parse(localStorage.getItem('baavar_tickets') || '[]');
     const myTickets = allTickets.filter(t => t.phoneNumber === phoneRaw);
     
@@ -48,22 +97,57 @@ const CheckTicketScreen = () => {
 
     setGroupedTickets(Object.values(groups));
     setIsLoading(false);
-    setHasSearched(true);
+    setStep('RESULT');
+    setIsNumpadOpen(false); 
+  };
+
+  // --- 4. RESET (X Button) ---
+  const handleReset = () => {
+    setStep('PHONE');
+    setPhoneNumber("");
+    setOtpCode("");
+    setGroupedTickets([]);
+    if (isMobile) setIsNumpadOpen(true);
+  };
+
+  const handleInputUpdate = (val) => {
+    if (step === 'PHONE') {
+        let raw = val.replace(/\s/g, '');
+        if (raw.length > 8) raw = raw.slice(0, 8);
+        
+        let formatted = raw;
+        if (raw.length > 4) {
+             formatted = raw.slice(0, 4) + ' ' + raw.slice(4);
+        }
+        setPhoneNumber(formatted);
+    } else if (step === 'OTP') {
+        let raw = val.replace(/\s/g, '');
+        if (raw.length > 4) raw = raw.slice(0, 4);
+        setOtpCode(raw);
+    }
   };
 
   const handleNumpadChange = (val) => {
-    let formatted = val;
-    if (val.length > 4) {
-        formatted = val.slice(0, 4) + ' ' + val.slice(4);
-    }
-    setPhoneNumber(formatted);
-
-    if (val.length === 8) {
-        performSearch(val);
-    } else {
-        setHasSearched(false);
-    }
+    handleInputUpdate(val);
   };
+
+  const handleDesktopChange = (e) => {
+    const rawVal = e.target.value.replace(/[^0-9]/g, '');
+    handleInputUpdate(rawVal);
+  };
+
+  const handleBack = (e) => {
+    e.stopPropagation();
+    setStep('PHONE');
+    setOtpCode("");
+  };
+
+  const currentValue = step === 'PHONE' ? phoneNumber : otpCode;
+  
+  // NOTE: OTP үед бид placeholder-ийг тусад нь div болгож харуулна, 
+  // тиймээс input-ийн placeholder-ийг зөвхөн PHONE үед л ашиглана.
+  const placeholderText = step === 'PHONE' ? "Утасны дугаар оруулах" : "";
+  const maxLength = step === 'PHONE' ? 8 : 4;
 
   return (
     <>
@@ -76,7 +160,7 @@ const CheckTicketScreen = () => {
         `}
         </style>
 
-        {/* 1. BACKGROUND LAYER - Энэ хэсэг хөдөлгөөнгүй байна */}
+        {/* 1. BACKGROUND */}
         <div 
             className="fixed inset-0 z-0"
             style={{
@@ -87,39 +171,103 @@ const CheckTicketScreen = () => {
             }}
         />
 
-        {/* 2. CONTENT LAYER - Энэ хэсэг дээш доош гүйнэ */}
-        {/* main-bg классыг хассан, relative болон z-10 нэмсэн */}
+        {/* 2. CONTENT */}
         <div className="relative z-10 w-full min-h-screen flex flex-col items-center overflow-x-hidden pb-10">
             
-            {/* SEARCH SECTION */}
+            {/* SEARCH / INPUT SECTION */}
             <div className="w-full flex flex-col items-center pt-24 md:pt-32 lg:pt-40 pb-6">
                 <div className="w-full max-w-[500px] px-6">
+                    
+                    {/* INPUT CONTAINER */}
                     <div 
-                        className="relative flex items-center w-full h-[54px] rounded-[16px] bg-[#1a2e2a]/90 border-[1.5px] border-[#D4AF37] focus-within:border-[#D4AF37] transition-all shadow-xl backdrop-blur-sm cursor-pointer"
-                        onClick={() => setIsNumpadOpen(true)}
+                        className={`relative flex items-center w-full h-[54px] rounded-[16px] bg-[#1a2e2a]/90 border-[1.5px] ${step === 'OTP' ? 'border-[#2AFA62]' : 'border-[#D4AF37]'} transition-all shadow-xl backdrop-blur-sm cursor-pointer`}
+                        onClick={() => {
+                            if (step !== 'RESULT' && isMobile) setIsNumpadOpen(true);
+                        }}
                     >
+                        {/* BACK BUTTON (Зөвхөн OTP үед харагдана) */}
+                        {step === 'OTP' && (
+                            <div 
+                                onClick={handleBack}
+                                className="absolute left-0 pl-3 h-full flex items-center cursor-pointer z-20 hover:opacity-70 transition-opacity"
+                            >
+                                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-black/20">
+                                   <Icons.Back className="w-5 h-5" color="#FFFFFF" />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- ӨӨРЧЛӨЛТ: OTP PLACEHOLDER CENTERED --- */}
+                        {step === 'OTP' && otpCode === "" && (
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                                <span className="text-[#D1D1D1] font-bold text-lg font-play tracking-widest opacity-100">
+                                    Баталгаажуулах код
+                                </span>
+                            </div>
+                        )}
+
                         <input
+                            ref={inputRef}
                             type="text"
-                            readOnly
-                            value={phoneNumber}
-                            placeholder="Утасны дугаар оруулах"
-                            className="w-full h-full bg-transparent outline-none px-6 text-white font-bold text-lg font-play tracking-widest custom-placeholder cursor-pointer"
+                            readOnly={isMobile || step === 'RESULT'} 
+                            value={currentValue}
+                            onChange={(!isMobile && step !== 'RESULT') ? handleDesktopChange : undefined}
+                            placeholder={placeholderText}
+                            // --- ӨӨРЧЛӨЛТ: text-left, pl-14 ---
+                            // OTP үед: pl-14 (сумны зай), text-left (зүүнээс бичих), tracking-[5px] (зайтай харагдуулах)
+                            className={`w-full h-full bg-transparent outline-none ${step === 'OTP' ? 'pl-14 text-left tracking-[5px]' : 'px-6 text-left'} text-white font-bold text-lg font-play tracking-widest custom-placeholder cursor-pointer relative z-20`}
                         />
-                        <div className="absolute right-5">
-                            {isLoading ? (
-                                <div className="w-5 h-5 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin"></div>
-                            ) : (
-                                <Icons.Search className="w-5 h-5" color="#D4AF37" />
-                            )}
+
+                        {/* ACTION BUTTON (Right Side) */}
+                        <div className="absolute right-3 h-full flex items-center z-30">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (step === 'PHONE') handleRequestOtp();
+                                    else if (step === 'OTP') handleVerifyOtp();
+                                    else if (step === 'RESULT') handleReset(); 
+                                }}
+                                disabled={isLoading}
+                                className={`h-[38px] w-[38px] flex items-center justify-center rounded-xl active:scale-95 transition-transform ${step === 'RESULT' ? 'bg-[#FF4D4D]' : ''}`} 
+                            >
+                                {isLoading ? (
+                                    <div className="w-5 h-5 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin"></div>
+                                ) : (
+                                    step === 'PHONE' ? (
+                                        <div className="bg-[#D4AF37] p-2 rounded-lg">
+                                             <Icons.ArrowRight className="w-5 h-5" color="#FFFFFF" />
+                                        </div>
+                                    ) : step === 'OTP' ? (
+                                        <div className="bg-[#2AFA62] p-2 rounded-lg">
+                                             <Icons.Search className="w-5 h-5" color="#000000" />
+                                        </div>
+                                    ) : (
+                                        // RESULT (X Icon)
+                                        <div className="bg-[#FF4D4D] p-2 rounded-lg">
+                                            <Icons.X className="w-5 h-5" color="#FFFFFF" />
+                                        </div>
+                                    )
+                                )}
+                            </button>
                         </div>
                     </div>
+
+                    {/* HINT TEXT */}
+                    {step === 'OTP' && (
+                        <motion.p 
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                            className="text-center text-white/60 text-sm mt-3 font-alt-bold"
+                        >
+                            {phoneNumber} дугаарт ирсэн кодыг оруулна уу
+                        </motion.p>
+                    )}
                 </div>
             </div>
 
             {/* RESULTS GRID */}
-            <div className="w-full max-w-[1400px] px-6 mt-8">
+            <div className="w-full max-w-[1400px] px-6 mt-2">
                 <AnimatePresence>
-                    {hasSearched && (
+                    {step === 'RESULT' && (
                         <motion.div 
                             initial={{ opacity: 0, y: 10 }} 
                             animate={{ opacity: 1, y: 0 }} 
@@ -127,8 +275,8 @@ const CheckTicketScreen = () => {
                             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         >
                             {groupedTickets.length === 0 ? (
-                                <div className="col-span-full text-center py-20 text-white font-play bg-black/40 rounded-3xl backdrop-blur-md border border-white/10">
-                                    Сугалаа олдсонгүй
+                                <div className="col-span-full flex flex-col items-center py-20 bg-black/40 rounded-3xl backdrop-blur-md border border-white/10">
+                                    <p className="text-white font-play text-lg">Сугалаа олдсонгүй</p>
                                 </div>
                             ) : (
                                 groupedTickets.map((group, idx) => (
@@ -141,20 +289,28 @@ const CheckTicketScreen = () => {
             </div>
 
             {/* NUMPAD COMPONENT */}
-            <Numpad 
-                isOpen={isNumpadOpen}
-                value={phoneNumber.replace(/\s/g, '')}
-                onChange={handleNumpadChange}
-                onDone={() => setIsNumpadOpen(false)}
-                maxLength={8}
-            />
+            {isMobile && step !== 'RESULT' && (
+                <Numpad 
+                    isOpen={isNumpadOpen}
+                    value={step === 'PHONE' ? phoneNumber.replace(/\s/g, '') : otpCode}
+                    onChange={handleNumpadChange}
+                    onDone={() => {
+                        if (step === 'PHONE') handleRequestOtp();
+                        else if (step === 'OTP') handleVerifyOtp();
+                        else setIsNumpadOpen(false);
+                    }}
+                    maxLength={maxLength}
+                    submitLabel={step === 'PHONE' ? "ИЛГЭЭХ" : "ШАЛГАХ"}
+                />
+            )}
         </div>
     </>
   );
 };
 
+// ... LotteryResultCard хэвээрээ ...
 const LotteryResultCard = ({ data }) => {
-  const imageToShow = data.image || "/suglaa/3.jpg"; 
+  const imageToShow = data.image || "/suglaa/1.png"; 
 
   return (
     <div className="w-full bg-white rounded-[24px] shadow-2xl overflow-hidden border-[1.5px] border-[#D4AF37] flex flex-col h-full transform transition-all duration-300 hover:scale-[1.02]">
@@ -164,7 +320,7 @@ const LotteryResultCard = ({ data }) => {
                   src={imageToShow} 
                   alt="Lottery" 
                   className="w-full h-full object-cover" 
-                  onError={(e) => { e.target.src = "/suglaa/3.jpg"; }}
+                  onError={(e) => { e.target.src = "/suglaa/2.png"; }}
                 />
             </div>
 
