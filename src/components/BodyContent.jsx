@@ -519,11 +519,11 @@ const BodyContent = ({ onLottoClick }) => {
              : isSmallPhone ? '-306px'                          // 1. iPhone SE
              
              // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
-             : (isPhone && window.innerWidth === 428) ? '-350px' // Энд тохируулна
+             : (isPhone && window.innerWidth === 428) ? '-370px' // Энд тохируулна
              
              : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max
              : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR
-             : isPhone ? '-300px'                               // 4. iPhone 12 Pro
+             : isPhone ? '-320px'                               // 4. iPhone 12 Pro
              : (isMobile ? '-50%'                               // 5. iPads
              : '-25%'),                                         // 6. Desktop
 
@@ -564,7 +564,7 @@ const BodyContent = ({ onLottoClick }) => {
 
            : (isPhone && window.innerWidth >= 425) ? '15%'      // 2. iPhone 14 Pro Max
            : (isPhone && window.innerWidth >= 400) ? '13%'      // 3. iPhone XR
-           : isPhone ? '12%'                                    // 4. iPhone 12 Pro
+           : isPhone ? '6%'                                    // 4. iPhone 12 Pro
            : (isMobile ? '10%'                                  // 5. iPads
            : '40%'),                                            // 6. Desktop
         
@@ -655,16 +655,21 @@ const BodyContent = ({ onLottoClick }) => {
 
             {/* SWIPER CONTAINER */}
             <div className={`swiper-container-wrapper ${isMobile ? "w-full relative" : "absolute w-full"}`} 
-                 style={{ 
-                  flexGrow: isPhone ? 0 : 0, 
-                  height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
-                  minHeight: isPhone ? '0' : 'auto', 
-                  top: isMobile ? '-50px' : '120px', 
-                  marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 10
+     style={{ 
+         flexGrow: isPhone ? 0 : 0, 
+         height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
+         minHeight: isPhone ? '0' : 'auto', 
+         
+         // --- ӨӨРЧЛӨЛТ ЭНД БАЙНА (TOP) ---
+         top: (isPhone && window.innerWidth === 428) // iPhone 12 Pro Max
+              ? '-50px' 
+              : (isMobile ? '-30px' : '120px'),      // Бусад бүх тохиолдолд хуучнаараа
+         
+         marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
+         display: 'flex', 
+         alignItems: 'center',
+         justifyContent: 'center',
+         zIndex: 10
                  }}>
                 
                 {/* Tablet Navigation Buttons (Sides of active slide) */}
