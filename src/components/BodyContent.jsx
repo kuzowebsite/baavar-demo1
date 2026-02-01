@@ -515,22 +515,30 @@ const BodyContent = ({ onLottoClick }) => {
           transform: 'translateX(-50%)', 
           
           // --- BLOOM POSITION (TOP) ---
-          top: (isPhone && window.innerWidth < 360) ? '-256px' // 0. Galaxy Z Fold 5 (344px - Very Narrow) -> Энийг тааруулна
-             : isSmallPhone ? '-306px'           // 1. iPhone SE (Small)
-             : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max (Wide)
-             : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR (Mid-Wide)
-             : isPhone ? '-400px'                // 4. iPhone 12 Pro (Standard)
-             : (isMobile ? '-50%'                // 5. iPads (Tablet) -> Энийг тааруулна
-             : '-25%'),                          // 6. Desktop -> Энийг тааруулна
+          top: (isPhone && window.innerWidth < 360) ? '-256px' // 0. Galaxy Z Fold 5
+             : isSmallPhone ? '-306px'                          // 1. iPhone SE
+             
+             // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
+             : (isPhone && window.innerWidth === 428) ? '-350px' // Энд тохируулна
+             
+             : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max
+             : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR
+             : isPhone ? '-300px'                               // 4. iPhone 12 Pro
+             : (isMobile ? '-50%'                               // 5. iPads
+             : '-25%'),                                         // 6. Desktop
 
           // --- BLOOM SIZE (WIDTH) ---
-          width: (isPhone && window.innerWidth < 360) ? '170vw' // 0. Galaxy Z Fold 5 (Нарийн дэлгэц тул багасгав)
-               : isSmallPhone ? '150vw'          // 1. iPhone SE
+          width: (isPhone && window.innerWidth < 360) ? '170vw' // 0. Galaxy Z Fold 5
+               : isSmallPhone ? '150vw'                         // 1. iPhone SE
+
+               // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
+               : (isPhone && window.innerWidth === 428) ? '210vw' // Энд тохируулна
+
                : (isPhone && window.innerWidth >= 425) ? '210vw' // 2. iPhone 14 Pro Max 
                : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
-               : isPhone ? '180vw'               // 4. iPhone 12 Pro
-               : (isMobile ? '180vw'              // 5. iPads (Tablet)
-               : '200%'),                        // 6. Desktop
+               : isPhone ? '300vw'                              // 4. iPhone 12 Pro
+               : (isMobile ? '180vw'                             // 5. iPads
+               : '200%'),                                       // 6. Desktop
                
           objectFit: 'contain',
           mixBlendMode: 'screen',
@@ -548,19 +556,27 @@ const BodyContent = ({ onLottoClick }) => {
         position: 'relative',
         
         // --- EFFECT POSITION (TOP) ---
-        top: (isPhone && window.innerWidth < 360) ? '8%'       // 0. Galaxy Z Fold 5 (344px) -> Энийг тааруулна
-           : isSmallPhone ? '10%'                // 1. iPhone SE
-           : (isPhone && window.innerWidth >= 425) ? '15%'  // 2. iPhone 14 Pro Max
-           : (isPhone && window.innerWidth >= 400) ? '13%'  // 3. iPhone XR
-           : isPhone ? '-35%'                     // 4. iPhone 12 Pro
-           : (isMobile ? '10%'                   // 5. iPads (Tablet) -> Энийг тааруулна
-           : '40%'),                             // 6. Desktop -> Энийг тааруулна
+        top: (isPhone && window.innerWidth < 360) ? '8%'       // 0. Galaxy Z Fold 5
+           : isSmallPhone ? '10%'                               // 1. iPhone SE
+
+           // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
+           : (isPhone && window.innerWidth === 428) ? '-6%'     // Энд тохируулна
+
+           : (isPhone && window.innerWidth >= 425) ? '15%'      // 2. iPhone 14 Pro Max
+           : (isPhone && window.innerWidth >= 400) ? '13%'      // 3. iPhone XR
+           : isPhone ? '12%'                                    // 4. iPhone 12 Pro
+           : (isMobile ? '10%'                                  // 5. iPads
+           : '40%'),                                            // 6. Desktop
         
         // --- EFFECT SIZE (WIDTH) ---
-        width: (isPhone && window.innerWidth < 360) ? '95vw'  // 0. Galaxy Z Fold 5 (Нарийн дэлгэц)
-             : isPhone ? '100vw'                 // Phones
-             : (isMobile ? '40%'                // 5. iPads (Tablet) -> Энийг тааруулна
-             : '35%'),                          // 6. Desktop -> Энийг тааруулна
+        width: (isPhone && window.innerWidth < 360) ? '95vw'   // 0. Galaxy Z Fold 5
+             
+             // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
+             : (isPhone && window.innerWidth === 428) ? '100vw' // Энд тохируулна
+
+             : isPhone ? '100vw'                                // Phones (General)
+             : (isMobile ? '40%'                                // 5. iPads
+             : '35%'),                                          // 6. Desktop
 
         height: isPhone ? '100vw' : '180%',
         objectFit: 'contain',
@@ -643,7 +659,7 @@ const BodyContent = ({ onLottoClick }) => {
                   flexGrow: isPhone ? 0 : 0, 
                   height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                   minHeight: isPhone ? '0' : 'auto', 
-                  top: isMobile ? '-50px' : '120px', 
+                  top: isMobile ? '0' : '120px', 
                   marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
                   display: 'flex', 
                   alignItems: 'center',
