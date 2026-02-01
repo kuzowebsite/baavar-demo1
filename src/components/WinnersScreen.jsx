@@ -4,71 +4,80 @@ const WINNERS_DATA = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const WinnersScreen = () => {
   return (
-    <div className="w-full min-h-screen main-bg flex flex-col pt-28 md:pt-32 pb-20 space-y-2 overflow-x-hidden">
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
-          
-          .scrollbar-hide::-webkit-scrollbar { display: none; }
-          .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-          
-          .main-bg {
-            background-image: url('assets/background.jpg') !important;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-          }
+    <>
+      {/* 1. FIXED BACKGROUND LAYER - Хөдөлгөөнгүй арын зураг */}
+      <div 
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: "url('/assets/background.jpg')", // Замд '/' нэмсэн нь илүү найдвартай
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      />
 
-          .winner-title {
-            font-family: 'Montserrat Alternates', sans-serif;
-            font-weight: 700;
-            background: linear-gradient(to bottom, #FFE37C, #A6690F);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-          }
+      {/* 2. SCROLLING CONTENT LAYER - Наагуур нь гүйдэг контент */}
+      {/* main-bg классыг хасч, relative z-10 нэмсэн */}
+      <div className="relative z-10 w-full min-h-screen flex flex-col pt-28 md:pt-32 pb-20 space-y-2 overflow-x-hidden">
+        <style>
+          {`
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
+            
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+            
+            /* .main-bg классыг эндээс хассан, учир нь бид тусдаа div ашиглаж байна */
 
-          .gold-card-outer {
-            position: relative;
-            background: linear-gradient(180deg, #FFE37C 0%, #A6690F 100%);
-            padding: 1px; 
-            border-radius: 16px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
-            transition: transform 0.3s ease;
-            z-index: 10;
-          }
-
-          .gold-card-outer:hover {
-            transform: scale(1.02);
-            z-index: 20; 
-          }
-
-          .inner-container {
-            width: 100%;
-            height: 100%;
-            background-color: #1a1a1a;
-            border-radius: 16px;
-            overflow: hidden;
-          }
-          
-          @media (max-width: 767px) {
-            .snap-container {
-              scroll-snap-type: x mandatory;
-              scroll-behavior: smooth;
+            .winner-title {
+              font-family: 'Montserrat Alternates', sans-serif;
+              font-weight: 700;
+              background: linear-gradient(to bottom, #FFE37C, #A6690F);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
             }
-            .snap-item {
-              scroll-snap-align: center;
-            }
-          }
-        `}
-      </style>
 
-      <WinnerSection title="Баавар ялагчид" />
-      <WinnerSection title="Нүнжиг ялагчид" />
-      <WinnerSection title="Сүншиг ялагчид" />
-    </div>
+            .gold-card-outer {
+              position: relative;
+              background: linear-gradient(180deg, #FFE37C 0%, #A6690F 100%);
+              padding: 1px; 
+              border-radius: 16px;
+              filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+              transition: transform 0.3s ease;
+              z-index: 10;
+            }
+
+            .gold-card-outer:hover {
+              transform: scale(1.02);
+              z-index: 20; 
+            }
+
+            .inner-container {
+              width: 100%;
+              height: 100%;
+              background-color: #1a1a1a;
+              border-radius: 16px;
+              overflow: hidden;
+            }
+            
+            @media (max-width: 767px) {
+              .snap-container {
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+              }
+              .snap-item {
+                scroll-snap-align: center;
+              }
+            }
+          `}
+        </style>
+
+        <WinnerSection title="Баавар ялагчид" />
+        <WinnerSection title="Нүнжиг ялагчид" />
+        <WinnerSection title="Сүншиг ялагчид" />
+      </div>
+    </>
   );
 };
 
@@ -137,15 +146,12 @@ const WinnerSection = ({ title }) => {
 
   return (
     <div className="flex flex-col gap-3 md:gap-5 relative z-10">
-      {/* Title Padding: md (Tablet) дээр багасгаж, xl (Desktop) дээр буцааж том болгосон */}
       <h2 className="winner-title text-xl md:text-3xl pl-8 md:pl-8 xl:pl-[232px] uppercase tracking-wider">
         {title}
       </h2>
       
-      {/* Container Padding: md (Tablet) дээр заагийг багасгаж, xl (Desktop) дээр хуучин хэвэнд нь оруулсан */}
       <div className="relative w-full md:px-8 xl:px-[232px] group">
         
-        {/* Зүүн сум: Байршлыг мөн адил дэлгэцийн хэмжээнээс хамааруулж өөрчилсөн */}
         <button 
           onClick={() => scroll('left')}
           className="absolute left-2 md:left-4 xl:left-[242px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all md:opacity-0 md:group-hover:opacity-100 shadow-lg"
@@ -162,11 +168,6 @@ const WinnerSection = ({ title }) => {
           {WINNERS_DATA.map((_, i) => (
             <div 
               key={i} 
-              /* Image Size:
-                 w-[140px] -> Mobile
-                 md:w-[150px] -> Tablet (Жижигрүүлсэн тул 6 ширхэг багтана)
-                 xl:w-[200px] -> Desktop (Том дэлгэц дээр буцаад томорно)
-              */
               className="snap-item shrink-0 gold-card-outer w-[140px] md:w-[150px] xl:w-[200px]" 
               style={{ aspectRatio: '222/280' }}
             >
@@ -182,7 +183,6 @@ const WinnerSection = ({ title }) => {
           ))}
         </div>
 
-        {/* Баруун сум */}
         <button 
           onClick={() => scroll('right')}
           className="absolute right-2 md:right-4 xl:right-[10px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all md:opacity-0 md:group-hover:opacity-100 shadow-lg"
