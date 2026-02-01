@@ -105,7 +105,7 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
           minHeight: 0 
         }}>
         
-        {/* АРЫН ФОН - ЗАСВАР 1: Opacity 1 болгож, mixBlendMode арилгав */}
+        {/* АРЫН ФОН */}
         <div style={{
             position: 'absolute',
             top: 0,
@@ -239,7 +239,6 @@ const BodyContent = ({ onLottoClick }) => {
   }, []);
 
   // Desktop дээр слайдыг өргөн (fatter) болгов.
-  // 540px өргөн болгосноор сугалааны мэдээлэл илүү тод харагдана.
   const DESKTOP_SLIDE_WIDTH = 540; 
   const DESKTOP_SLIDE_HEIGHT = 650;
   
@@ -266,12 +265,26 @@ const BodyContent = ({ onLottoClick }) => {
         {`
           @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700;900&family=Roboto:wght@400;700;900&display=swap');
           
+          /* === SCROLL LOCKING FIX === */
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden !important; /* Хуудсыг бүхэлд нь түгжинэ */
+            overscroll-behavior: none; /* iOS bounce эффектийг зогсооно */
+          }
+          #root {
+            height: 100%;
+            overflow: hidden;
+          }
+
           header, .header-container {
             position: fixed !important;
             top: 0; left: 0; width: 100%; z-index: 100 !important; background: #0f172a;
           }
 
-          /* === ANIMATION KEYFRAMES НЭМСЭН === */
+          /* === ANIMATION KEYFRAMES === */
           @keyframes goldGlowPulse {
             0% { 
               transform: scale(1); 
@@ -288,7 +301,6 @@ const BodyContent = ({ onLottoClick }) => {
           }
 
           .mobile-title-container, .desktop-title-container { 
-            /* Header (z-index: 100) дээр гаргах бол 100-аас дээш утга */
             z-index: 110 !important; 
           }
 
@@ -337,7 +349,6 @@ const BodyContent = ({ onLottoClick }) => {
           }
 
           @media (min-width: 740px) {
-             /* ЗАСВАР 2: Хажуугийн слайдуудыг бүрсгэр (blurry) болгов */
              .swiper-slide {
                 filter: blur(5px) !important;
                 opacity: 0.9 !important;
@@ -367,7 +378,6 @@ const BodyContent = ({ onLottoClick }) => {
           .swiper-slide-active img { border-radius: 0 !important; }
 
           .effect-image {
-            /* Animation-ийг зогсоов */
             animation: none;
             display: block;
             object-fit: contain;
@@ -376,7 +386,6 @@ const BodyContent = ({ onLottoClick }) => {
 
           @media (max-width: 739px) {
               .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
-              body, html { overflow-x: hidden; }
           }
           
           @media (min-width: 740px) and (max-width: 1025px) {
@@ -416,15 +425,13 @@ const BodyContent = ({ onLottoClick }) => {
           @media (max-width: 380px) {
             .mobile-title { font-size: 20px !important; }
             .mobile-title-container { 
-               /* FIXED болгож байгаа тул энд margin өөрчлөлт хамаарахгүй байж болно, гэхдээ үлдээлээ */
-               /* margin-top: 85px !important; */
                margin-bottom: 10px !important; 
             }
           }
         `}
       </style>
 
-      {/* --- ШИНЭ ХЭСЭГ: FIXED BACKGROUND (Зөвхөн арын зураг, бүх төхөөрөмж дээр fixed байна) --- */}
+      {/* --- FIXED BACKGROUND --- */}
       <div 
         style={{
           position: 'fixed',
@@ -436,12 +443,12 @@ const BodyContent = ({ onLottoClick }) => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          zIndex: 0, // Бүх юмны ард
-          pointerEvents: 'none' // Mouse click-д саад болохгүй
+          zIndex: 0, 
+          pointerEvents: 'none' 
         }}
       />
 
-      {/* Main Container (Background-ийг эндээс авсан) */}
+      {/* Main Container */}
       <div className={`w-full relative flex`} 
            style={{ 
                height: isPhone ? '100vh' : '100%', 
@@ -451,7 +458,6 @@ const BodyContent = ({ onLottoClick }) => {
                alignItems: 'center',
                paddingTop: isMobile ? '0px' : '0',
                overflow: 'hidden',
-               // Background-ийг дээд талын тусдаа div руу шилжүүлсэн тул энд transparent байна
                backgroundColor: 'transparent' 
            }}>
           
@@ -470,10 +476,8 @@ const BodyContent = ({ onLottoClick }) => {
             
             {/* ГАРЧИГ / EFFECT IMAGE ХЭСЭГ */}
             <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
-                style={{ 
-                    // ШИНЭЧЛЭЛ: isPhone үед FIXED байрлалтай болгож байна.
+                 style={{ 
                     position: isPhone ? 'fixed' : (isMobile ? 'relative' : 'absolute'),
-                    // FIXED үед дээд талаас авах зайг энд зааж өгнө. Scroll хийхэд хөдлөхгүй.
                     top: isPhone ? (isSmallPhone ? '35px' : '50px') : (isMobile ? 'auto' : '50px'),
                     marginTop: isPhone ? '0' : (isSmallPhone ? '45px' : (isMobile ? '100px' : '-140px')), 
                     marginBottom: isPhone ? '-40px' : '0', 
@@ -481,10 +485,9 @@ const BodyContent = ({ onLottoClick }) => {
                     zIndex: 110, 
                     flexShrink: 0, 
                     pointerEvents: 'none',
-                    // FIXED үед төвд байрлуулах
                     left: isPhone ? 0 : 'auto',
                     width: '100%'
-                }}>
+                 }}>
   
   <img 
     src="assets/effect.png" 
@@ -540,7 +543,7 @@ const BodyContent = ({ onLottoClick }) => {
                     loop={true}
                     speed={500}
                     mousewheel={isPhone ? true : false} 
-                    spaceBetween={isPhone ? 0 : 80} // Desktop дээр зайг нэмэв
+                    spaceBetween={isPhone ? 0 : 80}
                     slideToClickedSlide={true}
                     autoplay={{ delay: 10000, disableOnInteraction: false }}
                     coverflowEffect={{ 
@@ -578,7 +581,6 @@ const BodyContent = ({ onLottoClick }) => {
                                               minHeight: 0,
                                               borderTopLeftRadius: isMobile ? '18px' : '38px',
                                               borderTopRightRadius: isMobile ? '18px' : '38px',
-                                              // Desktop дээр доод булангууд үргэлж тэгш өнцөгтэй байна (мэдээлэл үргэлж харагдах тул)
                                               borderBottomLeftRadius: isMobile ? '0' : '0', 
                                               borderBottomRightRadius: isMobile ? '0' : '0',
                                               transition: 'border-radius 0.3s ease'
@@ -590,7 +592,6 @@ const BodyContent = ({ onLottoClick }) => {
                                           style={{ 
                                               flex: '0 0 auto', 
                                               minHeight: 0,
-                                              // Desktop дээр бүх сугалааны мэдээлэл харагдана (isActive хамаарахгүй)
                                               display: 'flex'
                                           }}>
                                           <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
@@ -651,7 +652,6 @@ const BodyContent = ({ onLottoClick }) => {
 
           </div>
 
-          {/* ЗАСВАР 4: PurchaseDialog-ийг маш өндөр z-index-тай container-т хийж, бусад element-ийн наана гаргав */}
           <div style={{ position: 'relative', zIndex: 99999 }}>
             {showPurchaseDialog && selectedLotto && (
                 <PurchaseDialog 
