@@ -1,23 +1,22 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const WINNERS_DATA = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 const WinnersScreen = () => {
   return (
     <>
-      {/* 1. FIXED BACKGROUND LAYER - Хөдөлгөөнгүй арын зураг */}
+      {/* 1. FIXED BACKGROUND LAYER */}
       <div 
         className="fixed inset-0 z-0"
         style={{
-          backgroundImage: "url('/assets/background.jpg')", // Замд '/' нэмсэн нь илүү найдвартай
+          backgroundImage: "url('/assets/background.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         }}
       />
 
-      {/* 2. SCROLLING CONTENT LAYER - Наагуур нь гүйдэг контент */}
-      {/* main-bg классыг хасч, relative z-10 нэмсэн */}
+      {/* 2. SCROLLING CONTENT LAYER */}
       <div className="relative z-10 w-full min-h-screen flex flex-col pt-28 md:pt-32 pb-20 space-y-2 overflow-x-hidden">
         <style>
           {`
@@ -26,8 +25,6 @@ const WinnersScreen = () => {
             .scrollbar-hide::-webkit-scrollbar { display: none; }
             .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
             
-            /* .main-bg классыг эндээс хассан, учир нь бид тусдаа div ашиглаж байна */
-
             .winner-title {
               font-family: 'Montserrat Alternates', sans-serif;
               font-weight: 700;
@@ -83,6 +80,7 @@ const WinnersScreen = () => {
 
 const WinnerSection = ({ title }) => {
   const sliderRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -92,9 +90,13 @@ const WinnerSection = ({ title }) => {
     let startX;
     let scrollLeft;
 
+    // Desktop Mouse Events
     const onMouseDown = (e) => {
+      // Гар утсан дээр Mouse event-ийг болиулж, доорх Touch event-ийг ашиглана
       if (window.innerWidth < 768) return;
+      
       isDown = true;
+      setIsDragging(true);
       slider.style.cursor = 'grabbing';
       startX = e.clientX;
       scrollLeft = slider.scrollLeft;
@@ -103,11 +105,13 @@ const WinnerSection = ({ title }) => {
 
     const onMouseLeave = () => {
       isDown = false;
+      setIsDragging(false);
       slider.style.cursor = 'grab';
     };
 
     const onMouseUp = () => {
       isDown = false;
+      setIsDragging(false);
       slider.style.cursor = 'grab';
     };
 
@@ -150,11 +154,15 @@ const WinnerSection = ({ title }) => {
         {title}
       </h2>
       
+      {/* Wrapper */}
       <div className="relative w-full md:px-8 xl:px-[232px] group">
         
+        {/* Left Button */}
         <button 
           onClick={() => scroll('left')}
-          className="absolute left-2 md:left-4 xl:left-[242px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all md:opacity-0 md:group-hover:opacity-100 shadow-lg"
+          className={`absolute left-2 md:left-4 xl:left-[190px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all shadow-lg
+            ${isDragging ? 'opacity-0 pointer-events-none duration-200' : 'md:opacity-0 md:group-hover:opacity-100 duration-300'}
+          `}
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
@@ -163,6 +171,9 @@ const WinnerSection = ({ title }) => {
 
         <div 
           ref={sliderRef}
+          // Mobile Touch Logic - Энд гар утасны локигийг нэмлээ
+          onTouchStart={() => setIsDragging(true)}
+          onTouchEnd={() => setIsDragging(false)}
           className="flex overflow-x-auto gap-5 pt-4 pb-8 px-8 md:px-0 scrollbar-hide snap-container select-none cursor-grab active:cursor-grabbing"
         >
           {WINNERS_DATA.map((_, i) => (
@@ -183,9 +194,12 @@ const WinnerSection = ({ title }) => {
           ))}
         </div>
 
+        {/* Right Button */}
         <button 
           onClick={() => scroll('right')}
-          className="absolute right-2 md:right-4 xl:right-[10px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all md:opacity-0 md:group-hover:opacity-100 shadow-lg"
+          className={`absolute right-2 md:right-4 xl:right-[190px] top-1/2 -translate-y-1/2 z-20 w-11 h-11 bg-black/60 rounded-full flex items-center justify-center text-white backdrop-blur-md active:scale-90 transition-all shadow-lg
+            ${isDragging ? 'opacity-0 pointer-events-none duration-200' : 'md:opacity-0 md:group-hover:opacity-100 duration-300'}
+          `}
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
