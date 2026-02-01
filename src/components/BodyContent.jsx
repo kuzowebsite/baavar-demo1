@@ -852,12 +852,15 @@ const BodyContent = ({ onLottoClick }) => {
       position: 'relative',
       zIndex: 20, 
 
+      // --- NEW: HIDE ON DESKTOP (Desktop дээр харагдахгүй) ---
+      // 1024px-ээс их буюу Desktop үед 'none', бусад үед 'block'
+      display: (window.innerWidth > 1024) ? 'none' : 'block',
+
       // --- ICON POSITION: MARGIN TOP ---
       // ЗӨВХӨН iPad (Mini, Air, Pro) дээр 0px
-      // (768px-ээс их БА 1024px-ээс бага буюу тэнцүү үед)
       marginTop: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
 
-               // --- Phone & Desktop Logic (Desktop доошоо орно) ---
+               // --- Phone Logic ---
                : (isPhone && window.innerWidth < 360) ? '-180px'   
                : (isPhone && window.innerWidth === 360) ? '40px'    
                : isSmallPhone ? '30px'                              
@@ -871,7 +874,7 @@ const BodyContent = ({ onLottoClick }) => {
       // ЗӨВХӨН iPad (Mini, Air, Pro) дээр 0px
       marginLeft: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'          
 
-                // --- Phone & Desktop Logic ---
+                // --- Phone Logic ---
                 : (isPhone && window.innerWidth < 360) ? '-120px'  
                 : (isPhone && window.innerWidth === 360) ? '-50px' 
                 : isSmallPhone ? '-40px' 
@@ -898,6 +901,10 @@ const BodyContent = ({ onLottoClick }) => {
     fontWeight: '300', 
     color: '#FFFFFF', 
     textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+
+    // --- NEW: HIDE ON DESKTOP (Desktop дээр харагдахгүй) ---
+    // 1024px-ээс их буюу Desktop үед 'none', бусад үед 'block'
+    display: (window.innerWidth > 1024) ? 'none' : 'block',
 
     // --- FONT SIZE ---
     // Зөвхөн iPad (768px - 1024px) дээр 16px
