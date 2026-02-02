@@ -61,7 +61,6 @@ const Icons = {
       <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
     </svg>
   ),
-  // ШИНЭ: Анхаарлын тэмдэг (Alert/Warning)
   Alert: () => (
     <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
@@ -99,7 +98,7 @@ const PurchaseDialog = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false); 
   
-  // ШИНЭ STATE: Банкны төлбөр шалгалт амжилтгүй болсон эсэх
+  // Банкны шалгалт амжилтгүй болсон эсэхийг хадгалах state
   const [isBankCheckFailed, setIsBankCheckFailed] = useState(false);
 
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -326,14 +325,14 @@ const PurchaseDialog = ({
     if (currentStep > 1) {
       if (currentStep === 6 || currentStep === 7) {
           setCurrentStep(5);
-          setIsBankCheckFailed(false); // Банкны алдааг цэвэрлэх
+          setIsBankCheckFailed(false); // Банкны step-ээс буцахад алдааг цэвэрлэнэ
       }
       else setCurrentStep(prev => prev - 1);
       setIsPaymentSuccess(false); 
     }
   };
 
-  // QPay шалгах
+  // QPay Шалгах (Амжилттай)
   const handleCheckPayment = () => {
       setIsLoading(true);
       setTimeout(() => {
@@ -343,14 +342,14 @@ const PurchaseDialog = ({
       }, 2000);
   };
 
-  // Банкны төлбөр шалгах (Симмуляци: Амжилтгүй болгож харуулна)
+  // Банк Шалгах (Амжилтгүй)
   const handleBankCheck = () => {
       setIsLoading(true);
-      setIsBankCheckFailed(false); // Reset state
+      setIsBankCheckFailed(false); // Reset
       setTimeout(() => {
           setIsLoading(false);
-          setIsBankCheckFailed(true); // Алдаа заана
-          // Хадгалах үйлдэл хийхгүй (saveToStorage дуудахгүй)
+          setIsBankCheckFailed(true); // Алдааны мэдээлэл харуулна
+          // Хадгалахгүй
       }, 2000);
   };
 
@@ -377,7 +376,7 @@ const PurchaseDialog = ({
       case 4: return "Захиалга хянах";
       case 5: return "Төлбөрийн нөхцөл";
       case 6: return isPaymentSuccess ? "Амжилттай" : "QPay";
-      case 7: return isBankCheckFailed ? "Анхааруулга" : "Банк"; // Гарчиг өөрчлөгдөнө
+      case 7: return isBankCheckFailed ? "Анхааруулга" : "Банк"; 
       case 8: return "Амжилттай";
       default: return "";
     }
@@ -401,7 +400,6 @@ const PurchaseDialog = ({
           </div>
         );
 
-      // ... Case 2, 3, 4, 5, 6 хэвээрээ ...
       case 2: 
         return (
             <div className="flex flex-col items-center w-full justify-center h-full">
@@ -490,7 +488,6 @@ const PurchaseDialog = ({
               <div className="flex justify-between"><span>Утга:</span><span className="font-bold">{phoneNumber}</span></div>
             </div>
 
-            {/* Төлбөр шалгалт амжилтгүй болсон үед харуулах хэсэг */}
             {isBankCheckFailed && (
                 <div className="flex flex-col items-center animate-pulse mt-4">
                     <Icons.Alert />
@@ -572,25 +569,22 @@ const PurchaseDialog = ({
 
               <button onClick={() => {
                           if (currentStep === 6) { if (isPaymentSuccess) onClose(); else handleCheckPayment(); }
-                          else if (currentStep === 7) handleBankCheck(); // ШИНЭ: Банкны төлбөр шалгах
+                          else if (currentStep === 7) handleBankCheck(); 
                           else if (currentStep === 8) onClose();
                           else handleNext();
                       }}
                       disabled={(currentStep === 1 && !isPhoneValid) || (currentStep === 2 && !isOtpValid) || isLoading}
                       className="min-w-[90px] h-[30px] rounded-lg border text-[12px] font-play flex items-center justify-center gap-1"
                       style={{ 
-                          // Step 6 (QPay) эсвэл Step 7 (Bank - Алдаатай үед) товчлуурын өнгө өөрчлөгдөнө
-                          backgroundColor: (isPaymentSuccess || currentStep === 8 || (currentStep === 7 && isBankCheckFailed)) ? '#EF4444' : (isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF',
-                          // isBankCheckFailed үед Улаан өнгөөр (Дахин шалгах), Амжилттай бол Ногоон
-                          backgroundColor: (currentStep === 7 && isBankCheckFailed) ? '#FFFFFF' : ((isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF'),
-
+                          // ЗАССАН ХЭСЭГ: backgroundColor давхардаагүй
+                          backgroundColor: (isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF',
                           color: (isPaymentSuccess || currentStep === 8) ? '#FFFFFF' : (currentStep === 7 && isBankCheckFailed) ? '#EF4444' : '#057F71',
                           borderColor: (currentStep === 7 && isBankCheckFailed) ? '#EF4444' : '#E5E7EB'
                       }}>
                   
                   {isLoading ? <Icons.Loader /> : 
                      (currentStep === 6 ? (isPaymentSuccess ? "Хаах" : "Төлбөр шалгах") : 
-                     (currentStep === 7 ? (isBankCheckFailed ? "Дахин шалгах" : "Төлбөр шалгах") : // Банкны step логик
+                     (currentStep === 7 ? (isBankCheckFailed ? "Дахин шалгах" : "Төлбөр шалгах") : 
                      (currentStep >= 8 ? "Хаах" : "Дараах")))}
               </button>
           </div>
