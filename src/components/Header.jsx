@@ -150,10 +150,15 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
   );
 };
 
+// --- NAV BUTTON (Hover Zoom Effect Added Here) ---
 const NavButton = ({ text, active, onClick, textStyle }) => (
-  <button 
+  <motion.button 
     onClick={onClick} 
-    className="relative py-1 flex flex-col items-center group overflow-visible" 
+    className="relative py-1 flex flex-col items-center group overflow-visible"
+    // HOVER ZOOM EFFECT:
+    whileHover={{ scale: 1.1 }} 
+    whileTap={{ scale: 0.95 }}
+    transition={{ type: "spring", stiffness: 400, damping: 17 }}
   >
     <span 
         className="uppercase text-[13px] xl:text-[15px] transition-all duration-300 tracking-wider"
@@ -173,7 +178,7 @@ const NavButton = ({ text, active, onClick, textStyle }) => (
             style={{ background: 'linear-gradient(90deg, #FFE37C 0%, #A6690F 100%)' }}
         />
     )}
-  </button>
+  </motion.button>
 );
 
 export default Header;
