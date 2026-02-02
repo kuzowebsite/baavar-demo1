@@ -1,4 +1,3 @@
-// src/components/BodyContent.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Autoplay, Mousewheel } from 'swiper/modules'; 
@@ -178,7 +177,6 @@ const BodyContent = ({ onLottoClick }) => {
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [selectedLotto, setSelectedLotto] = useState(null);
   const [mobileSlideSize, setMobileSlideSize] = useState({ width: 340, height: 500 });
-  // Tablet дээр гүйлгэх үед товчийг нуух state
   const [isInteracting, setIsInteracting] = useState(false);
 
   useEffect(() => {
@@ -188,31 +186,25 @@ const BodyContent = ({ onLottoClick }) => {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
 
-      // Mobile check (Phone + Tablet)
       const mobileCheck = windowWidth <= 1024;
       setIsMobile(mobileCheck);
 
-      // Phone check (Only Phone)
       const phoneCheck = windowWidth < 740;
       setIsPhone(phoneCheck);
 
-      // Small Phone check (iPhone SE etc.)
       const smallPhoneCheck = windowWidth <= 400 && windowHeight <= 750;
       setIsSmallPhone(smallPhoneCheck);
 
       if (mobileCheck) {
         setScale(1); 
         if (windowWidth >= 740) {
-          // Tablet Size
           setMobileSlideSize({ width: 330, height: 420 });
         } else {
-          // Phone Size
           const mWidth = Math.min(windowWidth * 0.65, 260); 
           const mHeight = mWidth * 1.35; 
           setMobileSlideSize({ width: mWidth, height: mHeight });
         }
       } else {
-        // Desktop Scale
         const widthScale = windowWidth / designWidth;
         const heightScale = windowHeight / designHeight;
         const finalScale = Math.min(widthScale, heightScale) * (windowWidth < 1500 ? 0.95 : 0.9); 
@@ -240,7 +232,6 @@ const BodyContent = ({ onLottoClick }) => {
     }));
   }, []);
 
-  // Desktop дээр слайдыг өргөн (fatter) болгов.
   const DESKTOP_SLIDE_WIDTH = 540; 
   const DESKTOP_SLIDE_HEIGHT = 650;
   
@@ -249,10 +240,7 @@ const BodyContent = ({ onLottoClick }) => {
   const CONTAINER_HEIGHT = 760;
 
   const handlePurchaseClick = (item, isActive) => {
-
-    if (isActive === false) {
-      return; 
-    }
+    if (isActive === false) return; 
 
     sessionStorage.setItem('currentLottoType', item.type);
     sessionStorage.setItem('currentLottoTitle', item.title);
@@ -272,14 +260,13 @@ const BodyContent = ({ onLottoClick }) => {
         {`
           @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700;900&family=Roboto:wght@400;700;900&display=swap');
           
-          /* === SCROLL LOCKING FIX === */
           html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden !important; /* Хуудсыг бүхэлд нь түгжинэ */
-            overscroll-behavior: none; /* iOS bounce эффектийг зогсооно */
+            overflow: hidden !important; 
+            overscroll-behavior: none; 
           }
           #root {
             height: 100%;
@@ -291,20 +278,10 @@ const BodyContent = ({ onLottoClick }) => {
             top: 0; left: 0; width: 100%; z-index: 100 !important; background: #0f172a;
           }
 
-          /* === ANIMATION KEYFRAMES === */
           @keyframes goldGlowPulse {
-            0% { 
-              transform: scale(1); 
-              filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) brightness(1); 
-            }
-            50% { 
-              transform: scale(1.05); 
-              filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) brightness(1.2); 
-            }
-            100% { 
-              transform: scale(1); 
-              filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) brightness(1); 
-            }
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) brightness(1); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) brightness(1.2); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)) brightness(1); }
           }
 
           .mobile-title-container, .desktop-title-container { 
@@ -321,7 +298,17 @@ const BodyContent = ({ onLottoClick }) => {
               height: ${isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT}px !important; 
               transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, filter 0.4s ease; 
               border-radius: ${isMobile ? '20px' : '40px'} !important; 
-              overflow: hidden; user-select: none; background-color: #0f172a; z-index: 10; cursor: default; 
+              overflow: visible !important; 
+              user-select: none; background-color: #0f172a; z-index: 10; cursor: default; 
+          }
+
+          /* ШИНЭ: Desktop дээр идэвхтэй слайдыг hover хийхэд томруулах */
+          @media (min-width: 1025px) {
+            .swiper-slide-active .lottery-card-hover:hover {
+               transform: scale(1.05); /* 5% ZOOM */
+               z-index: 200;
+               box-shadow: 0 25px 60px rgba(0,0,0,0.7); /* Сүүдрийг тодруулах */
+            }
           }
 
           @media (max-width: 739px) {
@@ -361,14 +348,12 @@ const BodyContent = ({ onLottoClick }) => {
                 opacity: 0.9 !important;
                 transform: scale(1) !important;
              }
-             
              .swiper-slide-active {
                 filter: blur(0px) !important;
                 opacity: 1 !important;
                 z-index: 150 !important; 
                 box-shadow: 0 15px 40px rgba(0,0,0,0.55);
              }
-
              .swiper-slide-prev, .swiper-slide-next {
                 opacity: 0.8 !important;
              }
@@ -760,7 +745,7 @@ const BodyContent = ({ onLottoClick }) => {
                     {displayList.map((item) => (
                         <SwiperSlide key={item.uniqueId}>
             {({ isActive }) => (
-                <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
+                <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col lottery-card-hover" 
                      // isActive утгыг функц руу дамжуулна
                      onClick={() => handlePurchaseClick(item, isActive)}
                      style={{ 
