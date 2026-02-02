@@ -534,7 +534,7 @@ const BodyContent = ({ onLottoClick }) => {
                // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
                : (isPhone && window.innerWidth === 428) ? '210vw' // Энд тохируулна
 
-               : (isPhone && window.innerWidth >= 425) ? '210vw' // 2. iPhone 14 Pro Max 
+               : (isPhone && window.innerWidth >= 425) ? '200vw' // 2. iPhone 14 Pro Max 
                : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
                : isPhone ? '200vw'                              // 4. iPhone 12 Pro
                : (isMobile ? '180vw'                             // 5. iPads
