@@ -72,7 +72,7 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
         style={{ background: 'transparent', boxShadow: 'none' }}
       >
         
-        {/* BACKGROUND LAYER REMOVED - Арын фон зургийг авч хаясан */}
+        {/* BACKGROUND LAYER REMOVED */}
 
         {/* CONTENT LAYER */}
         <div className="relative z-10 w-full max-w-[1920px] mx-auto h-[70px] md:h-[100px] flex items-center justify-between px-5 md:px-8 xl:px-[120px]">
@@ -134,7 +134,6 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
             className="absolute bottom-0 left-0 w-full z-20"
             style={{
                 height: '2px',
-                // 2 зах руугаа transparent (0 opacity)
                 background: 'linear-gradient(90deg, rgba(166,105,15,0) 0%, #A6690F 20%, #FFE37C 50%, #A6690F 80%, rgba(166,105,15,0) 100%)',
                 opacity: 1,
                 boxShadow: '0px -1px 5px rgba(0,0,0,0.2)' 
@@ -146,14 +145,15 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
   );
 };
 
-// --- NAV BUTTON (Hover Zoom Effect) ---
+// --- NAV BUTTON (Hover Zoom Effect - SLOWER) ---
 const NavButton = ({ text, active, onClick, textStyle }) => (
   <motion.button 
     onClick={onClick} 
     className="relative py-1 flex flex-col items-center group overflow-visible"
     whileHover={{ scale: 1.1 }} 
     whileTap={{ scale: 0.95 }}
-    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+    // ӨӨРЧЛӨЛТ: Spring-ийн оронд duration ашиглаж зөөлөн/аажуу болгосон
+    transition={{ duration: 0.4, ease: "easeOut" }}
   >
     <span 
         className="uppercase text-[13px] xl:text-[15px] transition-all duration-300 tracking-wider"
