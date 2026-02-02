@@ -60,6 +60,14 @@ const Icons = {
       <path d="M1 20v-6h6"></path>
       <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
     </svg>
+  ),
+  // ШИНЭ: Анхаарлын тэмдэг (Alert/Warning)
+  Alert: () => (
+    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
   )
 };
 
@@ -90,17 +98,35 @@ const PurchaseDialog = ({
   const [luckyNumbers, setLuckyNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false); 
+  
+  // ШИНЭ STATE: Банкны төлбөр шалгалт амжилтгүй болсон эсэх
+  const [isBankCheckFailed, setIsBankCheckFailed] = useState(false);
+
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const [processedImage, setProcessedImage] = useState(imageUrl);
   
   // NUMPAD STATE
   const [isNumpadOpen, setIsNumpadOpen] = useState(false);
+  
+  // MOBILE CHECK STATE
+  const [isMobile, setIsMobile] = useState(false);
 
   const totalPrice = basePrice * quantity;
   const rawPhoneNumber = phoneNumber.replace(/\s/g, ''); 
   const isPhoneValid = rawPhoneNumber.length === 8;
   const isOtpValid = otpInput.length === 4 && !isOtpExpired;
+
+  // --- SCREEN SIZE CHECK ---
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   // --- IMAGE CONVERSION ---
   useEffect(() => {
@@ -170,7 +196,6 @@ const PurchaseDialog = ({
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  // --- NEW: Generate 6-digit alphanumeric unique codes ---
   const generateRandomString = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = '';
@@ -184,7 +209,6 @@ const PurchaseDialog = ({
   const generateLuckyNumbers = (count) => {
     const nums = new Set();
     while (nums.size < count) {
-        // Generate 6 character alphanumeric code
         nums.add(generateRandomString(6));
     }
     return Array.from(nums);
@@ -194,8 +218,8 @@ const PurchaseDialog = ({
     const ticketData = {
         id: Date.now(),
         phoneNumber: rawPhoneNumber,
-        lotteryName: title, // Updated key name for consistency
-        itemName: lotteryType, // Updated key name for consistency
+        lotteryName: title, 
+        itemName: lotteryType, 
         image: processedImage,
         luckyNumbers: numbers.length > 0 ? numbers : luckyNumbers, 
         drawDate: "2024.12.01",
@@ -208,7 +232,6 @@ const PurchaseDialog = ({
     localStorage.setItem('baavar_tickets', JSON.stringify([...existingData, ticketData]));
   };
 
-  // Numpad-аас ирэх утгыг боловсруулах
   const handleNumpadChange = (val) => {
     if (currentStep === 1) {
       let formatted = val;
@@ -219,6 +242,20 @@ const PurchaseDialog = ({
     } else if (currentStep === 2) {
       if (!isOtpExpired) setOtpInput(val);
     }
+  };
+
+  const handleDesktopInputChange = (e) => {
+      const rawVal = e.target.value.replace(/[^0-9]/g, '');
+      if (currentStep === 1) {
+          if (rawVal.length <= 8) {
+              handleNumpadChange(rawVal);
+          }
+      } 
+      else if (currentStep === 2) {
+          if (rawVal.length <= 4) {
+              handleNumpadChange(rawVal);
+          }
+      }
   };
 
   const handleResendOtp = () => {
@@ -287,18 +324,33 @@ const PurchaseDialog = ({
   const handleBack = () => {
     setIsNumpadOpen(false);
     if (currentStep > 1) {
-      if (currentStep === 6 || currentStep === 7) setCurrentStep(5);
+      if (currentStep === 6 || currentStep === 7) {
+          setCurrentStep(5);
+          setIsBankCheckFailed(false); // Банкны алдааг цэвэрлэх
+      }
       else setCurrentStep(prev => prev - 1);
       setIsPaymentSuccess(false); 
     }
   };
 
+  // QPay шалгах
   const handleCheckPayment = () => {
       setIsLoading(true);
       setTimeout(() => {
           setIsLoading(false);
           setIsPaymentSuccess(true); 
           saveToStorage('Paid', luckyNumbers); 
+      }, 2000);
+  };
+
+  // Банкны төлбөр шалгах (Симмуляци: Амжилтгүй болгож харуулна)
+  const handleBankCheck = () => {
+      setIsLoading(true);
+      setIsBankCheckFailed(false); // Reset state
+      setTimeout(() => {
+          setIsLoading(false);
+          setIsBankCheckFailed(true); // Алдаа заана
+          // Хадгалах үйлдэл хийхгүй (saveToStorage дуудахгүй)
       }, 2000);
   };
 
@@ -325,7 +377,7 @@ const PurchaseDialog = ({
       case 4: return "Захиалга хянах";
       case 5: return "Төлбөрийн нөхцөл";
       case 6: return isPaymentSuccess ? "Амжилттай" : "QPay";
-      case 7: return "Банк";
+      case 7: return isBankCheckFailed ? "Анхааруулга" : "Банк"; // Гарчиг өөрчлөгдөнө
       case 8: return "Амжилттай";
       default: return "";
     }
@@ -340,26 +392,27 @@ const PurchaseDialog = ({
             <input
               type="text"
               value={phoneNumber}
-              readOnly
-              onClick={() => setIsNumpadOpen(true)}
+              readOnly={isMobile}
+              onChange={!isMobile ? handleDesktopInputChange : undefined}
+              onClick={() => isMobile && setIsNumpadOpen(true)}
               placeholder="8090 1860" 
               className="w-full max-w-[320px] h-[35px] rounded-[8px] border border-[#D9D9D9] bg-white font-play text-sm text-center outline-none text-black cursor-pointer"
             />
           </div>
         );
 
+      // ... Case 2, 3, 4, 5, 6 хэвээрээ ...
       case 2: 
         return (
             <div className="flex flex-col items-center w-full justify-center h-full">
-                <p className="text-center mb-[6px] text-xs font-play">
-                    {phoneNumber} дугаарт илгээсэн кодыг оруулна уу
-                </p>
+                <p className="text-center mb-[6px] text-xs font-play">{phoneNumber} дугаарт илгээсэн кодыг оруулна уу</p>
                 <div className="flex items-center gap-2">
                     <input
                         type="text"
                         value={otpInput}
-                        readOnly
-                        onClick={() => !isOtpExpired && setIsNumpadOpen(true)}
+                        readOnly={isMobile}
+                        onChange={!isMobile ? handleDesktopInputChange : undefined}
+                        onClick={() => isMobile && !isOtpExpired && setIsNumpadOpen(true)}
                         placeholder="1234"
                         className={`w-[120px] h-[35px] rounded-[8px] border bg-white font-play text-lg text-center outline-none cursor-pointer ${
                             isOtpExpired ? 'border-red-400 bg-red-50 text-red-500' : 'border-[#D9D9D9]'
@@ -369,12 +422,9 @@ const PurchaseDialog = ({
                         {formatTimer(otpTimeLeft)}
                     </div>
                 </div>
-                {isOtpExpired && (
-                    <button onClick={handleResendOtp} className="mt-2 text-[#068071] text-[11px] font-bold">Дахин илгээх</button>
-                )}
+                {isOtpExpired && <button onClick={handleResendOtp} className="mt-2 text-[#068071] text-[11px] font-bold">Дахин илгээх</button>}
             </div>
         );
-
       case 3: 
         return (
           <div className="flex flex-col items-center w-full justify-center h-full">
@@ -388,7 +438,6 @@ const PurchaseDialog = ({
             </div>
           </div>
         );
-
       case 4: 
         return (
           <div className="flex flex-col w-full px-6 justify-center h-full pt-4"> 
@@ -401,7 +450,6 @@ const PurchaseDialog = ({
             </div>
           </div>
         );
-
       case 5: 
         return (
           <div className="flex flex-col items-center w-full justify-center h-full gap-2">
@@ -415,7 +463,6 @@ const PurchaseDialog = ({
             </button>
           </div>
         );
-
       case 6: 
         return (
           <div className="flex flex-col items-center w-full pt-2 pb-4">
@@ -435,13 +482,23 @@ const PurchaseDialog = ({
 
       case 7: 
         return (
-          <div className="flex flex-col w-full pt-2 px-6">
+          <div className="flex flex-col items-center w-full pt-2 px-6">
             <div className="space-y-1 w-full max-w-[320px] mx-auto text-[12px] font-play">
               <div className="flex justify-between"><span>Банк:</span><span className="font-bold">Хаан банк</span></div>
               <div className="flex justify-between"><span>Данс:</span><span className="font-bold">5318101209</span></div>
               <div className="flex justify-between"><span>Дүн:</span><span className="font-bold">{formatMoney(totalPrice)}₮</span></div>
               <div className="flex justify-between"><span>Утга:</span><span className="font-bold">{phoneNumber}</span></div>
             </div>
+
+            {/* Төлбөр шалгалт амжилтгүй болсон үед харуулах хэсэг */}
+            {isBankCheckFailed && (
+                <div className="flex flex-col items-center animate-pulse mt-4">
+                    <Icons.Alert />
+                    <span className="text-red-500 font-bold text-sm mt-2 text-center">
+                        Таны төлбөр төлөгдөөгүй байна
+                    </span>
+                </div>
+            )}
           </div>
         );
       
@@ -477,14 +534,14 @@ const PurchaseDialog = ({
         `}
       </style>
       
-      {/* BACKGROUND OVERLAY FOR DISMISSING NUMPAD */}
+      {/* BACKGROUND OVERLAY */}
       <div 
         className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 pt-[100px] px-4"
         onClick={handleOverlayClick}
       >
         <div 
           className="bg-white relative flex flex-col shadow-2xl overflow-hidden transition-all duration-300 w-full"
-          onClick={(e) => e.stopPropagation()} // Dialog дотор дарахад overlay ажиллахгүй
+          onClick={(e) => e.stopPropagation()} 
           style={{ maxWidth: '460px', minHeight: '250px', height: (currentStep >= 6) ? 'auto' : '250px', borderRadius: '20px' }}
         >
           
@@ -515,28 +572,40 @@ const PurchaseDialog = ({
 
               <button onClick={() => {
                           if (currentStep === 6) { if (isPaymentSuccess) onClose(); else handleCheckPayment(); }
-                          else if (currentStep === 7) handleFinish();
+                          else if (currentStep === 7) handleBankCheck(); // ШИНЭ: Банкны төлбөр шалгах
                           else if (currentStep === 8) onClose();
                           else handleNext();
                       }}
                       disabled={(currentStep === 1 && !isPhoneValid) || (currentStep === 2 && !isOtpValid) || isLoading}
                       className="min-w-[90px] h-[30px] rounded-lg border text-[12px] font-play flex items-center justify-center gap-1"
-                      style={{ backgroundColor: (isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF',
-                               color: (isPaymentSuccess || currentStep === 8) ? '#FFFFFF' : '#057F71' }}>
-                  {isLoading ? <Icons.Loader /> : (currentStep === 6 ? (isPaymentSuccess ? "Хаах" : "Төлбөр шалгах") : (currentStep >= 7 ? "Хаах" : "Дараах"))}
+                      style={{ 
+                          // Step 6 (QPay) эсвэл Step 7 (Bank - Алдаатай үед) товчлуурын өнгө өөрчлөгдөнө
+                          backgroundColor: (isPaymentSuccess || currentStep === 8 || (currentStep === 7 && isBankCheckFailed)) ? '#EF4444' : (isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF',
+                          // isBankCheckFailed үед Улаан өнгөөр (Дахин шалгах), Амжилттай бол Ногоон
+                          backgroundColor: (currentStep === 7 && isBankCheckFailed) ? '#FFFFFF' : ((isPaymentSuccess || currentStep === 8) ? '#068071' : '#FFFFFF'),
+
+                          color: (isPaymentSuccess || currentStep === 8) ? '#FFFFFF' : (currentStep === 7 && isBankCheckFailed) ? '#EF4444' : '#057F71',
+                          borderColor: (currentStep === 7 && isBankCheckFailed) ? '#EF4444' : '#E5E7EB'
+                      }}>
+                  
+                  {isLoading ? <Icons.Loader /> : 
+                     (currentStep === 6 ? (isPaymentSuccess ? "Хаах" : "Төлбөр шалгах") : 
+                     (currentStep === 7 ? (isBankCheckFailed ? "Дахин шалгах" : "Төлбөр шалгах") : // Банкны step логик
+                     (currentStep >= 8 ? "Хаах" : "Дараах")))}
               </button>
           </div>
         </div>
       </div>
 
-      {/* NUMPAD COMPONENT */}
-      <Numpad 
-        isOpen={isNumpadOpen}
-        value={currentStep === 1 ? rawPhoneNumber : otpInput}
-        onChange={handleNumpadChange}
-        onDone={() => setIsNumpadOpen(false)}
-        maxLength={currentStep === 1 ? 8 : 4}
-      />
+      {isMobile && (
+        <Numpad 
+            isOpen={isNumpadOpen}
+            value={currentStep === 1 ? rawPhoneNumber : otpInput}
+            onChange={handleNumpadChange}
+            onDone={() => setIsNumpadOpen(false)}
+            maxLength={currentStep === 1 ? 8 : 4}
+        />
+      )}
     </>
   );
 };
