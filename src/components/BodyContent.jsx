@@ -536,7 +536,7 @@ const BodyContent = ({ onLottoClick }) => {
 
                : (isPhone && window.innerWidth >= 425) ? '200vw' // 2. iPhone 14 Pro Max 
                : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
-               : isPhone ? '200vw'                              // 4. iPhone 12 Pro
+               : isPhone ? '180vw'                              // 4. iPhone 12 Pro
                : (isMobile ? '180vw'                             // 5. iPads
                : '200%'),                                       // 6. Desktop
                
