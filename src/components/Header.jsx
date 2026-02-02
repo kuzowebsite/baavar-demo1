@@ -63,33 +63,16 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
       <motion.header 
         initial={false}
         animate={{ 
-          // Menu нээгдсэн үед л бүдгэрнэ, бусад үед 'none' (цэвэр зураг)
           filter: isMenuOpen ? "blur(10px)" : "none",
           opacity: isMenuOpen ? 0.6 : 1,
           scale: isMenuOpen ? 0.98 : 1 
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
-        // shadow-sm болон bg өнгөнүүдийг авч хаясан
         className="fixed top-0 left-0 w-full z-50 overflow-hidden"
         style={{ background: 'transparent', boxShadow: 'none' }}
       >
         
-        {/* BACKGROUND LAYER */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-            <img 
-                src="/assets/background.jpg" 
-                alt="Header Background" 
-                className="w-full h-full object-cover scale-105" 
-                style={{ 
-                    filter: 'none',          // Ямар ч эффект байхгүй
-                    mixBlendMode: 'normal',  // Холих эффект байхгүй
-                    opacity: 1,              // Бүрэн тод
-                    maskImage: 'none',       // Ямар ч маск байхгүй
-                    WebkitMaskImage: 'none'
-                }}
-                loading="eager"
-            />
-        </div>
+        {/* BACKGROUND LAYER REMOVED - Арын фон зургийг авч хаясан */}
 
         {/* CONTENT LAYER */}
         <div className="relative z-10 w-full max-w-[1920px] mx-auto h-[70px] md:h-[100px] flex items-center justify-between px-5 md:px-8 xl:px-[120px]">
@@ -138,24 +121,36 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
                 onClick={onMenuPressed}
                 className="p-2 flex flex-col items-center gap-[5px] bg-transparent border-none outline-none group"
                 style={{ WebkitTapHighlightColor: 'transparent' }}
-              >
+             >
                 <span className="w-3 h-[2px] rounded-full transition-all duration-300 group-hover:w-5" style={goldenButtonStyle}></span>
                 <span className="w-5 h-[1.5px] rounded-full transition-all duration-300" style={goldenButtonStyle}></span>
                 <span className="w-3 h-[2px] rounded-full transition-all duration-300 group-hover:w-5" style={goldenButtonStyle}></span>
              </button>
           </div>
         </div>
+
+        {/* --- BOTTOM BORDER LINE (2 ТИЙШЭЭ УУССАН) --- */}
+        <div 
+            className="absolute bottom-0 left-0 w-full z-20"
+            style={{
+                height: '2px',
+                // 2 зах руугаа transparent (0 opacity)
+                background: 'linear-gradient(90deg, rgba(166,105,15,0) 0%, #A6690F 20%, #FFE37C 50%, #A6690F 80%, rgba(166,105,15,0) 100%)',
+                opacity: 1,
+                boxShadow: '0px -1px 5px rgba(0,0,0,0.2)' 
+            }}
+        />
+
       </motion.header>
     </>
   );
 };
 
-// --- NAV BUTTON (Hover Zoom Effect Added Here) ---
+// --- NAV BUTTON (Hover Zoom Effect) ---
 const NavButton = ({ text, active, onClick, textStyle }) => (
   <motion.button 
     onClick={onClick} 
     className="relative py-1 flex flex-col items-center group overflow-visible"
-    // HOVER ZOOM EFFECT:
     whileHover={{ scale: 1.1 }} 
     whileTap={{ scale: 0.95 }}
     transition={{ type: "spring", stiffness: 400, damping: 17 }}
