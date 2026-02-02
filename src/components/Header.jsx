@@ -89,7 +89,6 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
                 }}
                 loading="eager"
             />
-            {/* ХАР ДАВХАРГА (OVERLAY) БАЙСНЫГ БҮРМӨСӨН АРИЛГАЛАА */}
         </div>
 
         {/* CONTENT LAYER */}
@@ -146,24 +145,6 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
              </button>
           </div>
         </div>
-
-        {/* TICKER SECTION */}
-        {tickerData.length > 0 && (
-            // Ticker-ийн арын дэвсгэр хар хэвээр үлдсэн нь дээр (текст уншигдахын тулд)
-            <div className="w-full bg-black/60 border-t border-white/10 overflow-hidden py-1.5 relative z-10 ticker-container backdrop-blur-md">
-                <div className="animate-ticker flex items-center gap-16">
-                    {tickerData.map((item, index) => (
-                        <span key={index} className="text-[10px] font-sans uppercase tracking-wider flex items-center gap-2 text-[#FAD766]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                            <span className="text-white/90">
-                                <b className="text-white">{item.maskedPhone}****</b> дугаартай хэрэглэгч 
-                                <span className="mx-1 text-[#FAD766]">{item.title}</span> авлаа.
-                            </span>
-                        </span>
-                    ))}
-                </div>
-            </div>
-        )}
       </motion.header>
     </>
   );
