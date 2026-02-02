@@ -248,7 +248,12 @@ const BodyContent = ({ onLottoClick }) => {
   const SLIDE_HEIGHT_ACTIVE = isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT;
   const CONTAINER_HEIGHT = 760;
 
-  const handlePurchaseClick = (item) => {
+  const handlePurchaseClick = (item, isActive) => {
+
+    if (isActive === false) {
+      return; 
+    }
+
     sessionStorage.setItem('currentLottoType', item.type);
     sessionStorage.setItem('currentLottoTitle', item.title);
     sessionStorage.setItem('currentLottoImage', item.imageUrl);
@@ -754,19 +759,20 @@ const BodyContent = ({ onLottoClick }) => {
                 >
                     {displayList.map((item) => (
                         <SwiperSlide key={item.uniqueId}>
-                            {({ isActive }) => (
-                                <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
-                                     onClick={() => handlePurchaseClick(item)}
-                                     style={{ 
-                                          borderRadius: isMobile ? '20px' : '40px',
-                                          boxSizing: 'border-box',
-                                          border: '2px solid #9B7A49',
-                                          height: '100%', 
-                                          minHeight: '100%',
-                                          backgroundColor: '#0f172a',
-                                          display: 'flex',       
-                                          flexDirection: 'column' 
-                                     }}>
+            {({ isActive }) => (
+                <div className="relative w-full transition-all duration-500 cursor-pointer overflow-hidden flex flex-col" 
+                     // isActive утгыг функц руу дамжуулна
+                     onClick={() => handlePurchaseClick(item, isActive)}
+                     style={{ 
+                          borderRadius: isMobile ? '20px' : '40px',
+                          boxSizing: 'border-box',
+                          border: '2px solid #9B7A49',
+                          height: '100%', 
+                          minHeight: '100%',
+                          backgroundColor: '#0f172a',
+                          display: 'flex',       
+                          flexDirection: 'column' 
+                     }}>
                                      
                                      <div className="relative w-full overflow-hidden" 
                                           style={{
@@ -783,13 +789,13 @@ const BodyContent = ({ onLottoClick }) => {
                                      </div>
 
                                      <div className="w-full relative z-20 bg-transparent flex flex-col"
-                                          style={{ 
-                                              flex: '0 0 auto', 
-                                              minHeight: 0,
-                                              display: 'flex'
-                                          }}>
-                                          <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
-                                     </div>
+                          style={{ 
+                              flex: '0 0 auto', 
+                              minHeight: 0,
+                              display: 'flex'
+                          }}>
+                          <CardContent item={item} isMobile={isMobile} handlePurchaseClick={handlePurchaseClick} />
+                     </div>
                                 </div>
                             )}
                         </SwiperSlide>
