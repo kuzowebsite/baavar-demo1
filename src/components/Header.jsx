@@ -63,12 +63,15 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
       <motion.header 
         initial={false}
         animate={{ 
-          filter: isMenuOpen ? "blur(10px)" : "blur(0px)",
+          // Menu нээгдсэн үед л бүдгэрнэ, бусад үед 'none' (цэвэр зураг)
+          filter: isMenuOpen ? "blur(10px)" : "none",
           opacity: isMenuOpen ? 0.6 : 1,
           scale: isMenuOpen ? 0.98 : 1 
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
-        className="fixed top-0 left-0 w-full z-50 shadow-sm overflow-hidden"
+        // shadow-sm болон bg өнгөнүүдийг авч хаясан
+        className="fixed top-0 left-0 w-full z-50 overflow-hidden"
+        style={{ background: 'transparent', boxShadow: 'none' }}
       >
         
         {/* BACKGROUND LAYER */}
@@ -77,9 +80,16 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
                 src="/assets/background.jpg" 
                 alt="Header Background" 
                 className="w-full h-full object-cover scale-105" 
+                style={{ 
+                    filter: 'none',          // Ямар ч эффект байхгүй
+                    mixBlendMode: 'normal',  // Холих эффект байхгүй
+                    opacity: 1,              // Бүрэн тод
+                    maskImage: 'none',       // Ямар ч маск байхгүй
+                    WebkitMaskImage: 'none'
+                }}
                 loading="eager"
             />
-            <div className="absolute inset-0 bg-black/10"></div>
+            {/* ХАР ДАВХАРГА (OVERLAY) БАЙСНЫГ БҮРМӨСӨН АРИЛГАЛАА */}
         </div>
 
         {/* CONTENT LAYER */}
@@ -93,13 +103,9 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
               <img 
                 src="/assets/logo.png" 
                 alt="Baavar Logo" 
-                // drop-shadow-2xl классыг хасаад оронд нь доорх style-ийг бичлээ
                 className="w-[110px] md:w-[160px] xl:w-[190px] h-auto object-contain"
                 style={{ 
                     imageRendering: 'auto',
-                    // 3D МЭТ СҮҮДЭР: 
-                    // 1. Ойрын, тод сүүдэр (0px 4px 5px) -> Биетийг тодруулна
-                    // 2. Холын, бүдэг сүүдэр (0px 10px 20px) -> Гүнзгий (Depth) харагдуулна
                     filter: 'drop-shadow(0px 4px 5px rgba(0,0,0,0.8)) drop-shadow(0px 15px 25px rgba(0,0,0,0.5))'
                 }} 
               />
@@ -143,6 +149,7 @@ const Header = ({ onNavigate, selectedIndex, onMenuPressed, isMenuOpen }) => {
 
         {/* TICKER SECTION */}
         {tickerData.length > 0 && (
+            // Ticker-ийн арын дэвсгэр хар хэвээр үлдсэн нь дээр (текст уншигдахын тулд)
             <div className="w-full bg-black/60 border-t border-white/10 overflow-hidden py-1.5 relative z-10 ticker-container backdrop-blur-md">
                 <div className="animate-ticker flex items-center gap-16">
                     {tickerData.map((item, index) => (
