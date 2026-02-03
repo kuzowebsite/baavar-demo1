@@ -494,48 +494,49 @@ const BodyContent = ({ onLottoClick }) => {
     
     {/* Bloom - Behind */}
     <img 
-        src="assets/Bloom.png"
-        alt="Bloom"
-        style={{
-          position: 'absolute',
-          
-          height: isPhone ? '200vw' : '180%', 
-          
-          left: '50%', 
-          transform: 'translateX(-50%)', 
-          
-          // --- BLOOM POSITION (TOP) ---
-          top: (isPhone && window.innerWidth < 360) ? '-256px' // 0. Galaxy Z Fold 5
-             : isSmallPhone ? '-306px'                          // 1. iPhone SE
-             
-             // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
-             : (isPhone && window.innerWidth === 428) ? '-370px' // Энд тохируулна
-             
-             : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max
-             : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR
-             : isPhone ? '-320px'                               // 4. iPhone 12 Pro
-             : (isMobile ? '-50%'                               // 5. iPads
-             : '-25%'),                                         // 6. Desktop
+    src="assets/Bloom.png"
+    alt="Bloom"
+    style={{
+      position: 'absolute',
+      
+      height: isPhone ? '200vw' : '180%', 
+      
+      left: '50%', 
+      transform: 'translateX(-50%)', 
+      
+      // --- BLOOM POSITION (TOP) ---
+      top: (isPhone && window.innerWidth === 359) ? '-300px' // [ШИНЭ] 359px дээр дээшлүүлэв
 
-          // --- BLOOM SIZE (WIDTH) ---
-          width: (isPhone && window.innerWidth < 360) ? '170vw' // 0. Galaxy Z Fold 5
-               : isSmallPhone ? '150vw'                         // 1. iPhone SE
+         : (isPhone && window.innerWidth < 360) ? '-256px' // 0. Galaxy Z Fold 5
+         : isSmallPhone ? '-306px'                          // 1. iPhone SE
+         
+         // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
+         : (isPhone && window.innerWidth === 428) ? '-370px' // Энд тохируулна
+         : (isPhone && window.innerWidth >= 425) ? '-340px' // 2. iPhone 14 Pro Max
+         : (isPhone && window.innerWidth >= 400) ? '-330px' // 3. iPhone XR
+         : isPhone ? '-320px'                               // 4. iPhone 12 Pro
+         : (isMobile ? '-50%'                               // 5. iPads
+         : '-25%'),                                         // 6. Desktop
 
-               // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
-               : (isPhone && window.innerWidth === 428) ? '210vw' // Энд тохируулна
+      // --- BLOOM SIZE (WIDTH) ---
+      width: (isPhone && window.innerWidth < 360) ? '170vw' // 0. Galaxy Z Fold 5
+           : isSmallPhone ? '150vw'                         // 1. iPhone SE
 
-               : (isPhone && window.innerWidth >= 425) ? '200vw' // 2. iPhone 14 Pro Max 
-               : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
-               : isPhone ? '180vw'                              // 4. iPhone 12 Pro
-               : (isMobile ? '180vw'                             // 5. iPads
-               : '200%'),                                       // 6. Desktop
-               
-          objectFit: 'contain',
-          mixBlendMode: 'screen',
-          zIndex: 1,
-          pointerEvents: 'none'
-        }}
-    />
+           // --- [NEW] iPhone 12 Pro Max (Width: 428px) ---
+           : (isPhone && window.innerWidth === 428) ? '210vw' // Энд тохируулна
+
+           : (isPhone && window.innerWidth >= 425) ? '200vw' // 2. iPhone 14 Pro Max 
+           : (isPhone && window.innerWidth >= 400) ? '205vw' // 3. iPhone XR
+           : isPhone ? '180vw'                              // 4. iPhone 12 Pro
+           : (isMobile ? '180vw'                             // 5. iPads
+           : '200%'),                                       // 6. Desktop
+           
+      objectFit: 'contain',
+      mixBlendMode: 'screen',
+      zIndex: 1,
+      pointerEvents: 'none'
+    }}
+/>
 
     {/* Effect - Front */}
     <img 
@@ -544,7 +545,7 @@ const BodyContent = ({ onLottoClick }) => {
       className="effect-image"
       style={{
         position: 'relative',
-        
+    
         // --- EFFECT POSITION (TOP) ---
         top: (isPhone && window.innerWidth < 360) ? '8%'       // 0. Galaxy Z Fold 5
            : isSmallPhone ? '10%'                               // 1. iPhone SE
@@ -839,8 +840,8 @@ const BodyContent = ({ onLottoClick }) => {
          display: (window.innerWidth >= 768) ? 'none' : 'block',
 
          // --- IMAGE SIZE (HEIGHT) ---
-         height: (isPhone && window.innerWidth < 360) ? '330px'  
-               : isSmallPhone ? '200px'                           
+         height: (isPhone && window.innerWidth < 360) ? '330px'
+               : isSmallPhone ? '200px'                         
                : (isPhone && window.innerWidth >= 425) ? '350px'  
                : (isPhone && window.innerWidth === 414) ? '250px'
                : (isPhone && window.innerWidth >= 400) ? '325px'  
@@ -864,18 +865,20 @@ const BodyContent = ({ onLottoClick }) => {
       position: 'relative',
       zIndex: 20, 
 
-      // --- NEW: HIDE ON DESKTOP (Desktop дээр харагдахгүй) ---
-      // 1024px-ээс их буюу Desktop үед 'none', бусад үед 'block'
+      // --- NEW: HIDE ON DESKTOP ---
       display: (window.innerWidth > 1024) ? 'none' : 'block',
 
       // --- ICON POSITION: MARGIN TOP ---
-      // ЗӨВХӨН iPad (Mini, Air, Pro) дээр 0px
       marginTop: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
 
                // --- Phone Logic ---
+               // [ШИНЭЭР НЭМСЭН]: 355px өргөнтэй үед доошлуулах (40px)
+               : (isPhone && window.innerWidth === 355) ? '60px' 
+               : (isPhone && window.innerWidth === 359) ? '60px'
+               
                : (isPhone && window.innerWidth < 360) ? '-180px'   
                : (isPhone && window.innerWidth === 360) ? '40px'    
-               : isSmallPhone ? '30px'                              
+               : isSmallPhone ? '30px'                               
                : (isPhone && window.innerWidth === 375) ? '-130px'  
                : (isPhone && window.innerWidth >= 425) ? '-150px'  
                : (isPhone && window.innerWidth === 414) ? '20px'   
@@ -883,18 +886,17 @@ const BodyContent = ({ onLottoClick }) => {
                : '-140px',
 
       // --- ICON POSITION: MARGIN LEFT ---
-      // ЗӨВХӨН iPad (Mini, Air, Pro) дээр 0px
       marginLeft: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'          
 
-                // --- Phone Logic ---
-                : (isPhone && window.innerWidth < 360) ? '-120px'  
-                : (isPhone && window.innerWidth === 360) ? '-50px' 
-                : isSmallPhone ? '-40px' 
-                : (isPhone && window.innerWidth === 375) ? '-104px' 
-                : (isPhone && window.innerWidth >= 425) ? '-110px' 
-                : (isPhone && window.innerWidth === 414) ? '-40px' 
-                : (isPhone && window.innerWidth >= 400) ? '-106px' 
-                : '-104px',
+               // --- Phone Logic ---
+               : (isPhone && window.innerWidth < 360) ? '-120px'  
+               : (isPhone && window.innerWidth === 360) ? '-50px' 
+               : isSmallPhone ? '-40px' 
+               : (isPhone && window.innerWidth === 375) ? '-104px' 
+               : (isPhone && window.innerWidth >= 425) ? '-110px' 
+               : (isPhone && window.innerWidth === 414) ? '-40px' 
+               : (isPhone && window.innerWidth >= 400) ? '-106px' 
+               : '-104px',
 
       marginBottom: '0px',
       marginRight: '0px',
@@ -914,12 +916,10 @@ const BodyContent = ({ onLottoClick }) => {
     color: '#FFFFFF', 
     textShadow: '0 1px 3px rgba(0,0,0,0.6)',
 
-    // --- NEW: HIDE ON DESKTOP (Desktop дээр харагдахгүй) ---
-    // 1024px-ээс их буюу Desktop үед 'none', бусад үед 'block'
+    // --- NEW: HIDE ON DESKTOP ---
     display: (window.innerWidth > 1024) ? 'none' : 'block',
 
     // --- FONT SIZE ---
-    // Зөвхөн iPad (768px - 1024px) дээр 16px
     fontSize: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '16px'
             // Phone Logic
             : (isPhone && window.innerWidth < 360) ? '11px' 
@@ -928,10 +928,13 @@ const BodyContent = ({ onLottoClick }) => {
             : '11px',
 
     // --- TEXT POSITION: MARGIN TOP ---
-    // Зөвхөн iPad (768px - 1024px) дээр 0px
     marginTop: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
 
              // --- Phone Logic ---
+             // [ШИНЭЭР НЭМСЭН]: 355px өргөнтэй үед доошлуулах (40px)
+             : (isPhone && window.innerWidth === 355) ? '60px'
+             : (isPhone && window.innerWidth === 359) ? '60px'
+
              : (isPhone && window.innerWidth < 360) ? '-180px'  
              : (isPhone && window.innerWidth === 360) ? '40px' 
              : isSmallPhone ? '30px' 
@@ -942,7 +945,6 @@ const BodyContent = ({ onLottoClick }) => {
              : '-140px',
 
     // --- TEXT POSITION: MARGIN LEFT ---
-    // Зөвхөн iPad (768px - 1024px) дээр 0px
     marginLeft: (window.innerWidth >= 768 && window.innerWidth <= 1024) ? '0px'
 
               // --- Phone Logic ---
