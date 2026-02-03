@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const Footer = () => {
   // --- БАЙРШИЛ ТОХИРУУЛАХ STATE ---
-  // left, width болон transform утгуудыг төхөөрөмж бүрээр тохируулна
   const [lineConfig, setLineConfig] = useState({ 
-      xOffset: '0px', // Зүүн баруун тийш шилжүүлэх утга
+      xOffset: '0px', 
       width: '517px', 
       display: 'none' 
   });
@@ -14,7 +13,7 @@ const Footer = () => {
       const width = window.innerWidth;
 
       // ---------------------------------------------------------
-      // БАЙРШЛЫН ТОХИРГОО
+      // БАЙРШЛЫН ТОХИРГОО (JS хэсэг хэвээрээ)
       // ---------------------------------------------------------
       
       // 1. DESKTOP (Том дэлгэц > 1500px)
@@ -48,14 +47,15 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative w-full py-12 overflow-hidden">
+    // ӨӨРЧЛӨЛТ 1: py-12 (default/phone) -> lg:py-6 (notebook) -> 2xl:py-12 (desktop)
+    // Notebook дээр padding-ийг 12-оос 6 болгож багасгав. Бусад үед 12 хэвээрээ.
+    <footer className="relative w-full py-12 lg:py-6 2xl:py-12 overflow-hidden">
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700&display=swap');`}
       </style>
       
-      {/* BACKGROUND LAYER REMOVED - Арын фон зургийг авч хаясан */}
-
       {/* --- САНГИЙН ЯАМНЫ ЗӨВШӨӨРӨЛ (TOP CENTER) --- */}
+      {/* top-1 хэвээрээ тул Notebook дээр жаахан шахагдсан ч дээрээ байрлана */}
       <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-20 opacity-100 py-2">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
@@ -73,7 +73,9 @@ const Footer = () => {
       </div>
 
       {/* MAIN CONTENT CONTAINER */}
-      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-8 md:gap-0 mt-8">
+      {/* ӨӨРЧЛӨЛТ 2: mt-8 (default) -> lg:mt-3 (notebook) -> 2xl:mt-8 (desktop) */}
+      {/* Notebook дээр дээд зайг багасгаж агуулгыг дээшлүүлсэн */}
+      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-8 md:gap-0 mt-8 lg:mt-3 2xl:mt-8">
         
         {/* --- ЗҮҮН ТАЛ: Social Icons & Copyright & DECORATION LINE --- */}
         <div className="relative flex flex-col items-center md:items-start gap-5">
@@ -82,8 +84,8 @@ const Footer = () => {
             <div 
                 style={{
                     position: 'absolute',
-                    top: '-80px',  // Icon-оос дээшээ зай
-                    left: '0',     // Эхлэх цэг
+                    top: '-80px',
+                    left: '0', 
                     
                     width: lineConfig.width, 
                     height: '2px',  
