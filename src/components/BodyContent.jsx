@@ -319,7 +319,7 @@ const BodyContent = ({ onLottoClick }) => {
     if (windowWidth <= 375) return { width: '140px', left: '-30px', bottom: '0' };
     if (windowWidth <= 391) return { width: '200px', left: '-50px', bottom: '0' };
     if (windowWidth <= 400) return { width: '260px', left: '-80px', bottom: '0' };
-    if (windowWidth <= 414) return { width: '210px', left: '-50px', bottom: '0' };
+    if (windowWidth <= 414) return { width: '180px', left: '-40px', bottom: '0' };
     if (windowWidth < 768) return { width: '270px', left: '-80px', bottom: '0' };
     if (windowWidth >= 768 && windowWidth < 1024) return { width: '200px', left: '-40px', bottom: '0' }; 
     return { width: '0px', left: '0px', bottom: '0', display: 'none' }; 
@@ -334,10 +334,10 @@ const BodyContent = ({ onLottoClick }) => {
     if (windowWidth <= 375) return { bottom: '19%' };
     if (windowWidth <= 391) return { bottom: '26%' };
     if (windowWidth <= 400) return { bottom: '29%' };
-    if (windowWidth <= 414) return { bottom: '26%' };
+    if (windowWidth <= 414) return { bottom: '23%' };
     if (windowWidth < 767) return { bottom: '30%' };
-    if (windowWidth < 819) return { bottom: '28%' };
-    if (windowWidth >= 820 && windowWidth < 1024) return { bottom: '38%' };
+    if (windowWidth < 819) return { bottom: '27%' };
+    if (windowWidth >= 820 && windowWidth < 1024) return { bottom: '36%' };
     return { display: 'none' };
   };
 
@@ -736,8 +736,8 @@ const BodyContent = ({ onLottoClick }) => {
                      flexGrow: isPhone ? 0 : 0, 
                      height: isPhone ? `${mobileSlideSize.height + 400}px` : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                      minHeight: isPhone ? '0' : 'auto', 
-                     top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '-50px' : (isNotebook ? '40px' : '120px')),
-                     marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
+                     top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '10px' : (isNotebook ? '40px' : '120px')),
+                     marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '80px' : '-8px')) : '0', 
                      display: 'flex', alignItems: isPhone ? 'flex-start' : 'center', justifyContent: 'center', zIndex: 10,
                      // 🎨 ШИНЭЧЛЭГДСЭН ХЭСЭГ: MASKING
                      // Header-ийн доороос 20% хүртэл уусгаж харуулах (Дээд хэсэг нь transparent)
