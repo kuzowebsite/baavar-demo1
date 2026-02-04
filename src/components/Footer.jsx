@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const Footer = () => {
   // --- БАЙРШИЛ ТОХИРУУЛАХ STATE ---
   const [lineConfig, setLineConfig] = useState({ 
-      xOffset: '0px', 
+      left: '0px', 
       width: '517px', 
       display: 'none'
   });
@@ -13,23 +13,55 @@ const Footer = () => {
       const width = window.innerWidth;
 
       // ---------------------------------------------------------
-      // БАЙРШЛЫН ТОХИРГОО
+      // БАЙРШЛЫН ТОХИРГОО (ЗӨВ ДАРААЛАЛТАЙ)
       // ---------------------------------------------------------
-      
-      // 1. DESKTOP (Том дэлгэц > 1500px)
-      if (width > 1500) {
-         setLineConfig({ xOffset: '10px', width: '517px', display: 'block' });
+      if (width >= 1489) {
+         setLineConfig({ 
+             left: '10px',  // Баруун тийш (Хэвийн байрлал)
+             width: '517px', 
+             display: 'block'
+         }); 
       } 
-      // 2. iPAD PRO & LAPTOP (1024px - 1500px хооронд)
+
+      else if (width >= 1488) {
+         setLineConfig({ 
+             left: '30px',  // Баруун тийш (Хэвийн байрлал)
+             width: '517px', 
+             display: 'block'
+         }); 
+      } 
+
+      else if (width >= 1025) {
+         setLineConfig({ 
+             left: '20px',  // Баруун тийш (Хэвийн байрлал)
+             width: '517px', 
+             display: 'block'
+         }); 
+      } 
+      // 2. NOTEBOOK / ЖИЖИГ LAPTOP (1024px - 1419px хооронд)
+      // 1420-аас бага боловч 1024-өөс их үед энэ ажиллана
       else if (width >= 1024) {
-         setLineConfig({ xOffset: '-60px', width: '510px', display: 'block'}); 
+         setLineConfig({ 
+             left: '-50px', // Зүүн тийш шахна (Дэлгэц жижиг тул)
+             width: '510px', 
+             display: 'block'
+         }); 
       } 
-      // 3. iPAD MINI / TABLET PORTRAIT (768px - 1023px хооронд)
+      // 3. TABLET / iPAD (768px - 1023px хооронд)
       else if (width >= 768) {
-         setLineConfig({ xOffset: '-40px', width: '410px', display: 'block' }); 
-      } else {
-         // Mobile
-         setLineConfig({ xOffset: '0px', width: '0px', display: 'none' });
+         setLineConfig({ 
+             left: '-40px', 
+             width: '410px', 
+             display: 'block' 
+         }); 
+      } 
+      // 4. MOBILE (768px-ээс бага)
+      else {
+         setLineConfig({ 
+             left: '0px', 
+             width: '0px', 
+             display: 'none' 
+         });
       }
     };
 
@@ -81,17 +113,13 @@ const Footer = () => {
             
             {/* --- DECORATION LINE --- */}
             <div 
-                // ӨӨРЧЛӨЛТ: lg:-top-[25px] болгосон. 
-                // Өмнө нь -45px байсан нь хэт өндөр байсан тул overflow-hidden-д идэгдэж байсан.
                 className="absolute -top-[80px] lg:-top-[36px] 2xl:-top-[80px]"
                 style={{
-                    left: '0', 
+                    left: lineConfig.left, 
                     
                     width: lineConfig.width, 
                     height: '2px',  
                     display: lineConfig.display,
-
-                    transform: `translateX(${lineConfig.xOffset})`,
 
                     background: 'linear-gradient(90deg, rgba(166,105,15,0) 0%, #A6690F 20%, #FFE37C 50%, #A6690F 80%, rgba(166,105,15,0) 100%)',
                     
@@ -99,7 +127,7 @@ const Footer = () => {
                     pointerEvents: 'none', 
                     opacity: 1,
                     transformOrigin: 'left center',
-                    transition: 'transform 0.5s ease-out, width 0.5s ease-out, top 0.3s ease-out' 
+                    transition: 'left 0.5s ease-out, width 0.5s ease-out, top 0.3s ease-out' 
                 }}
             />
 
