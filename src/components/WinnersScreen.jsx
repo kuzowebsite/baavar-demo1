@@ -15,7 +15,7 @@ const WINNERS_DATA = [
 const WinnersScreen = () => {
   return (
     <>
-      {/* 1. FIXED BACKGROUND LAYER (Үндсэн сайтын арын дэвсгэр) */}
+      {/* 1. FIXED BACKGROUND LAYER */}
       <div 
         className="fixed inset-0 z-0"
         style={{
@@ -65,8 +65,8 @@ const WinnersScreen = () => {
               width: 100%;
               height: 100%;
               background: #1e293b; 
-              border-radius: 14px; /* Энэ radius доторх зурагнуудыг автоматаар хэлбэржүүлнэ */
-              overflow: hidden;    /* Radius-аас илүү гарсан хэсгийг хайчилна */
+              border-radius: 14px; 
+              overflow: hidden;    
               display: flex;
               flex-direction: row;
             }
@@ -87,16 +87,22 @@ const WinnersScreen = () => {
         </div>
 
         {/* GRID CONTAINER */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 w-full max-w-[1400px] mx-auto pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 w-full max-w-[1400px] mx-auto pb-10 justify-items-center md:justify-items-stretch">
           {WINNERS_DATA.map((item, i) => (
             <div 
               key={i} 
-              className="winner-card-outer h-[130px] md:h-[150px]"
+              // Card Width & Height Adjustment
+              // w-[335px]: Өргөнийг бага зэрэг нэмж текстийг багтаав
+              // h-[160px]: Өндрийг тохируулав (зураг дөрвөлжин харагдахад дөхөм болгож)
+              className="winner-card-outer w-[335px] h-[160px] md:w-auto md:h-[180px]"
             >
               <div className="winner-card-inner">
                 
-                {/* 1. Зүүн талд: ЗУРАГ (35%) */}
-                <div className="w-[35%] h-full relative overflow-hidden border-r border-white/10 shrink-0">
+                {/* 1. Зүүн талд: ЗУРАГ 
+                    w-[130px]: Тогтмол өргөн өгснөөр зургийг гонзгой биш, дөрвөлжин харагдуулна.
+                    h-full: Өндөртэйгээ тэнцүүлэхийг зорив.
+                */}
+                <div className="w-[130px] md:w-[150px] h-full relative overflow-hidden border-r border-white/10 shrink-0">
                    <img 
                      src={item.img} 
                      alt="Winner" 
@@ -105,12 +111,9 @@ const WinnersScreen = () => {
                    <div className="absolute inset-0 bg-gradient-to-tr from-black/30 to-transparent"></div>
                 </div>
 
-                {/* 2. Баруун талд: МЭДЭЭЛЭЛ (65%) */}
-                {/* Өөрчлөлт: bg-[url('/assets/background.jpg')] -ийг бүх төхөөрөмж дээр харагдуулна.
-                    overlay давхаргыг авч хаясан тул зураг яг өөрөөрөө харагдана.
-                */}
+                {/* 2. Баруун талд: МЭДЭЭЛЭЛ (Үлдсэн зайг эзэлнэ: flex-1) */}
                 <div 
-                  className="w-[65%] flex flex-col justify-between p-3 md:p-4
+                  className="flex-1 flex flex-col justify-between p-3 md:p-4
                              bg-[url('/assets/background.jpg')] bg-cover bg-center bg-no-repeat"
                 >
                     {/* Content Wrapper */}
@@ -118,7 +121,6 @@ const WinnersScreen = () => {
                         
                         {/* Дээд хэсэг: Гарчиг */}
                         <div>
-                            {/* Text Shadow нэмсэн нь зураг дээр текст уншигдахад тусална */}
                             <h3 className="font-['Montserrat_Alternates'] font-bold text-white text-sm md:text-base leading-tight line-clamp-2 uppercase drop-shadow-md">
                                 {item.title}
                             </h3>
@@ -132,9 +134,9 @@ const WinnersScreen = () => {
                             </span>
                         </div>
 
-                        {/* Доод хэсэг: Шугам + Ялагч + Огноо */}
-                        <div>
-                            <div className="w-full h-[1px] bg-white/30 my-1 shadow-sm"></div>
+                        {/* Доод хэсэг: Шугам + Ялагч + Огноо + ТОВЧ */}
+                        <div className="flex flex-col gap-1.5">
+                            <div className="w-full h-[1px] bg-white/30 shadow-sm"></div>
                             
                             <div className="flex justify-between items-end">
                                 {/* Ялагч */}
@@ -153,6 +155,28 @@ const WinnersScreen = () => {
                                     </span>
                                 </div>
                             </div>
+
+                            {/* --- LIVE ҮЗЭХ ТОВЧ --- */}
+                            <button 
+                                onClick={() => window.open('https://facebook.com/yourpage/live', '_blank')}
+                                className="w-full mt-0.5 group relative flex items-center justify-center gap-2 py-1 rounded-lg overflow-hidden transition-all duration-300 active:scale-95 bg-black/40 hover:bg-black/60 border border-[#F8BE53]/50 hover:border-[#F8BE53]"
+                            >
+                                {/* Blinking Red Dot */}
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+                                </span>
+                                
+                                <span className="text-[10px] md:text-xs font-bold text-[#F8BE53] uppercase tracking-widest group-hover:text-white transition-colors">
+                                    Live үзэх
+                                </span>
+                                
+                                {/* Play Icon */}
+                                <svg className="w-3 h-3 fill-current text-[#F8BE53] group-hover:text-white transition-colors" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            </button>
+
                         </div>
                     </div>
 
