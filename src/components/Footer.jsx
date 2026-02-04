@@ -5,7 +5,7 @@ const Footer = () => {
   const [lineConfig, setLineConfig] = useState({ 
       xOffset: '0px', 
       width: '517px', 
-      display: 'none' 
+      display: 'none'
   });
 
   useEffect(() => {
@@ -13,20 +13,23 @@ const Footer = () => {
       const width = window.innerWidth;
 
       // ---------------------------------------------------------
-      // БАЙРШЛЫН ТОХИРГОО (JS хэсэг хэвээрээ)
+      // БАЙРШЛЫН ТОХИРГОО
       // ---------------------------------------------------------
       
       // 1. DESKTOP (Том дэлгэц > 1500px)
       if (width > 1500) {
          setLineConfig({ xOffset: '10px', width: '517px', display: 'block' });
       } 
-      // 2. LAPTOP (1200px - 1500px хооронд)
-      else if (width > 1200) {
-         setLineConfig({ xOffset: '-40px', width: '517px', display: 'block' }); 
+      // 2. iPAD PRO & LAPTOP (1024px - 1500px хооронд)
+      else if (width >= 1024) {
+         setLineConfig({ xOffset: '-60px', width: '510px', display: 'block'}); 
       } 
-      // 3. iPAD PRO / TABLET (768px - 1200px хооронд)
+      // 3. iPAD MINI / TABLET PORTRAIT (768px - 1023px хооронд)
       else if (width >= 768) {
-         setLineConfig({ xOffset: '-50px', width: '417px', display: 'block' }); 
+         setLineConfig({ xOffset: '-40px', width: '410px', display: 'block' }); 
+      } else {
+         // Mobile
+         setLineConfig({ xOffset: '0px', width: '0px', display: 'none' });
       }
     };
 
@@ -47,17 +50,14 @@ const Footer = () => {
   };
 
   return (
-    // ӨӨРЧЛӨЛТ 1: py-12 (default/phone) -> lg:py-6 (notebook) -> 2xl:py-12 (desktop)
-    // Notebook дээр padding-ийг 12-оос 6 болгож багасгав. Бусад үед 12 хэвээрээ.
-    <footer className="relative w-full py-12 lg:py-6 2xl:py-12 overflow-hidden">
+    <footer className="relative w-full py-12 lg:py-6 2xl:py-12 overflow-visible bg-transparent">
       <style>
         {`@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700&display=swap');`}
       </style>
       
       {/* --- САНГИЙН ЯАМНЫ ЗӨВШӨӨРӨЛ (TOP CENTER) --- */}
-      {/* top-1 хэвээрээ тул Notebook дээр жаахан шахагдсан ч дээрээ байрлана */}
       <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex items-center gap-2 z-20 opacity-100 py-2">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
           </svg>
           <span 
@@ -65,7 +65,8 @@ const Footer = () => {
             style={{ 
                 fontFamily: "'Montserrat Alternates', sans-serif", 
                 fontWeight: '400',
-                textShadow: '0 1px 3px rgba(0,0,0,0.9)'
+                textShadow: '0 1px 3px rgba(0,0,0,0.9)',
+                fontSize: '20px'
             }}
           >
             Сангийн яамны зөвшөөрөлтэй
@@ -73,18 +74,17 @@ const Footer = () => {
       </div>
 
       {/* MAIN CONTENT CONTAINER */}
-      {/* ӨӨРЧЛӨЛТ 2: mt-8 (default) -> lg:mt-3 (notebook) -> 2xl:mt-8 (desktop) */}
-      {/* Notebook дээр дээд зайг багасгаж агуулгыг дээшлүүлсэн */}
       <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-8 md:gap-0 mt-8 lg:mt-3 2xl:mt-8">
         
         {/* --- ЗҮҮН ТАЛ: Social Icons & Copyright & DECORATION LINE --- */}
         <div className="relative flex flex-col items-center md:items-start gap-5">
             
-            {/* --- НЭМЭЛТ: ЗУРААС (DECORATION LINE) --- */}
+            {/* --- DECORATION LINE --- */}
             <div 
+                // ӨӨРЧЛӨЛТ: lg:-top-[25px] болгосон. 
+                // Өмнө нь -45px байсан нь хэт өндөр байсан тул overflow-hidden-д идэгдэж байсан.
+                className="absolute -top-[80px] lg:-top-[36px] 2xl:-top-[80px]"
                 style={{
-                    position: 'absolute',
-                    top: '-80px',
                     left: '0', 
                     
                     width: lineConfig.width, 
@@ -99,7 +99,7 @@ const Footer = () => {
                     pointerEvents: 'none', 
                     opacity: 1,
                     transformOrigin: 'left center',
-                    transition: 'transform 0.5s ease-out, width 0.5s ease-out' 
+                    transition: 'transform 0.5s ease-out, width 0.5s ease-out, top 0.3s ease-out' 
                 }}
             />
 
