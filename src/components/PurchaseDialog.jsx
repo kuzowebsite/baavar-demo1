@@ -565,7 +565,7 @@ const PurchaseDialog = ({
 
           <div className="w-full flex justify-between items-center border-t px-6" style={{ height: '50px' }}>
               <button onClick={handleBack} disabled={currentStep === 1 || isPaymentSuccess || currentStep === 8}
-                      className="w-[90px] h-[30px] rounded-lg border text-[12px] font-play disabled:opacity-50">Өмнөх</button>
+                      className="w-[90px] h-[30px] rounded-lg border text-[12px] font-play disabled:opacity-50">Буцах</button>
 
               <button onClick={() => {
                           if (currentStep === 6) { if (isPaymentSuccess) onClose(); else handleCheckPayment(); }
@@ -585,7 +585,7 @@ const PurchaseDialog = ({
                   {isLoading ? <Icons.Loader /> : 
                      (currentStep === 6 ? (isPaymentSuccess ? "Хаах" : "Төлбөр шалгах") : 
                      (currentStep === 7 ? (isBankCheckFailed ? "Дахин шалгах" : "Төлбөр шалгах") : 
-                     (currentStep >= 8 ? "Хаах" : "Дараах")))}
+                     (currentStep >= 8 ? "Хаах" : "Үргэлжлүүлэх")))}
               </button>
           </div>
         </div>
