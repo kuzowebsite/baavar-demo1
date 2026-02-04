@@ -569,12 +569,12 @@ const BodyContent = ({ onLottoClick }) => {
       transform: 'translateX(-50%)', 
       
       top: (isPhone && window.innerWidth === 359) ? '-300px' 
-         : (isPhone && window.innerWidth < 360) ? '-256px' 
+         : (isPhone && window.innerWidth < 360) ? '-240px' 
          : isSmallPhone ? '-306px'                          
          : (isPhone && window.innerWidth === 428) ? '-370px' 
          : (isPhone && window.innerWidth >= 425) ? '-340px' 
          : (isPhone && window.innerWidth >= 400) ? '-330px' 
-         : isPhone ? '-320px'                               
+         : isPhone ? '-280px'                               
          : (isMobile ? '-50%'                               
          : '-25%'),                                         
 
@@ -601,18 +601,18 @@ const BodyContent = ({ onLottoClick }) => {
       className="effect-image"
       style={{
         position: 'relative',
-        top: (isPhone && window.innerWidth < 360) ? '8%'       
+        top: (isPhone && window.innerWidth < 360) ? '18%'       
            : isSmallPhone ? '10%'                               
            : (isPhone && window.innerWidth === 428) ? '-2%'     
            : (isPhone && window.innerWidth >= 425) ? '15%'      
            : (isPhone && window.innerWidth >= 400) ? '13%'      
-           : isPhone ? '6%'                                    
+           : isPhone ? '25%'                                    
            : (isMobile ? '10%'                                  
            : '40%'),                                            
         
         width: (isPhone && window.innerWidth < 360) ? '95vw'   
              : (isPhone && window.innerWidth === 428) ? '100vw' 
-             : isPhone ? '100vw'                                
+             : isPhone ? '90vw'                                
              : (isMobile ? '40%'                                
              : '35%'),                                          
 
@@ -627,7 +627,7 @@ const BodyContent = ({ onLottoClick }) => {
       <div style={{
         position: 'absolute',
         right: '200px', 
-        top: '90%',
+        top: '91%',
         transform: 'translateY(-50%)',
         zIndex: 20,
         display: 'flex',
