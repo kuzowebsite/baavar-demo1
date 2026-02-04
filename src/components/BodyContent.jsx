@@ -11,6 +11,18 @@ import 'swiper/css/navigation';
 const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
   const gradientId = `starGradient-${item.uniqueId}`;
 
+  // Function to get button color based on lottery ID
+  const getButtonColor = (itemId) => {
+    const colors = {
+      1: '#2563EB', // LEXUS RX - Bright Blue
+      2: '#EF4444', // ХУРДАН МОРЬ - Vibrant Red
+      3: '#D97706', // 9.999.999₮ - Amber
+      4: '#8B5CF6', // IPHONE 17 - Purple
+      5: '#059669', // 1.000.000₮ - Emerald
+    };
+    return colors[itemId] || '#FF6060';
+  };
+
   const getTitleStyle = (title) => {
     const length = title.length;
     let fontSize;
@@ -33,12 +45,17 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
       textTransform: 'uppercase', 
       lineHeight: '1.2', 
       textAlign: 'center',
-      textShadow: '0px 2px 4px rgba(0,0,0,0.8)',
+      textShadow: '0px 2px 6px rgba(0,0,0,0.9), 0px 4px 12px rgba(0,0,0,0.7)',
       whiteSpace: 'normal', 
       wordBreak: 'break-word',
       width: '100%',
       display: 'block',
-      paddingBottom: '0px' 
+      paddingBottom: '0px',
+      WebkitFontSmoothing: 'antialiased',
+      MozOsxFontSmoothing: 'grayscale',
+      textRendering: 'optimizeLegibility',
+      letterSpacing: '1px',
+      paintOrder: 'stroke fill'
     };
   };
 
@@ -146,19 +163,35 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                   padding: isMobile ? '4px 8px' : '4px 16px',
                   flex: 1
                 }}>
-                <span className="font-bold text-black text-[12px] md:text-[18px]">{item.displayPrice}</span>
+                <span className="font-bold text-black text-[12px] md:text-[18px]" style={{ 
+                  WebkitFontSmoothing: 'antialiased', 
+                  MozOsxFontSmoothing: 'grayscale', 
+                  textRendering: 'optimizeLegibility', 
+                  letterSpacing: '1px',
+                  fontWeight: '900',
+                  textShadow: '0px 1px 2px rgba(0,0,0,0.3)',
+                  paintOrder: 'stroke fill'
+                }}>{item.displayPrice}</span>
               </div>
 
               <button onClick={(e) => { e.stopPropagation(); handlePurchaseClick(item); }}
                 className="flex items-center justify-center shadow-lg hover:brightness-110 transition-all active:scale-95" 
                 style={{ 
-                  backgroundColor: '#FF6060',
+                  backgroundColor: getButtonColor(item.id),
                   borderRadius: '8px', 
                   padding: isMobile ? '0 8px' : '0 16px',
                   cursor: 'pointer', border: 'none',
                   flex: 1.5 
                 }}>
-                <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm">Шууд оролцох</span>
+                <span className="font-bold text-white text-[12px] md:text-[16px] uppercase whitespace-nowrap drop-shadow-sm" style={{ 
+                  WebkitFontSmoothing: 'antialiased', 
+                  MozOsxFontSmoothing: 'grayscale', 
+                  textRendering: 'optimizeLegibility', 
+                  letterSpacing: '1.2px',
+                  fontWeight: '900',
+                  textShadow: '0px 2px 4px rgba(0,0,0,0.5), 0px 4px 8px rgba(0,0,0,0.3)',
+                  paintOrder: 'stroke fill'
+                }}>Шууд оролцох</span>
               </button>
             </div>
         </div>
@@ -274,7 +307,7 @@ const BodyContent = ({ onLottoClick }) => {
 
     // 2. ДУНД УТАС (345px - 360px) - Жишээ: Classic Androids
     if (windowWidth <= 360) {
-        return { width: '165px', left: '-50px', bottom: '0' };
+        return { width: '140px', left: '-30px', bottom: '0' };
     }
 
     // 3. iPhone SE 2/3, 12/13 Mini (361px - 375px)
@@ -310,8 +343,12 @@ const BodyContent = ({ onLottoClick }) => {
   // --- 2. ТЕКСТИЙН БАЙРЛАЛ (ТОХИРУУЛСАН) ---
   const getTextStyles = () => {
 
+    if (windowWidth <= 320) {
+        return { bottom: '20%' };
+    }
+
     if (windowWidth <= 344) {
-        return { bottom: '20%' }; // Доошлох хэрэгтэй
+        return { bottom: '30%' }; // Доошлох хэрэгтэй
     }
     // 1. ЖИЖИГ УТАС (320px - 344px)
     if (windowWidth <= 344) {
@@ -554,7 +591,7 @@ const BodyContent = ({ onLottoClick }) => {
     alignItems: 'center',
     justifyContent: 'center',
     width: '300%',
-    maxWidth: isMobile ? '200%' : '100%',
+    maxWidth: isMobile ? '180%' : '100%',
     height: isSmallPhone ? '160px' : (isPhone ? '200px' : (isMobile ? '180px' : '180px')),
   }}>
     
