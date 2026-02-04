@@ -33,20 +33,17 @@ const WinnersScreen = () => {
           {`
             @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap');
             
-            /* Section Title Style - CHANGED TO GOLD GRADIENT */
             .section-title {
               font-family: 'Montserrat Alternates', sans-serif;
               font-weight: 900;
               text-transform: uppercase;
               letter-spacing: 1px;
-              /* ШИНЭ ӨНГӨ: #FFE37C -> #A6690F */
               background: linear-gradient(180deg, #FFE37C 0%, #A6690F 100%);
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
               filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
             }
 
-            /* Gold Gradient Border & Outer Card */
             .winner-card-outer {
               position: relative;
               background: linear-gradient(135deg, #A54400 0%, #F8BE53 50%, #A54400 100%);
@@ -87,12 +84,12 @@ const WinnersScreen = () => {
            </h2>
         </div>
 
-        {/* GRID CONTAINER */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 w-full max-w-[1400px] mx-auto pb-10 justify-items-center md:justify-items-stretch">
+        {/* GRID CONTAINER - ӨӨРЧЛӨГДСӨН ХЭСЭГ */}
+        {/* lg:grid-cols-3 гэдгийг нэмж өгсөн (Notebook/Laptop дээр 3 багана болно) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 w-full max-w-[1400px] mx-auto pb-10 justify-items-center md:justify-items-stretch">
           {WINNERS_DATA.map((item, i) => (
             <div 
               key={i} 
-              // Card Width & Height Adjustment
               className="winner-card-outer w-[335px] h-[160px] md:w-auto md:h-[180px]"
             >
               <div className="winner-card-inner">
