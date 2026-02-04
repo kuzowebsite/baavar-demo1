@@ -208,7 +208,7 @@ const BodyContent = ({ onLottoClick }) => {
         } else {
           // Mobile Logic - USER FIXED SIZE
           // Таны хүссэн тогтмол хэмжээ: Width 290px, Height 356px
-          setMobileSlideSize({ width: 290, height: 356 });
+          setMobileSlideSize({ width: 250, height: 336 });
         }
       } else {
         // Desktop Scale Logic
