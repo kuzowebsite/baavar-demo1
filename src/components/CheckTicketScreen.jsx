@@ -143,9 +143,6 @@ const CheckTicketScreen = () => {
   };
 
   const currentValue = step === 'PHONE' ? phoneNumber : otpCode;
-  
-  // NOTE: OTP үед бид placeholder-ийг тусад нь div болгож харуулна, 
-  // тиймээс input-ийн placeholder-ийг зөвхөн PHONE үед л ашиглана.
   const placeholderText = step === 'PHONE' ? "Утасны дугаар оруулах" : "";
   const maxLength = step === 'PHONE' ? 8 : 4;
 
@@ -185,7 +182,7 @@ const CheckTicketScreen = () => {
                             if (step !== 'RESULT' && isMobile) setIsNumpadOpen(true);
                         }}
                     >
-                        {/* BACK BUTTON (Зөвхөн OTP үед харагдана) */}
+                        {/* BACK BUTTON */}
                         {step === 'OTP' && (
                             <div 
                                 onClick={handleBack}
@@ -197,7 +194,6 @@ const CheckTicketScreen = () => {
                             </div>
                         )}
 
-                        {/* --- ӨӨРЧЛӨЛТ: OTP PLACEHOLDER CENTERED --- */}
                         {step === 'OTP' && otpCode === "" && (
                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                                 <span className="text-[#D1D1D1] font-bold text-lg font-play tracking-widest opacity-100">
@@ -213,12 +209,10 @@ const CheckTicketScreen = () => {
                             value={currentValue}
                             onChange={(!isMobile && step !== 'RESULT') ? handleDesktopChange : undefined}
                             placeholder={placeholderText}
-                            // --- ӨӨРЧЛӨЛТ: text-left, pl-14 ---
-                            // OTP үед: pl-14 (сумны зай), text-left (зүүнээс бичих), tracking-[5px] (зайтай харагдуулах)
                             className={`w-full h-full bg-transparent outline-none ${step === 'OTP' ? 'pl-14 text-left tracking-[5px]' : 'px-6 text-left'} text-white font-bold text-lg font-play tracking-widest custom-placeholder cursor-pointer relative z-20`}
                         />
 
-                        {/* ACTION BUTTON (Right Side) */}
+                        {/* ACTION BUTTON */}
                         <div className="absolute right-3 h-full flex items-center z-30">
                             <button
                                 onClick={(e) => {
@@ -242,7 +236,6 @@ const CheckTicketScreen = () => {
                                              <Icons.Search className="w-5 h-5" color="#000000" />
                                         </div>
                                     ) : (
-                                        // RESULT (X Icon)
                                         <div className="bg-[#FF4D4D] p-2 rounded-lg">
                                             <Icons.X className="w-5 h-5" color="#FFFFFF" />
                                         </div>
@@ -308,14 +301,23 @@ const CheckTicketScreen = () => {
   );
 };
 
-// ... LotteryResultCard хэвээрээ ...
+// --- СУГАЛААНЫ КАРТ (ШИНЭЧЛЭГДСЭН BACKGROUND) ---
 const LotteryResultCard = ({ data }) => {
   const imageToShow = data.image || "/suglaa/1.png"; 
 
   return (
-    <div className="w-full bg-white rounded-[24px] shadow-2xl overflow-hidden border-[1.5px] border-[#D4AF37] flex flex-col h-full transform transition-all duration-300 hover:scale-[1.02]">
-        <div className="p-4 flex gap-4 items-center">
-            <div className="w-[74px] h-[74px] shrink-0 rounded-[14px] overflow-hidden border-[1.2px] border-[#D4AF37] bg-gray-50">
+    <div 
+        className="w-full rounded-[24px] shadow-2xl overflow-hidden border-[1.5px] border-[#D4AF37] flex flex-col h-full transform transition-all duration-300 hover:scale-[1.02]"
+        // BACKGROUND IMAGE HERE
+        style={{
+            backgroundImage: "url('assets/background.jpg')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundColor: '#0f172a' // Fallback color
+        }}
+    >
+        <div className="p-4 flex gap-4 items-center relative z-10">
+            <div className="w-[74px] h-[74px] shrink-0 rounded-[14px] overflow-hidden border-[1.2px] border-[#D4AF37] bg-black/20">
                 <img 
                   src={imageToShow} 
                   alt="Lottery" 
@@ -325,25 +327,29 @@ const LotteryResultCard = ({ data }) => {
             </div>
 
             <div className="flex flex-col">
-                <h3 className="text-[#000000] font-alt-bold text-[15px] leading-tight">
+                {/* ТЕКСТИЙН ӨНГИЙГ ЦАГААН БОЛГОВ */}
+                <h3 className="text-white font-alt-bold text-[15px] leading-tight drop-shadow-md">
                     {data.lotteryName}
                 </h3>
-                <p className="text-[#000000] font-alt-bold text-[15px] mt-1 opacity-70">
+                <p className="text-white/80 font-alt-bold text-[15px] mt-1 opacity-70 drop-shadow-sm">
                     {data.itemName}
                 </p>
             </div>
         </div>
 
-        <div className="w-full h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 5%, #9D9D9D 20%, #9D9D9D 80%, transparent 95%)', opacity: 0.3 }} />
+        {/* Separator Line */}
+        <div className="w-full h-[1px] relative z-10" style={{ background: 'linear-gradient(90deg, transparent 5%, #FFFFFF 20%, #FFFFFF 80%, transparent 95%)', opacity: 0.2 }} />
 
-        <div className="p-4 flex-grow bg-gray-50/50">
+        <div className="p-4 flex-grow bg-black/10 relative z-10">
             <div className="flex flex-wrap gap-2">
                 {data.numbers.map((num, i) => {
                     const isWinner = num === data.winningNumber || num.toString() === data.winningNumber?.toString();
                     return (
                         <div 
                             key={i} 
-                            className={`flex items-center justify-center px-3 py-1 rounded-[5px] font-bold font-play text-[12px] shadow-sm min-w-[60px] ${isWinner ? 'bg-[#2AFA62] ring-2 ring-[#1a9e3e] scale-110' : 'bg-[#A6ECFF]'} text-[#000000] transition-transform`}
+                            className={`flex items-center justify-center px-3 py-1 rounded-[5px] font-bold font-play text-[12px] shadow-sm min-w-[60px] 
+                                      ${isWinner ? 'bg-[#2AFA62] ring-2 ring-[#1a9e3e] scale-110 text-black' : 'bg-[#1a2e2a]/80 text-white border border-[#D4AF37]/50'} 
+                                      transition-transform`}
                         >
                             {num}
                         </div>
