@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const Footer = () => {
+const Footer = ({ showGoldenLine = false }) => {
+  
   // --- БАЙРШИЛ ТОХИРУУЛАХ STATE ---
   const [lineConfig, setLineConfig] = useState({ 
       left: '0px', 
@@ -13,41 +14,40 @@ const Footer = () => {
       const width = window.innerWidth;
 
       // ---------------------------------------------------------
-      // БАЙРШЛЫН ТОХИРГОО (ЗӨВ ДАРААЛАЛТАЙ)
+      // БАЙРШЛЫН ТОХИРГОО (Томоос -> Жижиг рүү)
       // ---------------------------------------------------------
+      
+      // 1. 1489px болон түүнээс дээш (Хэт том дэлгэц)
       if (width >= 1489) {
          setLineConfig({ 
-             left: '10px',  // Баруун тийш (Хэвийн байрлал)
+             left: '10px', 
              width: '517px', 
              display: 'block'
          }); 
       } 
-
+      
+      // 2. Яг 1488px болон түүнээс дээш (Тусгай тохиргоо)
+      // Дээрх нөхцөл биелээгүй бол энийг шалгана (Өөрөөр хэлбэл 1488px)
       else if (width >= 1488) {
          setLineConfig({ 
-             left: '30px',  // Баруун тийш (Хэвийн байрлал)
+             left: '30px', 
              width: '517px', 
              display: 'block'
          }); 
       } 
 
+      // 3. 1025px болон түүнээс дээш (Notebook / Laptop)
+      // 1488-аас бага боловч 1025-аас их
       else if (width >= 1025) {
          setLineConfig({ 
-             left: '20px',  // Баруун тийш (Хэвийн байрлал)
+             left: '20px', 
              width: '517px', 
              display: 'block'
          }); 
       } 
-      // 2. NOTEBOOK / ЖИЖИГ LAPTOP (1024px - 1419px хооронд)
-      // 1420-аас бага боловч 1024-өөс их үед энэ ажиллана
-      else if (width >= 1024) {
-         setLineConfig({ 
-             left: '-50px', // Зүүн тийш шахна (Дэлгэц жижиг тул)
-             width: '510px', 
-             display: 'block'
-         }); 
-      } 
-      // 3. TABLET / iPAD (768px - 1023px хооронд)
+
+      // 4. TABLET / iPAD PORTRAIT (768px - 1024px хооронд)
+      // 1024px хүртэлх хэмжээ энд орно
       else if (width >= 768) {
          setLineConfig({ 
              left: '-40px', 
@@ -55,7 +55,8 @@ const Footer = () => {
              display: 'block' 
          }); 
       } 
-      // 4. MOBILE (768px-ээс бага)
+      
+      // 5. MOBILE (768px-ээс бага)
       else {
          setLineConfig({ 
              left: '0px', 
@@ -111,15 +112,16 @@ const Footer = () => {
         {/* --- ЗҮҮН ТАЛ: Social Icons & Copyright & DECORATION LINE --- */}
         <div className="relative flex flex-col items-center md:items-start gap-5">
             
-            {/* --- DECORATION LINE --- */}
+            {/* --- DECORATION LINE (Зөвхөн showGoldenLine=true үед харагдана) --- */}
             <div 
                 className="absolute -top-[80px] lg:-top-[36px] 2xl:-top-[80px]"
                 style={{
                     left: lineConfig.left, 
-                    
                     width: lineConfig.width, 
                     height: '2px',  
-                    display: lineConfig.display,
+                    
+                    // showGoldenLine TRUE байвал л lineConfig.display-ийг авна
+                    display: showGoldenLine ? lineConfig.display : 'none',
 
                     background: 'linear-gradient(90deg, rgba(166,105,15,0) 0%, #A6690F 20%, #FFE37C 50%, #A6690F 80%, rgba(166,105,15,0) 100%)',
                     
