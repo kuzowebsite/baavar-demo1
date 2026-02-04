@@ -330,7 +330,7 @@ const BodyContent = ({ onLottoClick }) => {
 
     // 4. iPhone 12/13/14/15 Pro (376px - 400px)
     if (windowWidth <= 400) {
-        return { bottom: '28%' };
+        return { bottom: '30%' };
     }
 
     // 5. iPhone Plus (414px)
