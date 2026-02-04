@@ -286,8 +286,13 @@ const BodyContent = ({ onLottoClick }) => {
   const DESKTOP_SLIDE_WIDTH = 540; 
   const DESKTOP_SLIDE_HEIGHT = 650;
   
-  const SLIDE_WIDTH_ACTIVE = isMobile ? mobileSlideSize.width : DESKTOP_SLIDE_WIDTH;
-  const SLIDE_HEIGHT_ACTIVE = isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT;
+  // Notebook хэмжээнүүдийн хувьд жижигрүүлсэн хэмжээ
+  const isNotebook = windowWidth >= 1025 && windowWidth < 1400;
+  const NOTEBOOK_SLIDE_WIDTH = 420;
+  const NOTEBOOK_SLIDE_HEIGHT = 500;
+  
+  const SLIDE_WIDTH_ACTIVE = isMobile ? mobileSlideSize.width : (isNotebook ? NOTEBOOK_SLIDE_WIDTH : DESKTOP_SLIDE_WIDTH);
+  const SLIDE_HEIGHT_ACTIVE = isMobile ? mobileSlideSize.height : (isNotebook ? NOTEBOOK_SLIDE_HEIGHT : DESKTOP_SLIDE_HEIGHT);
   const CONTAINER_HEIGHT = 760;
 
   const handlePurchaseClick = (item, isActive) => {
@@ -308,9 +313,11 @@ const BodyContent = ({ onLottoClick }) => {
   // --- HELPER: Image Size & Position Logic ---
   const getImageStyles = () => {
     if (windowWidth <= 320) return { width: '135px', left: '-34px', bottom: '0' };
-    if (windowWidth <= 344) return { width: '230px', left: '-75px', bottom: '0' };
+    if (windowWidth <= 333) return { width: '155px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 344) return { width: '200px', left: '-65px', bottom: '0' };
     if (windowWidth <= 360) return { width: '140px', left: '-30px', bottom: '0' };
     if (windowWidth <= 375) return { width: '140px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 391) return { width: '200px', left: '-50px', bottom: '0' };
     if (windowWidth <= 400) return { width: '260px', left: '-80px', bottom: '0' };
     if (windowWidth <= 414) return { width: '210px', left: '-50px', bottom: '0' };
     if (windowWidth < 768) return { width: '270px', left: '-80px', bottom: '0' };
@@ -321,9 +328,11 @@ const BodyContent = ({ onLottoClick }) => {
   // --- HELPER: Text Position Logic ---
   const getTextStyles = () => {
     if (windowWidth <= 320) return { bottom: '20%' };
-    if (windowWidth <= 344) return { bottom: '28%' };
+    if (windowWidth <= 333) return { bottom: '23%' };
+    if (windowWidth <= 344) return { bottom: '26%' };
     if (windowWidth <= 360) return { bottom: '20%' };
     if (windowWidth <= 375) return { bottom: '19%' };
+    if (windowWidth <= 391) return { bottom: '26%' };
     if (windowWidth <= 400) return { bottom: '29%' };
     if (windowWidth <= 414) return { bottom: '26%' };
     if (windowWidth < 767) return { bottom: '30%' };
@@ -337,6 +346,19 @@ const BodyContent = ({ onLottoClick }) => {
   // =========================================================================
   const getBloomStyle = () => {
     const w = windowWidth;
+
+    // --- NOTEBOOK ХЭМЖЭЭНҮҮД (1025px - 1400px) ---
+    if (w >= 1025 && w < 1400) {
+      return {
+        containerTop: '-80px',    
+        width: '100%',
+        top: '0%',
+        left: '0',
+        transform: 'none',
+        scale: 2.4,
+        effectWidth: '22%'
+      };
+    }
 
     // --- 1. ЖИЖИГ УТАСНУУД (Small Mobile) ---
     if (w < 360) {
@@ -404,7 +426,7 @@ const BodyContent = ({ onLottoClick }) => {
     }
 
     // --- 6. ЖИЖИГ LAPTOP БА ТОМ TABLET (Landscape) ---
-    else if (w >= 1024 && w < 1280) {
+    else if (w >= 1400 && w < 1280) {
       return {
         containerTop: '-100px',    
         width: '120%',
@@ -417,7 +439,7 @@ const BodyContent = ({ onLottoClick }) => {
     }
 
     // --- 7. ДУНДАЖ LAPTOP (Standard Laptop) ---
-    else if (w >= 1280 && w < 1600) {
+    else if (w >= 1400 && w < 1600) {
       return {
         containerTop: '-100px',
         width: '120%',
@@ -432,7 +454,7 @@ const BodyContent = ({ onLottoClick }) => {
     // --- 8. DESKTOP / ТОМ ДЭЛГЭЦ (Full HD & 4K) ---
     else {
       return {
-        containerTop: '-140px',    
+        containerTop: '-140px',
         width: '120%',             
         top: '10%',
         left: '0',
@@ -478,8 +500,8 @@ const BodyContent = ({ onLottoClick }) => {
           .swiper-wrapper { align-items: center; transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important; }
           
           .swiper-slide { 
-              width: ${isMobile ? mobileSlideSize.width : DESKTOP_SLIDE_WIDTH}px !important; 
-              height: ${isMobile ? mobileSlideSize.height : DESKTOP_SLIDE_HEIGHT}px !important; 
+              width: ${isMobile ? mobileSlideSize.width : (isNotebook ? NOTEBOOK_SLIDE_WIDTH : DESKTOP_SLIDE_WIDTH)}px !important; 
+              height: ${isMobile ? mobileSlideSize.height : (isNotebook ? NOTEBOOK_SLIDE_HEIGHT : DESKTOP_SLIDE_HEIGHT)}px !important; 
               transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, filter 0.4s ease; 
               border-radius: ${isMobile ? '20px' : '40px'} !important; 
               overflow: visible !important; 
@@ -698,7 +720,7 @@ const BodyContent = ({ onLottoClick }) => {
                      flexGrow: isPhone ? 0 : 0, 
                      height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                      minHeight: isPhone ? '0' : 'auto', 
-                     top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '-50px' : '120px'),
+                     top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '-50px' : (isNotebook ? '40px' : '120px')),
                      marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
                      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10,
                      // 🎨 ШИНЭЧЛЭГДСЭН ХЭСЭГ: MASKING
@@ -729,7 +751,7 @@ const BodyContent = ({ onLottoClick }) => {
                     loop={true}
                     speed={500}
                     mousewheel={isPhone ? true : false} 
-                    spaceBetween={isPhone ? 0 : 80}
+                    spaceBetween={isPhone ? 0 : (isNotebook ? 40 : 80)}
                     slideToClickedSlide={true}
                     autoplay={{ delay: 10000, disableOnInteraction: false }}
                     onTouchMove={() => setIsInteracting(true)} 
