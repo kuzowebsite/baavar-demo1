@@ -52,10 +52,9 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
       display: 'block',
       paddingBottom: '0px',
       letterSpacing: '0.5px', 
-      // Текстийг тод байлгах гол тохиргоонууд
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
-      transform: 'perspective(1px) translateZ(0)', // Force GPU rendering
+      transform: 'perspective(1px) translateZ(0)', 
       backfaceVisibility: 'hidden',
     };
   };
@@ -101,7 +100,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                     lineHeight: '1', 
                     textAlign: 'center',
                     display: 'block',
-                    // Percent text fix
                     transform: 'perspective(1px) translateZ(0)',
                     backfaceVisibility: 'hidden',
                   }}>
@@ -168,7 +166,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                   borderRadius: '8px', 
                   padding: isMobile ? '4px 8px' : '4px 16px',
                   flex: 1,
-                  // Container GPU fix
                   transform: 'translate3d(0,0,0)',
                   backfaceVisibility: 'hidden'
                 }}>
@@ -176,7 +173,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                       style={{ 
                         fontWeight: '900', 
                         letterSpacing: '0.5px',
-                        // TEXT SHARPNESS FIX
                         WebkitFontSmoothing: 'subpixel-antialiased', 
                         MozOsxFontSmoothing: 'auto',
                         transform: 'perspective(1px) translateZ(0)',
@@ -196,7 +192,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                   padding: isMobile ? '0 8px' : '0 16px',
                   cursor: 'pointer', border: 'none',
                   flex: 1.5,
-                  // Container GPU fix
                   transform: 'translate3d(0,0,0)',
                   backfaceVisibility: 'hidden'
                 }}>
@@ -205,10 +200,9 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                         fontWeight: '900', 
                         letterSpacing: '0.5px', 
                         textShadow: '0 1px 1px rgba(0,0,0,0.2)',
-                        // TEXT SHARPNESS FIX
                         WebkitFontSmoothing: 'subpixel-antialiased', 
                         MozOsxFontSmoothing: 'auto',
-                        transform: 'perspective(1px) translateZ(0)', // Энэ маш чухал
+                        transform: 'perspective(1px) translateZ(0)', 
                         backfaceVisibility: 'hidden',
                         display: 'inline-block'
                       }}>
@@ -259,7 +253,6 @@ const BodyContent = ({ onLottoClick }) => {
         if (wWidth >= 740) {
           setMobileSlideSize({ width: 330, height: 420 });
         } else {
-          // Mobile Logic - USER FIXED SIZE
           setMobileSlideSize({ width: 250, height: 336 });
         }
       } else {
@@ -339,8 +332,120 @@ const BodyContent = ({ onLottoClick }) => {
     return { display: 'none' };
   };
 
+  // =========================================================================
+  // 🎨 BLOOM ЗУРГИЙН ХЭМЖЭЭГ БҮХ ТӨХӨӨРӨМЖ ДЭЭР НАРИЙН ТОХИРУУЛАХ ФУНКЦ
+  // =========================================================================
+  const getBloomStyle = () => {
+    const w = windowWidth;
+
+    // --- 1. ЖИЖИГ УТАСНУУД (Small Mobile) ---
+    if (w < 360) {
+      return {
+        containerTop: '-40px',     
+        width: '180%',             
+        top: '-10%',               
+        left: '50%',               
+        transform: 'translateX(0%)',
+        scale: 1.0,                 
+        effectWidth: '55%'         
+      };
+    }
+
+    // --- 2. ДУНДАЖ УТАСНУУД (Standard Mobile) ---
+    else if (w >= 360 && w < 390) {
+      return {
+        containerTop: '-50px',
+        width: '160%',             
+        top: '-15%',
+        left: '50%',
+        transform: 'translateX(15%)',
+        scale: 1.3,
+        effectWidth: '50%'
+      };
+    }
+
+    // --- 3. ТОМ УТАСНУУД (Large Mobile / Plus / Max) ---
+    else if (w >= 390 && w < 430) {
+      return {
+        containerTop: '-60px',
+        width: '150%',             
+        top: '0%',
+        left: '50%',
+        transform: 'translateX(15%)',
+        scale: 1.3,
+        effectWidth: '55%'
+      };
+    }
+
+    // --- 4. ӨРГӨН УТАС БА ЖИЖИГ TABLET (Foldables / Phablets) ---
+    else if (w >= 430 && w < 768) {
+      return {
+        containerTop: '20px',      
+        width: '200%',
+        top: '-25%',
+        left: '50%',
+        transform: 'translateX(30%)',
+        scale: 1.6,
+        effectWidth: '36%'
+      };
+    }
+
+    // --- 5. TABLET БОЛОН IPAD (Portrait Mode) ---
+    else if (w >= 768 && w < 1024) {
+      return {
+        containerTop: '40px',
+        width: '100%',             
+        top: '-30%',
+        left: '0',
+        transform: 'none',
+        scale: 1.6,                
+        effectWidth: '45%'
+      };
+    }
+
+    // --- 6. ЖИЖИГ LAPTOP БА ТОМ TABLET (Landscape) ---
+    else if (w >= 1024 && w < 1280) {
+      return {
+        containerTop: '-100px',    
+        width: '120%',
+        top: '-36%',
+        left: '10%',
+        transform: 'translateX(-10%)',
+        scale: 2.0,
+        effectWidth: '26%'
+      };
+    }
+
+    // --- 7. ДУНДАЖ LAPTOP (Standard Laptop) ---
+    else if (w >= 1280 && w < 1600) {
+      return {
+        containerTop: '-100px',
+        width: '120%',
+        top: '0%',
+        left: '0',
+        transform: 'none', 
+        scale: 2.0,
+        effectWidth: '26%'
+      };
+    }
+
+    // --- 8. DESKTOP / ТОМ ДЭЛГЭЦ (Full HD & 4K) ---
+    else {
+      return {
+        containerTop: '-140px',    
+        width: '120%',             
+        top: '10%',
+        left: '0',
+        transform: 'none',
+        scale: 2.0,
+        effectWidth: '18%'
+      };
+    }
+  };
+
   const imageStyle = getImageStyles();
   const textPos = getTextStyles();
+  const bloomStyles = getBloomStyle(); 
 
   return (
     <>
@@ -348,8 +453,6 @@ const BodyContent = ({ onLottoClick }) => {
         {`
           @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@300;400;700;900&family=Roboto:wght@400;700;900&display=swap');
           
-          /* --- GLOBAL SHARP TEXT FIXES --- */
-          /* Текстийг тод болгох гол тохиргоонууд */
           body, html, #root {
              -webkit-font-smoothing: antialiased !important;
              -moz-osx-font-smoothing: grayscale !important;
@@ -357,13 +460,14 @@ const BodyContent = ({ onLottoClick }) => {
           }
 
           .sharp-text-container {
-             transform: translate3d(0, 0, 0); /* Force GPU */
+             transform: translate3d(0, 0, 0); 
              backface-visibility: hidden;
              perspective: 1000px;
           }
 
+          /* --- HEADER Z-INDEX FIXED TO 9999 TO COVER EVERYTHING --- */
           header, .header-container {
-            position: fixed !important; top: 0; left: 0; width: 100%; z-index: 100 !important; background: #0f172a;
+            position: fixed !important; top: 0; left: 0; width: 100%; z-index: 9999 !important; background: transparent;
           }
 
           .mobile-title-container, .desktop-title-container { z-index: 110 !important; }
@@ -381,8 +485,6 @@ const BodyContent = ({ onLottoClick }) => {
               overflow: visible !important; 
               user-select: none; background-color: #0f172a; z-index: 10; 
               cursor: pointer;
-              
-              /* Blur арилгах гол хэсэг */
               transform-style: preserve-3d;
               backface-visibility: hidden;
               will-change: transform; 
@@ -399,17 +501,23 @@ const BodyContent = ({ onLottoClick }) => {
                 filter: blur(0px) !important; opacity: 1 !important; z-index: 100 !important;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
              }
-             /* Идэвхтэй слайд дээрх текстийг blur-гүй болгох */
              .swiper-slide-active .w-full {
                 transform: translateZ(0); 
                 backface-visibility: hidden;
              }
              
              .swiper-slide { filter: blur(2px); opacity: 0.8; }
+             
+             /* ЭНД ӨӨРЧЛӨЛТ ОРСОН: Цаашаагаа (Z-axis) жижгэрч алга болох эффект */
              .swiper-slide-prev { 
-                opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
-                transform: translateY(-500%) !important; z-index: -100 !important;
+                opacity: 0 !important; 
+                visibility: hidden !important; 
+                pointer-events: none !important;
+                /* Дээшээ 500% шидэхгүйгээр, бага зэрэг дээшлээд гүн рүү (Z) түлхэж, жижгэрүүлнэ */
+                transform: translate3d(0, -50px, -400px) scale(0.6) !important; 
+                z-index: -100 !important;
              }
+
              .swiper-slide-next {
                 opacity: 0.6 !important; filter: blur(4px) !important; z-index: 50 !important; visibility: visible !important;
              }
@@ -424,13 +532,12 @@ const BodyContent = ({ onLottoClick }) => {
              }
              .swiper-slide-prev, .swiper-slide-next { 
                  opacity: 0.8 !important; 
-                 pointer-events: auto !important; /* Enable clicks on side slides */
+                 pointer-events: auto !important; 
              }
           }
 
           .swiper-slide img { 
              width: 100%; height: 100%; object-fit: cover; border-radius: ${isMobile ? '20px' : '40px'} !important;
-             /* Prevent image blur during scaling */
              image-rendering: -webkit-optimize-contrast;
           }
           
@@ -453,7 +560,6 @@ const BodyContent = ({ onLottoClick }) => {
               .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
           }
           
-          /* ... other media queries unchanged ... */
           @media (min-width: 740px) and (max-width: 1025px) {
               .mobile-title-container { margin-top: 100px !important; display: flex !important; position: relative !important; z-index: 60 !important; }
               .swiper-container-wrapper { margin-top: 20px !important; z-index: 10 !important; }
@@ -513,43 +619,58 @@ const BodyContent = ({ onLottoClick }) => {
             <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
                  style={{ 
                     position: isPhone ? 'fixed' : (isMobile ? 'relative' : 'absolute'),
+                    // getBloomStyle функцээс ирсэн containerTop-ийг ашиглана
+                    marginTop: isMobile ? bloomStyles.containerTop : '-140px', 
                     top: isPhone ? (isSmallPhone ? '60px' : '50px') : (isMobile ? 'auto' : '50px'),
-                    marginTop: isPhone ? '-50px' : (isSmallPhone ? '45px' : (isMobile ? '100px' : '-140px')), 
                     marginBottom: isPhone ? '-40px' : '0', paddingBottom: isPhone ? '0px' : '0',
-                    zIndex: 110, flexShrink: 0, pointerEvents: 'none', left: isPhone ? 0 : 'auto', width: '100%'
+                    zIndex: 110, flexShrink: 0, pointerEvents: 'none', 
+                    left: isPhone ? 0 : 'auto', 
+                    width: '100%'
                  }}>
 
               {/* Image Container */}
               <div style={{
-                position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: '300%', maxWidth: isMobile ? '180%' : '100%',
+                position: 'relative', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                // Функцээс ирсэн өргөн ба байрлалууд:
+                width: bloomStyles.width, 
+                maxWidth: isMobile ? '180%' : '100%',
                 height: isSmallPhone ? '160px' : (isPhone ? '200px' : (isMobile ? '180px' : '180px')),
+                transform: bloomStyles.transform, // X тэнхлэгийн дагуу төвлөрүүлэх
+                left: isMobile ? '0' : '0', 
               }}>
                 <div style={{
-                    position: 'absolute', left: '50%', transform: 'translateX(-50%)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    pointerEvents: 'none', zIndex: 1,
-                    top: (isPhone && window.innerWidth === 359) ? '-300px' 
-                       : (isPhone && window.innerWidth < 360) ? '-240px' 
-                       : isSmallPhone ? '-280px'                          
-                       : (isPhone && window.innerWidth === 428) ? '-370px' 
-                       : (isPhone && window.innerWidth >= 425) ? '-300px' 
-                       : (isPhone && window.innerWidth >= 400) ? '-290px' 
-                       : isPhone ? '-270px'                               
-                       : (isMobile ? '-60%' : '-25%'),
-                    width: (isPhone && window.innerWidth < 360) ? '170vw' 
-                         : isSmallPhone ? '90vw'                         
-                         : (isPhone && window.innerWidth === 428) ? '210vw' 
-                         : (isPhone && window.innerWidth >= 425) ? '120vw' 
-                         : (isPhone && window.innerWidth >= 400) ? '120vw' 
-                         : isPhone ? '120vw'                              
-                         : (isMobile ? '100vw' : '200%'),
-                    height: isPhone ? '200vw' : '180%',
+                    position: 'absolute', 
+                    // Функцээс ирсэн нарийн тохиргоонууд:
+                    left: bloomStyles.left === '50%' ? '50%' : bloomStyles.left,
+                    top: bloomStyles.top,
+                    transform: bloomStyles.left === '50%' ? 'translateX(-50%)' : 'none',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    pointerEvents: 'none', 
+                    zIndex: 1,
+                    width: '100%',
+                    height: '100%',
+                    scale: bloomStyles.scale // Томруулах/Жижигрүүлэх
                 }}>
                     <img src="assets/Bloom.png" alt="Bloom"
-                        style={{ width: '100%', height: '104%', objectFit: 'contain', mixBlendMode: 'screen', position: 'absolute', top: 0, left: 0 }}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'screen', position: 'absolute', top: 0, left: 0 }}
                     />
-                    
+                    <img src="assets/effect.png" alt="Lottery Effect" className="effect-image"
+                        style={{ 
+                          position: 'absolute', 
+                          objectFit: 'contain', 
+                          mixBlendMode: 'normal', 
+                          top: '65%', 
+                          left: '50%', 
+                          transform: 'translate(-50%, -50%)',
+                          width: isMobile ? bloomStyles.effectWidth : '18%', // Effect-ийн хэмжээг мөн тааруулав
+                          height: 'auto'
+                        }}
+                    />
                 </div>
 
                 {!isMobile && (
@@ -571,15 +692,19 @@ const BodyContent = ({ onLottoClick }) => {
               </div>
             )}
 
-            {/* SWIPER CONTAINER */}
+            {/* SWIPER CONTAINER - MASK ADDED HERE TO HIDE CONTENT BEHIND HEADER */}
             <div className={`swiper-container-wrapper ${isMobile ? "w-full relative" : "absolute w-full"}`} 
                  style={{ 
                      flexGrow: isPhone ? 0 : 0, 
                      height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                      minHeight: isPhone ? '0' : 'auto', 
-                     top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '-30px' : '120px'),
+                     top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '-50px' : '120px'),
                      marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
-                     display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10
+                     display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10,
+                     // 🎨 ШИНЭЧЛЭГДСЭН ХЭСЭГ: MASKING
+                     // Header-ийн доороос 20% хүртэл уусгаж харуулах (Дээд хэсэг нь transparent)
+                     WebkitMaskImage: isMobile ? 'linear-gradient(to bottom, transparent 0%, black 0%, black 0%)' : 'none',
+                     maskImage: isMobile ? 'linear-gradient(to bottom, transparent 0%, black 0%, black 0%)' : 'none'
                  }}>
                 
                 {isMobile && !isPhone && (
@@ -658,7 +783,7 @@ const BodyContent = ({ onLottoClick }) => {
                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
                  </svg>
-                 <p style={{ fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: '300', color: '#FFFFFF', textShadow: '0 1px 3px rgba(0,0,0,0.6)', fontSize: '12px', margin: '0', lineHeight: '1', textAlign: 'left' }}>
+                 <p style={{ fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: '300', color: '#FFFFFF', textShadow: '0 1px 3px rgba(0,0,0,0.6)', fontSize: '13px', margin: '0', lineHeight: '1', textAlign: 'left' }}>
                     Сангийн яамны зөвшөөрөлтэй
                  </p>
              </div>
