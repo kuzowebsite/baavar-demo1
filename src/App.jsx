@@ -100,7 +100,11 @@ function App() {
 
           {showLayout && (
             <div className="hidden lg:block relative z-50">
-              <Footer />
+              {/* ӨӨРЧЛӨЛТ ОРСОН ХЭСЭГ: 
+                  showGoldenLine={selectedIndex === 0} 
+                  Энэ нь зөвхөн BodyContent хуудас (0) дээр л true байна.
+              */}
+              <Footer showGoldenLine={selectedIndex === 0} />
             </div>
           )}
         </>
