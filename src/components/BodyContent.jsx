@@ -531,29 +531,25 @@ const BodyContent = ({ onLottoClick }) => {
                     pointerEvents: 'none', zIndex: 1,
                     top: (isPhone && window.innerWidth === 359) ? '-300px' 
                        : (isPhone && window.innerWidth < 360) ? '-240px' 
-                       : isSmallPhone ? '-306px'                          
+                       : isSmallPhone ? '-280px'                          
                        : (isPhone && window.innerWidth === 428) ? '-370px' 
-                       : (isPhone && window.innerWidth >= 425) ? '-340px' 
-                       : (isPhone && window.innerWidth >= 400) ? '-330px' 
-                       : isPhone ? '-280px'                               
-                       : (isMobile ? '-50%' : '-25%'),
+                       : (isPhone && window.innerWidth >= 425) ? '-300px' 
+                       : (isPhone && window.innerWidth >= 400) ? '-290px' 
+                       : isPhone ? '-270px'                               
+                       : (isMobile ? '-60%' : '-25%'),
                     width: (isPhone && window.innerWidth < 360) ? '170vw' 
-                         : isSmallPhone ? '150vw'                         
+                         : isSmallPhone ? '90vw'                         
                          : (isPhone && window.innerWidth === 428) ? '210vw' 
-                         : (isPhone && window.innerWidth >= 425) ? '200vw' 
-                         : (isPhone && window.innerWidth >= 400) ? '205vw' 
-                         : isPhone ? '180vw'                              
-                         : (isMobile ? '180vw' : '200%'),
+                         : (isPhone && window.innerWidth >= 425) ? '120vw' 
+                         : (isPhone && window.innerWidth >= 400) ? '120vw' 
+                         : isPhone ? '120vw'                              
+                         : (isMobile ? '100vw' : '200%'),
                     height: isPhone ? '200vw' : '180%',
                 }}>
                     <img src="assets/Bloom.png" alt="Bloom"
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'screen', position: 'absolute', top: 0, left: 0 }}
+                        style={{ width: '100%', height: '104%', objectFit: 'contain', mixBlendMode: 'screen', position: 'absolute', top: 0, left: 0 }}
                     />
-                    <img src="assets/effect.png" alt="Lottery Effect" className="effect-image"
-                        style={{ position: 'absolute', objectFit: 'contain', mixBlendMode: 'normal', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                            width: (isPhone) ? '55%' : (isMobile ? '25%' : '18%'), height: 'auto'
-                        }}
-                    />
+                    
                 </div>
 
                 {!isMobile && (
