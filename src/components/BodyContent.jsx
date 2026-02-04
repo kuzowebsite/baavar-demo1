@@ -117,7 +117,7 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
           borderBottomLeftRadius: isMobile ? '18px' : '38px',
           borderBottomRightRadius: isMobile ? '18px' : '38px',
           marginTop: '0px', 
-          marginBottom: '-1px', 
+          marginBottom: '0px', // ЗАСВАР: -1px байсныг 0px болгов (Доорх заагийг арилгахын тулд)
           flexShrink: 0, 
           minHeight: 0 
         }}>
@@ -425,8 +425,20 @@ const BodyContent = ({ onLottoClick }) => {
       };
     }
 
+    else if (w >= 1024 && w < 1280) {
+      return {
+        containerTop: '40px',
+        width: '100%',             
+        top: '-30%',
+        left: '0',
+        transform: 'none',
+        scale: 1.6,                
+        effectWidth: '45%'
+      };
+    }
+
     // --- 6. ЖИЖИГ LAPTOP БА ТОМ TABLET (Landscape) ---
-    else if (w >= 1400 && w < 1280) {
+    else if (w >= 1280 && w < 1400) {
       return {
         containerTop: '-100px',    
         width: '120%',
@@ -579,7 +591,11 @@ const BodyContent = ({ onLottoClick }) => {
           }
 
           @media (max-width: 739px) {
-              .custom-swiper { padding-top: 0px !important; padding-bottom: 0px !important; }
+              .custom-swiper { 
+        padding-top: 0px !important; 
+        padding-bottom: 80px !important; 
+        overflow: visible !important; 
+    }
           }
           
           @media (min-width: 740px) and (max-width: 1025px) {
@@ -718,15 +734,15 @@ const BodyContent = ({ onLottoClick }) => {
             <div className={`swiper-container-wrapper ${isMobile ? "w-full relative" : "absolute w-full"}`} 
                  style={{ 
                      flexGrow: isPhone ? 0 : 0, 
-                     height: isPhone ? 'auto' : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
+                     height: isPhone ? `${mobileSlideSize.height + 400}px` : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
                      minHeight: isPhone ? '0' : 'auto', 
                      top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '-50px' : (isNotebook ? '40px' : '120px')),
                      marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '10px' : '-8px')) : '0', 
-                     display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10,
+                     display: 'flex', alignItems: isPhone ? 'flex-start' : 'center', justifyContent: 'center', zIndex: 10,
                      // 🎨 ШИНЭЧЛЭГДСЭН ХЭСЭГ: MASKING
                      // Header-ийн доороос 20% хүртэл уусгаж харуулах (Дээд хэсэг нь transparent)
-                     WebkitMaskImage: isMobile ? 'linear-gradient(to bottom, transparent 0%, black 0%, black 0%)' : 'none',
-                     maskImage: isMobile ? 'linear-gradient(to bottom, transparent 0%, black 0%, black 0%)' : 'none'
+                     WebkitMaskImage: 'none',
+maskImage: 'none'
                  }}>
                 
                 {isMobile && !isPhone && (
@@ -751,12 +767,12 @@ const BodyContent = ({ onLottoClick }) => {
                     loop={true}
                     speed={500}
                     mousewheel={isPhone ? true : false} 
-                    spaceBetween={isPhone ? 0 : (isNotebook ? 40 : 80)}
+                    spaceBetween={isPhone ? 20 : (isNotebook ? 40 : 80)}
                     slideToClickedSlide={true}
                     autoplay={{ delay: 10000, disableOnInteraction: false }}
                     onTouchMove={() => setIsInteracting(true)} 
                     onTouchEnd={() => setTimeout(() => setIsInteracting(false), 500)} 
-                    coverflowEffect={{ rotate: 0, stretch: isPhone ? -320 : 0, depth: isPhone ? 150 : 100, modifier: 1, slideShadows: false, scale: isPhone ? 0.9 : 1 }}
+                    coverflowEffect={{ rotate: 0, stretch: isPhone ? 0 : 0, depth: isPhone ? 80 : 100, modifier: isPhone ? 0.8 : 1, slideShadows: false, scale: isPhone ? 0.85 : 1 }}
                     modules={[EffectCoverflow, Pagination, Autoplay, Mousewheel, Navigation]} 
                     className="custom-swiper"
                     style={{ height: '100%', width: '100%' }}
