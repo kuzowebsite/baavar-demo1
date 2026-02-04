@@ -2,14 +2,14 @@ import React from 'react';
 
 // Жишээ өгөгдөл
 const WINNERS_DATA = [
-  { id: 1, title: "LEXUS RX 350", luckyNumber: "A4F92K", phone: "9911 2***", date: "2024.02.01", img: "/win/win1.jpg" },
-  { id: 2, title: "IPHONE 15 PRO", luckyNumber: "B77X12", phone: "8805 1***", date: "2024.02.03", img: "/win/win1.jpg" },
-  { id: 3, title: "5 САЯ ТӨГРӨГ", luckyNumber: "C90L01", phone: "9191 8***", date: "2024.02.05", img: "/win/win1.jpg" },
-  { id: 4, title: "SUPER ЯЛАГЧ", luckyNumber: "S11K99", phone: "8080 3***", date: "2024.02.06", img: "/win/win1.jpg" },
-  { id: 5, title: "LAND CRUISER", luckyNumber: "LC300X", phone: "9900 9***", date: "2024.02.08", img: "/win/win1.jpg" },
-  { id: 6, title: "MACBOOK PRO", luckyNumber: "M2PRO5", phone: "9515 7***", date: "2024.02.10", img: "/win/win1.jpg" },
-  { id: 7, title: "PLAYSTATION 5", luckyNumber: "PS5X01", phone: "8686 2***", date: "2024.02.12", img: "/win/win1.jpg" },
-  { id: 8, title: "AIRPODS MAX", luckyNumber: "APM999", phone: "9444 5***", date: "2024.02.14", img: "/win/win1.jpg" },
+  { id: 1, title: "LEXUS RX 350", luckyNumber: "A4F92K", phone: "9911 2***", date: "2024.02.01", img: "/suglaa/1.png" },
+  { id: 2, title: "IPHONE 15 PRO", luckyNumber: "B77X12", phone: "8805 1***", date: "2024.02.03", img: "/suglaa/2.png" },
+  { id: 3, title: "5 САЯ ТӨГРӨГ", luckyNumber: "C90L01", phone: "9191 8***", date: "2024.02.05", img: "/suglaa/3.png" },
+  { id: 4, title: "SUPER ЯЛАГЧ", luckyNumber: "S11K99", phone: "8080 3***", date: "2024.02.06", img: "/suglaa/4.png" },
+  { id: 5, title: "LAND CRUISER", luckyNumber: "LC300X", phone: "9900 9***", date: "2024.02.08", img: "/suglaa/5.png" },
+  { id: 6, title: "MACBOOK PRO", luckyNumber: "M2PRO5", phone: "9515 7***", date: "2024.02.10", img: "/suglaa/1.png" },
+  { id: 7, title: "PLAYSTATION 5", luckyNumber: "PS5X01", phone: "8686 2***", date: "2024.02.12", img: "/suglaa/3.png" },
+  { id: 8, title: "AIRPODS MAX", luckyNumber: "APM999", phone: "9444 5***", date: "2024.02.14", img: "/suglaa/4.png" },
 ];
 
 const WinnersScreen = () => {
