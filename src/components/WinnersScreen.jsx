@@ -78,7 +78,7 @@ const WinnersScreen = () => {
         </style>
 
         {/* Header */}
-        <div className="w-full max-w-[1400px] mx-auto text-center md:text-left mb-4">
+        <div className="w-full max-w-[1490px] mx-auto text-center md:text-left mb-4">
            <h2 className="section-title text-2xl md:text-3xl pl-0 md:pl-2">
              ТОХИРЛЫН ЯЛАГЧИД
            </h2>
@@ -86,7 +86,7 @@ const WinnersScreen = () => {
 
         {/* GRID CONTAINER - ӨӨРЧЛӨГДСӨН ХЭСЭГ */}
         {/* lg:grid-cols-3 гэдгийг нэмж өгсөн (Notebook/Laptop дээр 3 багана болно) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 w-full max-w-[1400px] mx-auto pb-10 justify-items-center md:justify-items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6 w-full max-w-[1490px] mx-auto pb-10 justify-items-center md:justify-items-stretch">
           {WINNERS_DATA.map((item, i) => (
             <div 
               key={i} 
