@@ -294,7 +294,7 @@ const BodyContent = ({ onLottoClick }) => {
 
     // 6. ТОМ УТАС / Pro Max (415px - 767px)
     if (windowWidth < 768) {
-        return { width: '300px', left: '-80px', bottom: '0' };
+        return { width: '270px', left: '-80px', bottom: '0' };
     }
 
     // 7. TABLET (768px - 1023px) - iPad, Galaxy Tab
@@ -330,7 +330,7 @@ const BodyContent = ({ onLottoClick }) => {
 
     // 4. iPhone 12/13/14/15 Pro (376px - 400px)
     if (windowWidth <= 400) {
-        return { bottom: '30%' };
+        return { bottom: '29%' };
     }
 
     // 5. iPhone Plus (414px)
