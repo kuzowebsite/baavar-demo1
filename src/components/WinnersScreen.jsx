@@ -33,13 +33,14 @@ const WinnersScreen = () => {
           {`
             @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap');
             
-            /* Section Title Style */
+            /* Section Title Style - CHANGED TO GOLD GRADIENT */
             .section-title {
               font-family: 'Montserrat Alternates', sans-serif;
               font-weight: 900;
               text-transform: uppercase;
               letter-spacing: 1px;
-              background: linear-gradient(180deg, #FFFFFF 0%, #E2E2E2 100%);
+              /* ШИНЭ ӨНГӨ: #FFE37C -> #A6690F */
+              background: linear-gradient(180deg, #FFE37C 0%, #A6690F 100%);
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
               filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
@@ -92,16 +93,11 @@ const WinnersScreen = () => {
             <div 
               key={i} 
               // Card Width & Height Adjustment
-              // w-[335px]: Өргөнийг бага зэрэг нэмж текстийг багтаав
-              // h-[160px]: Өндрийг тохируулав (зураг дөрвөлжин харагдахад дөхөм болгож)
               className="winner-card-outer w-[335px] h-[160px] md:w-auto md:h-[180px]"
             >
               <div className="winner-card-inner">
                 
-                {/* 1. Зүүн талд: ЗУРАГ 
-                    w-[130px]: Тогтмол өргөн өгснөөр зургийг гонзгой биш, дөрвөлжин харагдуулна.
-                    h-full: Өндөртэйгээ тэнцүүлэхийг зорив.
-                */}
+                {/* 1. Зүүн талд: ЗУРАГ */}
                 <div className="w-[130px] md:w-[150px] h-full relative overflow-hidden border-r border-white/10 shrink-0">
                    <img 
                      src={item.img} 
@@ -111,7 +107,7 @@ const WinnersScreen = () => {
                    <div className="absolute inset-0 bg-gradient-to-tr from-black/30 to-transparent"></div>
                 </div>
 
-                {/* 2. Баруун талд: МЭДЭЭЛЭЛ (Үлдсэн зайг эзэлнэ: flex-1) */}
+                {/* 2. Баруун талд: МЭДЭЭЛЭЛ */}
                 <div 
                   className="flex-1 flex flex-col justify-between p-3 md:p-4
                              bg-[url('/assets/background.jpg')] bg-cover bg-center bg-no-repeat"
