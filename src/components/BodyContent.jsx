@@ -647,7 +647,7 @@ const BodyContent = ({ onLottoClick }) => {
       {/* --- FIXED BACKGROUND --- */}
       <div 
         style={{
-          position: 'fixed', top: 0, left: 0, width: '120vw', height: '120vh',
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
           backgroundImage: "url('assets/background.jpg')", backgroundSize: 'cover',
           backgroundPosition: 'center', backgroundRepeat: 'no-repeat', zIndex: 0, pointerEvents: 'none' 
         }}
@@ -828,7 +828,7 @@ maskImage: 'none'
 
             {/* WOMAN IMAGE - Dynamic for Phones Only */}
             {(isPhone || window.innerWidth < 768) && (
-             <div style={{ position: 'absolute', bottom: imageStyle.bottom, left: imageStyle.left, zIndex: 90, pointerEvents: 'none', display: imageStyle.display }}>
+             <div style={{ position: 'absolute', bottom: imageStyle.bottom, left: imageStyle.left, zIndex: 5, pointerEvents: 'none', display: imageStyle.display }}>
                   <img src="/assets/mongolian-woman.png" style={{ width: imageStyle.width, height: 'auto' }} alt="Host" />
              </div>
             )}
