@@ -314,12 +314,22 @@ const BodyContent = ({ onLottoClick }) => {
   const getImageStyles = () => {
     if (windowWidth <= 320) return { width: '135px', left: '-34px', bottom: '0' };
     if (windowWidth <= 333) return { width: '155px', left: '-45px', bottom: '0' };
-    if (windowWidth <= 344) return { width: '200px', left: '-65px', bottom: '0' };
+    if (windowWidth <= 334) return { width: '155px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 344) return { width: '155px', left: '-45px', bottom: '0' };
     if (windowWidth <= 360) return { width: '140px', left: '-30px', bottom: '0' };
     if (windowWidth <= 375) return { width: '140px', left: '-30px', bottom: '0' };
-    if (windowWidth <= 391) return { width: '200px', left: '-50px', bottom: '0' };
-    if (windowWidth <= 400) return { width: '260px', left: '-80px', bottom: '0' };
-    if (windowWidth <= 414) return { width: '180px', left: '-40px', bottom: '0' };
+    if (windowWidth <= 390) return { width: '195px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 391) return { width: '155px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 393) return { width: '205px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 394) return { width: '140px', left: '-50px', bottom: '0' };
+    if (windowWidth <= 396) return { width: '120px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 400) return { width: '150px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 414) return { width: '120px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 422) return { width: '180px', left: '-40px', bottom: '0' };
+    if (windowWidth <= 424) return { width: '180px', left: '-40px', bottom: '0' };
+    if (windowWidth <= 426) return { width: '140px', left: '-40px', bottom: '0' };
+        if (windowWidth <= 430) return { width: '180px', left: '-40px', bottom: '0' };
+        if (windowWidth <= 530) return { width: '130px', left: '-30px', bottom: '0' };
     if (windowWidth < 768) return { width: '270px', left: '-80px', bottom: '0' };
     if (windowWidth >= 768 && windowWidth < 1024) return { width: '200px', left: '-40px', bottom: '0' }; 
     return { width: '0px', left: '0px', bottom: '0', display: 'none' }; 
@@ -329,12 +339,23 @@ const BodyContent = ({ onLottoClick }) => {
   const getTextStyles = () => {
     if (windowWidth <= 320) return { bottom: '20%' };
     if (windowWidth <= 333) return { bottom: '23%' };
-    if (windowWidth <= 344) return { bottom: '26%' };
+    if (windowWidth <= 334) return { bottom: '22%' };
+    if (windowWidth <= 344) return { bottom: '22%' };
     if (windowWidth <= 360) return { bottom: '20%' };
     if (windowWidth <= 375) return { bottom: '19%' };
-    if (windowWidth <= 391) return { bottom: '26%' };
-    if (windowWidth <= 400) return { bottom: '29%' };
-    if (windowWidth <= 414) return { bottom: '23%' };
+    if (windowWidth <= 376) return { bottom: '24%' };
+    if (windowWidth <= 390) return { bottom: '26%' };
+    if (windowWidth <= 391) return { bottom: '22%' };
+    if (windowWidth <= 393) return { bottom: '27%' };
+    if (windowWidth <= 394) return { bottom: '23%' };
+    if (windowWidth <= 396) return { bottom: '13%' };
+    if (windowWidth <= 400) return { bottom: '22%' };
+    if (windowWidth <= 414) return { bottom: '18%' };
+    if (windowWidth <= 422) return { bottom: '23%' };
+    if (windowWidth <= 424) return { bottom: '23%' };
+    if (windowWidth <= 426) return { bottom: '20%' };
+    if (windowWidth <= 430) return { bottom: '23%' };
+    if (windowWidth <= 530) return { bottom: '16%' };
     if (windowWidth < 767) return { bottom: '30%' };
     if (windowWidth < 819) return { bottom: '27%' };
     if (windowWidth >= 820 && windowWidth < 1024) return { bottom: '36%' };
@@ -725,7 +746,7 @@ const BodyContent = ({ onLottoClick }) => {
             </div>
 
             {!isMobile && (
-              <div className="absolute pointer-events-none" style={{ left: '80px', bottom: '-30px', height: 'auto', top: '140px', zIndex: 9999 }}>
+              <div className="absolute pointer-events-none" style={{ left: '90px', bottom: '-30px', height: 'auto', top: '140px', zIndex: 9999 }}>
                 <img src="/assets/mongolian-woman.png" alt="Host" style={{ height: '780px', width: 'auto', objectFit: 'contain' }} />
               </div>
             )}
@@ -813,7 +834,7 @@ maskImage: 'none'
             )}
 
             {/* TEXT & ICON - Visible on Phones & Tablets, Hidden on Desktop (>= 1024) */}
-            {window.innerWidth < 1024 && (
+            {/* {window.innerWidth < 1024 && (
              <div style={{
                   position: 'absolute', bottom: textPos.bottom, left: '50%', transform: 'translateX(-50%)', 
                   zIndex: 90, display: textPos.display || 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px', pointerEvents: 'none', whiteSpace: 'nowrap'
@@ -825,7 +846,7 @@ maskImage: 'none'
                     Сангийн яамны зөвшөөрөлтэй
                  </p>
              </div>
-            )}
+            )}*/}
 
             {isMobile && !isPhone && (
               <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
