@@ -647,7 +647,7 @@ const BodyContent = ({ onLottoClick }) => {
       {/* --- FIXED BACKGROUND --- */}
       <div 
         style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '120vh',
           backgroundImage: "url('assets/background.jpg')", backgroundSize: 'cover',
           backgroundPosition: 'center', backgroundRepeat: 'no-repeat', zIndex: 0, pointerEvents: 'none' 
         }}
