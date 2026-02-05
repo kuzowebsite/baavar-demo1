@@ -117,7 +117,7 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
           borderBottomLeftRadius: isMobile ? '18px' : '38px',
           borderBottomRightRadius: isMobile ? '18px' : '38px',
           marginTop: '0px', 
-          marginBottom: '0px', // ЗАСВАР: -1px байсныг 0px болгов (Доорх заагийг арилгахын тулд)
+          marginBottom: '0px', 
           flexShrink: 0, 
           minHeight: 0 
         }}>
@@ -644,20 +644,27 @@ const BodyContent = ({ onLottoClick }) => {
         `}
       </style>
 
-      {/* --- FIXED BACKGROUND --- */}
+      {/* --- FIXED BACKGROUND (ӨӨРЧЛӨГДСӨН: 120vh - Доош сунгав) --- */}
       <div 
         style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          backgroundImage: "url('assets/background.jpg')", backgroundSize: 'cover',
-          backgroundPosition: 'center', backgroundRepeat: 'no-repeat', zIndex: 0, pointerEvents: 'none' 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100vw', 
+          height: '120vh', // ЗАСВАР: Доор цагаан зай гарахаас сэргийлж сунгав
+          backgroundImage: "url('assets/background.jpg')", 
+          backgroundSize: 'cover',
+          backgroundPosition: 'center', 
+          backgroundRepeat: 'no-repeat', 
+          zIndex: 0, 
+          pointerEvents: 'none' 
         }}
       />
 
       {/* Main Container */}
       <div className={`w-full relative flex`} 
            style={{ 
-               // ӨӨРЧЛӨЛТ: 100vh байсныг 100dvh болгосон. 
-               // Энэ нь Safari-ийн доод мөрний зайг тооцож, контентыг тэр зайны ДЭЭР гаргана.
+               // ӨӨРЧЛӨЛТ: 100dvh (Safari Bottom Bar Fix)
                height: isPhone ? '100dvh' : '100%', 
                
                minHeight: isMobile ? '100dvh' : '600px', 
@@ -666,12 +673,11 @@ const BodyContent = ({ onLottoClick }) => {
                alignItems: 'center', 
                paddingTop: isMobile ? '0px' : '0', 
                
-               // ӨӨРЧЛӨЛТ: overflow: hidden нь дэлгэцээс илүү гарсан зүйлсийг тасдаж харуулна
                overflow: 'hidden', 
                
                backgroundColor: 'transparent',
                
-               // iPhone-ий доод зураасны (Home indicator) зайг авах
+               // iPhone Home Indicator Fix
                paddingBottom: isPhone ? 'env(safe-area-inset-bottom)' : '0'
            }}>
           
@@ -694,7 +700,11 @@ const BodyContent = ({ onLottoClick }) => {
                     marginTop: isMobile ? bloomStyles.containerTop : '-140px', 
                     top: isPhone ? (isSmallPhone ? '60px' : '50px') : (isMobile ? 'auto' : '50px'),
                     marginBottom: isPhone ? '-40px' : '0', paddingBottom: isPhone ? '0px' : '0',
-                    zIndex: 110, flexShrink: 0, pointerEvents: 'none', 
+                    
+                    // ЗАСВАР: Z-Index-ийг 10001 болгож Header (9999)-ийн наана гаргав
+                    zIndex: 10001, 
+                    
+                    flexShrink: 0, pointerEvents: 'none', 
                     left: isPhone ? 0 : 'auto', 
                     width: '100%'
                  }}>
@@ -772,10 +782,8 @@ const BodyContent = ({ onLottoClick }) => {
                      top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '10px' : (isNotebook ? '40px' : '120px')),
                      marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '80px' : '-8px')) : '0', 
                      display: 'flex', alignItems: isPhone ? 'flex-start' : 'center', justifyContent: 'center', zIndex: 10,
-                     // 🎨 ШИНЭЧЛЭГДСЭН ХЭСЭГ: MASKING
-                     // Header-ийн доороос 20% хүртэл уусгаж харуулах (Дээд хэсэг нь transparent)
                      WebkitMaskImage: 'none',
-maskImage: 'none'
+                     maskImage: 'none'
                  }}>
                 
                 {isMobile && !isPhone && (
@@ -790,6 +798,7 @@ maskImage: 'none'
                 )}
 
                 <Swiper
+                    initialSlide={5} // ЗАСВАР: LEXUS RX (Index 5)-ээс эхлүүлж байна (Infinite loop-ийн гол хэсгээс)
                     onSwiper={setSwiperRef}
                     direction={isPhone ? 'vertical' : 'horizontal'} 
                     effect={'coverflow'}
@@ -840,12 +849,21 @@ maskImage: 'none'
 
             {/* WOMAN IMAGE - Dynamic for Phones Only */}
             {(isPhone || window.innerWidth < 768) && (
-             <div style={{ position: 'absolute', bottom: imageStyle.bottom, left: imageStyle.left, zIndex: 90, pointerEvents: 'none', display: imageStyle.display }}>
+             <div style={{ 
+                  position: 'absolute', 
+                  bottom: imageStyle.bottom, 
+                  left: imageStyle.left, 
+                  // ЗАСВАР: zIndex: 5 (Card-ны цаана оруулав)
+                  zIndex: 5,
+                  pointerEvents: 'none', 
+                  display: imageStyle.display 
+             }}>
                   <img src="/assets/mongolian-woman.png" style={{ width: imageStyle.width, height: 'auto' }} alt="Host" />
              </div>
             )}
 
             {/* TEXT & ICON - Visible on Phones & Tablets, Hidden on Desktop (>= 1024) */}
+            {/* ТҮР НУУСАН */}
             {/* {window.innerWidth < 1024 && (
              <div style={{
                   position: 'absolute', bottom: textPos.bottom, left: '50%', transform: 'translateX(-50%)', 
@@ -858,7 +876,7 @@ maskImage: 'none'
                     Сангийн яамны зөвшөөрөлтэй
                  </p>
              </div>
-            )}*/}
+            )} */}
 
             {isMobile && !isPhone && (
               <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
