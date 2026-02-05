@@ -854,7 +854,7 @@ const BodyContent = ({ onLottoClick }) => {
                   bottom: imageStyle.bottom, 
                   left: imageStyle.left, 
                   // ЗАСВАР: zIndex: 5 (Card-ны цаана оруулав)
-                  zIndex: 5,
+                  zIndex: 99,
                   pointerEvents: 'none', 
                   display: imageStyle.display 
              }}>
