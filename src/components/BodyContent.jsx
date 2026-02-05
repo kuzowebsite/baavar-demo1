@@ -656,11 +656,23 @@ const BodyContent = ({ onLottoClick }) => {
       {/* Main Container */}
       <div className={`w-full relative flex`} 
            style={{ 
-               height: isPhone ? '100vh' : '100%', 
-               minHeight: isMobile ? '100vh' : '600px', 
+               // ӨӨРЧЛӨЛТ: 100vh байсныг 100dvh болгосон. 
+               // Энэ нь Safari-ийн доод мөрний зайг тооцож, контентыг тэр зайны ДЭЭР гаргана.
+               height: isPhone ? '100dvh' : '100%', 
+               
+               minHeight: isMobile ? '100dvh' : '600px', 
                flexDirection: 'column', 
                justifyContent: isPhone ? 'flex-start' : (isMobile ? 'flex-start' : 'center'), 
-               alignItems: 'center', paddingTop: isMobile ? '0px' : '0', overflow: 'hidden', backgroundColor: 'transparent' 
+               alignItems: 'center', 
+               paddingTop: isMobile ? '0px' : '0', 
+               
+               // ӨӨРЧЛӨЛТ: overflow: hidden нь дэлгэцээс илүү гарсан зүйлсийг тасдаж харуулна
+               overflow: 'hidden', 
+               
+               backgroundColor: 'transparent',
+               
+               // iPhone-ий доод зураасны (Home indicator) зайг авах
+               paddingBottom: isPhone ? 'env(safe-area-inset-bottom)' : '0'
            }}>
           
           <div className="relative" 
@@ -828,7 +840,7 @@ maskImage: 'none'
 
             {/* WOMAN IMAGE - Dynamic for Phones Only */}
             {(isPhone || window.innerWidth < 768) && (
-             <div style={{ position: 'absolute', bottom: imageStyle.bottom, left: imageStyle.left, zIndex: 5, pointerEvents: 'none', display: imageStyle.display }}>
+             <div style={{ position: 'absolute', bottom: imageStyle.bottom, left: imageStyle.left, zIndex: 90, pointerEvents: 'none', display: imageStyle.display }}>
                   <img src="/assets/mongolian-woman.png" style={{ width: imageStyle.width, height: 'auto' }} alt="Host" />
              </div>
             )}
