@@ -520,9 +520,10 @@ const BodyContent = ({ onLottoClick }) => {
              perspective: 1000px;
           }
 
-          /* --- HEADER Z-INDEX FIXED TO 9999 TO COVER EVERYTHING --- */
+          /* --- HEADER Z-INDEX FIXED TO LOWER VALUE SO CONTENT CAN COVER IT --- */
+          /* ӨӨРЧЛӨЛТ: Header-ийг 9999-өөс 40 болгож буулгав, ингэснээр Bloom (10001) болон Картууд дээгүүр нь гарна */
           header, .header-container {
-            position: fixed !important; top: 0; left: 0; width: 100%; z-index: 9999 !important; background: transparent;
+            position: fixed !important; top: 0; left: 0; width: 100%; z-index: 40 !important; background: transparent;
           }
 
           .mobile-title-container, .desktop-title-container { z-index: 110 !important; }
@@ -701,7 +702,7 @@ const BodyContent = ({ onLottoClick }) => {
                     top: isPhone ? (isSmallPhone ? '60px' : '50px') : (isMobile ? 'auto' : '50px'),
                     marginBottom: isPhone ? '-40px' : '0', paddingBottom: isPhone ? '0px' : '0',
                     
-                    // ЗАСВАР: Z-Index-ийг 10001 болгож Header (9999)-ийн наана гаргав
+                    // ЗАСВАР: Z-Index-ийг 10001 хэвээр үлдээв (Header 40 болсон тул энэ нь наана харагдана)
                     zIndex: 10001, 
                     
                     flexShrink: 0, pointerEvents: 'none', 
@@ -862,22 +863,6 @@ const BodyContent = ({ onLottoClick }) => {
              </div>
             )}
 
-            {/* TEXT & ICON - Visible on Phones & Tablets, Hidden on Desktop (>= 1024) */}
-            {/* ТҮР НУУСАН */}
-            {/* {window.innerWidth < 1024 && (
-             <div style={{
-                  position: 'absolute', bottom: textPos.bottom, left: '50%', transform: 'translateX(-50%)', 
-                  zIndex: 90, display: textPos.display || 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px', pointerEvents: 'none', whiteSpace: 'nowrap'
-             }}>
-                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M23 12L20.6 9.2L20.9 5.5L17.3 4.7L15.4 1.5L12 3L8.6 1.5L6.7 4.7L3.1 5.5L3.4 9.2L1 12L3.4 14.8L3.1 18.5L6.7 19.3L8.6 22.5L12 21L15.4 22.5L17.3 19.3L20.9 18.5L20.6 14.8L23 12ZM10 16.5L6 12.5L7.4 11.1L10 13.7L16.6 7.1L18 8.5L10 16.5Z" fill="white"/>
-                 </svg>
-                 <p style={{ fontFamily: "'Montserrat Alternates', sans-serif", fontWeight: '300', color: '#FFFFFF', textShadow: '0 1px 3px rgba(0,0,0,0.6)', fontSize: '13px', margin: '0', lineHeight: '1', textAlign: 'left' }}>
-                    Сангийн яамны зөвшөөрөлтэй
-                 </p>
-             </div>
-            )} */}
-
             {isMobile && !isPhone && (
               <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
                    style={{ marginTop: '1px', marginLeft: '40px', transform: 'translateY(0px)' }}>
@@ -905,4 +890,3 @@ const BodyContent = ({ onLottoClick }) => {
 };
 
 export default BodyContent;
-
