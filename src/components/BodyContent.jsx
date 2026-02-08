@@ -317,6 +317,7 @@ const BodyContent = ({ onLottoClick }) => {
     if (windowWidth <= 334) return { width: '155px', left: '-45px', bottom: '0' };
     if (windowWidth <= 344) return { width: '155px', left: '-45px', bottom: '0' };
     if (windowWidth <= 360) return { width: '140px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 370) return { width: '150px', left: '-30px', bottom: '0' };
     if (windowWidth <= 375) return { width: '200px', left: '-50px', bottom: '0' };
     if (windowWidth <= 381) return { width: '190px', left: '-50px', bottom: '0' };
     if (windowWidth <= 388) return { width: '190px', left: '-50px', bottom: '0' };
@@ -330,7 +331,7 @@ const BodyContent = ({ onLottoClick }) => {
     if (windowWidth <= 422) return { width: '180px', left: '-40px', bottom: '0' };
     if (windowWidth <= 424) return { width: '180px', left: '-40px', bottom: '0' };
     if (windowWidth <= 426) return { width: '140px', left: '-40px', bottom: '0' };
-        if (windowWidth <= 430) return { width: '290px', left: '-60px', bottom: '0' };
+        if (windowWidth <= 430) return { width: '220px', left: '-60px', bottom: '0' };
         if (windowWidth <= 530) return { width: '130px', left: '-30px', bottom: '0' };
     if (windowWidth < 768) return { width: '270px', left: '-80px', bottom: '0' };
     if (windowWidth >= 768 && windowWidth < 1024) return { width: '200px', left: '-40px', bottom: '0' }; 
