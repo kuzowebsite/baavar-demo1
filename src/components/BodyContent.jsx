@@ -312,26 +312,40 @@ const BodyContent = ({ onLottoClick }) => {
 
   // --- HELPER: Image Size & Position Logic ---
   const getImageStyles = () => {
+    if (windowWidth <= 295) return { width: '105px', left: '-34px', bottom: '0' };
+    if (windowWidth <= 312) return { width: '105px', left: '-34px', bottom: '0' };
     if (windowWidth <= 320) return { width: '135px', left: '-34px', bottom: '0' };
+    if (windowWidth <= 332) return { width: '125px', left: '-34px', bottom: '0' };
     if (windowWidth <= 333) return { width: '155px', left: '-45px', bottom: '0' };
     if (windowWidth <= 334) return { width: '155px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 343) return { width: '145px', left: '-45px', bottom: '0' };
     if (windowWidth <= 344) return { width: '155px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 353) return { width: '125px', left: '-45px', bottom: '0' };
     if (windowWidth <= 360) return { width: '140px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 366) return { width: '120px', left: '-30px', bottom: '0' };
     if (windowWidth <= 370) return { width: '150px', left: '-30px', bottom: '0' };
-    if (windowWidth <= 375) return { width: '200px', left: '-50px', bottom: '0' };
-    if (windowWidth <= 381) return { width: '190px', left: '-50px', bottom: '0' };
-    if (windowWidth <= 388) return { width: '190px', left: '-50px', bottom: '0' };
-    if (windowWidth <= 390) return { width: '170px', left: '-40px', bottom: '0' };
+    if (windowWidth <= 374) return { width: '130px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 375) return { width: '130px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 377) return { width: '150px', left: '-50px', bottom: '0' };
+    if (windowWidth <= 381) return { width: '140px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 384) return { width: '140px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 388) return { width: '150px', left: '-50px', bottom: '0' };
+    if (windowWidth <= 389) return { width: '130px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 390) return { width: '140px', left: '-40px', bottom: '0' };
     if (windowWidth <= 391) return { width: '155px', left: '-45px', bottom: '0' };
-    if (windowWidth <= 393) return { width: '205px', left: '-45px', bottom: '0' };
+    if (windowWidth <= 392) return { width: '135px', left: '-35px', bottom: '0' };
+    if (windowWidth <= 393) return { width: '135px', left: '-35px', bottom: '0' };
     if (windowWidth <= 394) return { width: '140px', left: '-50px', bottom: '0' };
     if (windowWidth <= 396) return { width: '120px', left: '-30px', bottom: '0' };
     if (windowWidth <= 400) return { width: '150px', left: '-45px', bottom: '0' };
     if (windowWidth <= 414) return { width: '150px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 415) return { width: '130px', left: '-30px', bottom: '0' };
+    if (windowWidth <= 416) return { width: '120px', left: '-20px', bottom: '0' };
     if (windowWidth <= 422) return { width: '180px', left: '-40px', bottom: '0' };
+    if (windowWidth <= 423) return { width: '120px', left: '-30px', bottom: '0' };
     if (windowWidth <= 424) return { width: '180px', left: '-40px', bottom: '0' };
     if (windowWidth <= 426) return { width: '140px', left: '-40px', bottom: '0' };
-        if (windowWidth <= 430) return { width: '220px', left: '-60px', bottom: '0' };
+        if (windowWidth <= 430) return { width: '160px', left: '-40px', bottom: '0' };
         if (windowWidth <= 530) return { width: '130px', left: '-30px', bottom: '0' };
     if (windowWidth < 768) return { width: '270px', left: '-80px', bottom: '0' };
     if (windowWidth >= 768 && windowWidth < 1024) return { width: '200px', left: '-40px', bottom: '0' }; 
