@@ -315,23 +315,49 @@ const BodyContent = ({ onLottoClick }) => {
     }
     
     const isSmallScreen = window.innerHeight < 750;
-    const isTinyMobile = windowWidth < 430; // 430-аас бага хэмжээг шалгах
+    
+    // БАЙРЛАЛ ТОХИРУУЛГА (BOTTOM POSITION)
+    let bottomPos;
+    
+    if (windowWidth <= 365) {
+        // 360px: Доошлуулах (Одоогийнхоос доош -65px)
+        bottomPos = '-65px'; 
+    } else if (windowWidth > 365 && windowWidth <= 380) {
+        // 375px: Яг болсон (-40px хэвээр)
+        bottomPos = '-40px';
+    } else if (windowWidth > 380 && windowWidth < 430) {
+        // 412px болон 414px
+        if (window.innerHeight < 500) {
+            // 414 x 360 (Хэвтээ эсвэл намхан): Яг болсон
+            bottomPos = '-40px';
+        } else {
+            // 412px, 414 x 890 (Босоо): Дээшлүүлэх (0px эсвэл -10px руу дөхнө)
+            bottomPos = '-10px'; 
+        }
+    } else {
+        // 430px+: Яг болсон (0px хэвээр)
+        bottomPos = '0px';
+    }
+
+    // Зургийн өндөр (Height) тохируулга
+    // Жижиг дэлгэц дээр зураг хэт жижигрэхээс сэргийлж 412/414 дээр бага зэрэг томруулав
+    const heightStyle = (windowWidth > 380 && windowWidth < 430 && window.innerHeight > 500) 
+        ? '32vh' // 412/414 дээр бага зэрэг том
+        : (windowWidth < 430 ? '28vh' : (isSmallScreen ? '30vh' : '35vh'));
 
     return { 
       position: 'fixed', 
       left: '20%', 
-      // 430-аас бага бол -40px, үгүй бол 0px байрлалд байна
-      bottom: isTinyMobile ? '-40px' : '0px', 
+      bottom: bottomPos, // Шинэчлэгдсэн байрлал
       transform: 'translateX(-50%)', 
       width: 'auto',
-      // Дэлгэц жижиг байх тусам зургийн өндрийг багасгаж өгвөл карттай давхцахгүй
-      height: isTinyMobile ? '28vh' : (isSmallScreen ? '30vh' : '35vh'),
-      maxHeight: isTinyMobile ? '220px' : (isSmallScreen ? '240px' : '320px'),
+      height: heightStyle,
+      maxHeight: windowWidth < 430 ? '240px' : (isSmallScreen ? '240px' : '320px'),
       zIndex: 90, 
       pointerEvents: 'none', 
       lineHeight: 0, 
       fontSize: 0,
-      transition: 'all 0.3s ease' // Хэмжээ өөрчлөгдөхөд зөөлөн харагдуулна
+      transition: 'all 0.3s ease' 
     }; 
   };
 
