@@ -11,14 +11,13 @@ import 'swiper/css/navigation';
 const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
   const gradientId = `starGradient-${item.uniqueId}`;
 
-  // Function to get button color based on lottery ID
   const getButtonColor = (itemId) => {
     const colors = {
-      1: '#2563EB', // LEXUS RX - Bright Blue
-      2: '#EF4444', // ХУРДАН МОРЬ - Vibrant Red
-      3: '#D97706', // 9.999.999₮ - Amber
-      4: '#8B5CF6', // IPHONE 17 - Purple
-      5: '#059669', // 1.000.000₮ - Emerald
+      1: '#2563EB', 
+      2: '#EF4444', 
+      3: '#D97706', 
+      4: '#8B5CF6', 
+      5: '#059669', 
     };
     return colors[itemId] || '#FF6060';
   };
@@ -122,7 +121,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
           minHeight: 0 
         }}>
         
-        {/* АРЫН ФОН */}
         <div style={{
             position: 'absolute',
             top: 0,
@@ -138,7 +136,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
             zIndex: 0
         }}></div>
 
-        {/* ҮНДСЭН КОНТЕНТ */}
         <div className="w-full flex flex-col items-center relative z-10"
              style={{
                paddingLeft: isMobile ? '20px' : '40px',
@@ -159,7 +156,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
             
             <div className="w-full flex items-stretch justify-between" style={{ marginTop: '4px', marginBottom: '0', gap: '8px' }}>
               
-              {/* ҮНЭ */}
               <div className="flex items-center justify-center shadow-md sharp-text-container" 
                 style={{ 
                   backgroundColor: '#F8BE53', 
@@ -183,7 +179,6 @@ const CardContent = ({ item, isMobile, handlePurchaseClick }) => {
                 </span>
               </div>
 
-              {/* ТОВЧ */}
               <button onClick={(e) => { e.stopPropagation(); handlePurchaseClick(item); }}
                 className="flex items-center justify-center shadow-lg hover:brightness-110 transition-all active:scale-95 sharp-text-container" 
                 style={{ 
@@ -224,10 +219,10 @@ const BodyContent = ({ onLottoClick }) => {
   const [isSmallPhone, setIsSmallPhone] = useState(false);
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [selectedLotto, setSelectedLotto] = useState(null);
+  
   const [mobileSlideSize, setMobileSlideSize] = useState({ width: 290, height: 356 });
+  
   const [isInteracting, setIsInteracting] = useState(false);
-
-  // Дэлгэцийн өргөнийг хадгалах
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -249,11 +244,14 @@ const BodyContent = ({ onLottoClick }) => {
       setIsSmallPhone(smallPhoneCheck);
 
       if (mobileCheck) {
-        setScale(1); 
-        if (wWidth >= 740) {
-          setMobileSlideSize({ width: 330, height: 420 });
+        if (phoneCheck) {
+            const baseMobileWidth = 390; 
+            const mobileScale = wWidth / baseMobileWidth;
+            setScale(mobileScale);
+            setMobileSlideSize({ width: 290, height: 356 });
         } else {
-          setMobileSlideSize({ width: 250, height: 336 });
+            setScale(1); 
+            setMobileSlideSize({ width: 330, height: 420 });
         }
       } else {
         const widthScale = wWidth / designWidth;
@@ -286,14 +284,15 @@ const BodyContent = ({ onLottoClick }) => {
   const DESKTOP_SLIDE_WIDTH = 540; 
   const DESKTOP_SLIDE_HEIGHT = 650;
   
-  // Notebook хэмжээнүүдийн хувьд жижигрүүлсэн хэмжээ
   const isNotebook = windowWidth >= 1025 && windowWidth < 1400;
   const NOTEBOOK_SLIDE_WIDTH = 420;
   const NOTEBOOK_SLIDE_HEIGHT = 500;
   
   const SLIDE_WIDTH_ACTIVE = isMobile ? mobileSlideSize.width : (isNotebook ? NOTEBOOK_SLIDE_WIDTH : DESKTOP_SLIDE_WIDTH);
   const SLIDE_HEIGHT_ACTIVE = isMobile ? mobileSlideSize.height : (isNotebook ? NOTEBOOK_SLIDE_HEIGHT : DESKTOP_SLIDE_HEIGHT);
-  const CONTAINER_HEIGHT = 760;
+  
+  // ЗАСВАР: Desktop дээр контент багтах өндрийг ихэсгэв (760 -> 950)
+  const CONTAINER_HEIGHT = 950;
 
   const handlePurchaseClick = (item, isActive) => {
     if (isActive === false) return; 
@@ -310,214 +309,66 @@ const BodyContent = ({ onLottoClick }) => {
     setSelectedLotto(null);
   };
 
-  // --- HELPER: Image Size & Position Logic ---
   const getImageStyles = () => {
-    if (windowWidth <= 295) return { width: '105px', left: '-34px', bottom: '-50px' };
-    if (windowWidth <= 312) return { width: '105px', left: '-34px', bottom: '-50px' };
-    if (windowWidth <= 320) return { width: '135px', left: '-34px', bottom: '-50px' };
-    if (windowWidth <= 332) return { width: '125px', left: '-34px', bottom: '-50px' };
-    if (windowWidth <= 333) return { width: '155px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 334) return { width: '155px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 343) return { width: '145px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 344) return { width: '155px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 353) return { width: '125px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 360) return { width: '140px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 366) return { width: '120px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 370) return { width: '150px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 374) return { width: '130px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 375) return { width: '200px', left: '-50px', bottom: '-50px' };
-    if (windowWidth <= 377) return { width: '150px', left: '-50px', bottom: '-50px' };
-    if (windowWidth <= 381) return { width: '140px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 384) return { width: '140px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 388) return { width: '150px', left: '-50px', bottom: '-50px' };
-    if (windowWidth <= 389) return { width: '130px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 390) return { width: '210px', left: '-40px', bottom: '-50px' };
-    if (windowWidth <= 391) return { width: '155px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 392) return { width: '135px', left: '-35px', bottom: '-50px' };
-    if (windowWidth <= 393) return { width: '215px', left: '-55px', bottom: '-50px' };
-    if (windowWidth <= 394) return { width: '140px', left: '-50px', bottom: '-50px' };
-    if (windowWidth <= 396) return { width: '120px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 400) return { width: '150px', left: '-45px', bottom: '-50px' };
-    if (windowWidth <= 412) return { width: '260px', left: '-65px', bottom: '-50px' };
-    if (windowWidth <= 414) return { width: '150px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 415) return { width: '130px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 416) return { width: '120px', left: '-20px', bottom: '-50px' };
-    if (windowWidth <= 422) return { width: '180px', left: '-40px', bottom: '-50px' };
-    if (windowWidth <= 423) return { width: '120px', left: '-30px', bottom: '-50px' };
-    if (windowWidth <= 424) return { width: '180px', left: '-40px', bottom: '-50px' };
-    if (windowWidth <= 426) return { width: '140px', left: '-40px', bottom: '-50px' };
-        if (windowWidth <= 430) return { width: '260px', left: '-60px', bottom: '-50px' };
-        if (windowWidth <= 530) return { width: '130px', left: '-30px', bottom: '-50px' };
-    if (windowWidth < 768) return { width: '270px', left: '-80px', bottom: '-50px' };
-    if (windowWidth >= 768 && windowWidth < 1024) return { width: '200px', left: '-40px', bottom: '-50px' }; 
-    return { width: '0px', left: '0px', bottom: '0', display: 'none' }; 
+    if (windowWidth >= 768) {
+      return { display: 'none' };
+    }
+    
+    const isSmallScreen = window.innerHeight < 750;
+    const isTinyMobile = windowWidth < 430; // 430-аас бага хэмжээг шалгах
+
+    return { 
+      position: 'fixed', 
+      left: '20%', 
+      // 430-аас бага бол -40px, үгүй бол 0px байрлалд байна
+      bottom: isTinyMobile ? '-40px' : '0px', 
+      transform: 'translateX(-50%)', 
+      width: 'auto',
+      // Дэлгэц жижиг байх тусам зургийн өндрийг багасгаж өгвөл карттай давхцахгүй
+      height: isTinyMobile ? '28vh' : (isSmallScreen ? '30vh' : '35vh'),
+      maxHeight: isTinyMobile ? '220px' : (isSmallScreen ? '240px' : '320px'),
+      zIndex: 90, 
+      pointerEvents: 'none', 
+      lineHeight: 0, 
+      fontSize: 0,
+      transition: 'all 0.3s ease' // Хэмжээ өөрчлөгдөхөд зөөлөн харагдуулна
+    }; 
   };
 
-  // --- HELPER: Text Position Logic ---
-  const getTextStyles = () => {
-    if (windowWidth <= 320) return { bottom: '20%' };
-    if (windowWidth <= 333) return { bottom: '23%' };
-    if (windowWidth <= 334) return { bottom: '22%' };
-    if (windowWidth <= 344) return { bottom: '22%' };
-    if (windowWidth <= 360) return { bottom: '20%' };
-    if (windowWidth <= 375) return { bottom: '19%' };
-    if (windowWidth <= 376) return { bottom: '24%' };
-    if (windowWidth <= 390) return { bottom: '26%' };
-    if (windowWidth <= 391) return { bottom: '22%' };
-    if (windowWidth <= 393) return { bottom: '27%' };
-    if (windowWidth <= 394) return { bottom: '23%' };
-    if (windowWidth <= 396) return { bottom: '13%' };
-    if (windowWidth <= 400) return { bottom: '22%' };
-    if (windowWidth <= 414) return { bottom: '18%' };
-    if (windowWidth <= 422) return { bottom: '23%' };
-    if (windowWidth <= 424) return { bottom: '23%' };
-    if (windowWidth <= 426) return { bottom: '20%' };
-    if (windowWidth <= 430) return { bottom: '23%' };
-    if (windowWidth <= 530) return { bottom: '16%' };
-    if (windowWidth < 767) return { bottom: '30%' };
-    if (windowWidth < 819) return { bottom: '27%' };
-    if (windowWidth >= 820 && windowWidth < 1024) return { bottom: '36%' };
-    return { display: 'none' };
-  };
-
-  // =========================================================================
-  // 🎨 BLOOM ЗУРГИЙН ХЭМЖЭЭГ БҮХ ТӨХӨӨРӨМЖ ДЭЭР НАРИЙН ТОХИРУУЛАХ ФУНКЦ
-  // =========================================================================
   const getBloomStyle = () => {
     const w = windowWidth;
-
-    // --- NOTEBOOK ХЭМЖЭЭНҮҮД (1025px - 1400px) ---
     if (w >= 1025 && w < 1400) {
-      return {
-        containerTop: '-80px',    
-        width: '100%',
-        top: '0%',
-        left: '0',
-        transform: 'none',
-        scale: 2.4,
-        effectWidth: '22%'
-      };
+      return { containerTop: '-80px', width: '100%', top: '0%', left: '0', transform: 'none', scale: 2.4, effectWidth: '22%' };
     }
-
-    // --- 1. ЖИЖИГ УТАСНУУД (Small Mobile) ---
     if (w < 360) {
-      return {
-        containerTop: '-40px',     
-        width: '180%',             
-        top: '-10%',               
-        left: '50%',               
-        transform: 'translateX(0%)',
-        scale: 1.0,                 
-        effectWidth: '55%'         
-      };
+      return { containerTop: '-40px', width: '180%', top: '-10%', left: '50%', transform: 'translateX(0%)', scale: 1.0, effectWidth: '55%' };
     }
-
-    // --- 2. ДУНДАЖ УТАСНУУД (Standard Mobile) ---
     else if (w >= 360 && w < 390) {
-      return {
-        containerTop: '-50px',
-        width: '160%',             
-        top: '-15%',
-        left: '50%',
-        transform: 'translateX(15%)',
-        scale: 1.3,
-        effectWidth: '50%'
-      };
+      return { containerTop: '-50px', width: '160%', top: '-15%', left: '50%', transform: 'translateX(15%)', scale: 1.3, effectWidth: '50%' };
     }
-
-    // --- 3. ТОМ УТАСНУУД (Large Mobile / Plus / Max) ---
     else if (w >= 390 && w < 430) {
-      return {
-        containerTop: '-60px',
-        width: '150%',             
-        top: '0%',
-        left: '50%',
-        transform: 'translateX(15%)',
-        scale: 1.3,
-        effectWidth: '55%'
-      };
+      return { containerTop: '-60px', width: '150%', top: '0%', left: '50%', transform: 'translateX(15%)', scale: 1.3, effectWidth: '55%' };
     }
-
-    // --- 4. ӨРГӨН УТАС БА ЖИЖИГ TABLET (Foldables / Phablets) ---
     else if (w >= 430 && w < 768) {
-      return {
-        containerTop: '20px',      
-        width: '200%',
-        top: '-25%',
-        left: '50%',
-        transform: 'translateX(30%)',
-        scale: 1.6,
-        effectWidth: '36%'
-      };
+      return { containerTop: '20px', width: '200%', top: '-25%', left: '50%', transform: 'translateX(30%)', scale: 1.6, effectWidth: '36%' };
     }
-
-    // --- 5. TABLET БОЛОН IPAD (Portrait Mode) ---
     else if (w >= 768 && w < 1024) {
-      return {
-        containerTop: '40px',
-        width: '100%',             
-        top: '-30%',
-        left: '0',
-        transform: 'none',
-        scale: 1.6,                
-        effectWidth: '45%'
-      };
+      return { containerTop: '40px', width: '100%', top: '-30%', left: '0', transform: 'none', scale: 1.6, effectWidth: '45%' };
     }
-
     else if (w >= 1024 && w < 1280) {
-      return {
-        containerTop: '40px',
-        width: '100%',             
-        top: '-30%',
-        left: '0',
-        transform: 'none',
-        scale: 1.6,                
-        effectWidth: '45%'
-      };
+      return { containerTop: '40px', width: '100%', top: '-30%', left: '0', transform: 'none', scale: 1.6, effectWidth: '45%' };
     }
-
-    // --- 6. ЖИЖИГ LAPTOP БА ТОМ TABLET (Landscape) ---
     else if (w >= 1280 && w < 1400) {
-      return {
-        containerTop: '-100px',    
-        width: '120%',
-        top: '-36%',
-        left: '10%',
-        transform: 'translateX(-10%)',
-        scale: 2.0,
-        effectWidth: '26%'
-      };
+      return { containerTop: '-100px', width: '120%', top: '-36%', left: '10%', transform: 'translateX(-10%)', scale: 2.0, effectWidth: '26%' };
     }
-
-    // --- 7. ДУНДАЖ LAPTOP (Standard Laptop) ---
     else if (w >= 1400 && w < 1600) {
-      return {
-        containerTop: '-100px',
-        width: '120%',
-        top: '0%',
-        left: '0',
-        transform: 'none', 
-        scale: 2.0,
-        effectWidth: '26%'
-      };
+      return { containerTop: '-100px', width: '120%', top: '0%', left: '0', transform: 'none', scale: 2.0, effectWidth: '26%' };
     }
-
-    // --- 8. DESKTOP / ТОМ ДЭЛГЭЦ (Full HD & 4K) ---
     else {
-      return {
-        containerTop: '-140px',
-        width: '120%',             
-        top: '10%',
-        left: '0',
-        transform: 'none',
-        scale: 2.0,
-        effectWidth: '18%'
-      };
+      return { containerTop: '-140px', width: '120%', top: '10%', left: '0', transform: 'none', scale: 2.0, effectWidth: '18%' };
     }
   };
 
-  const imageStyle = getImageStyles();
-  const textPos = getTextStyles();
   const bloomStyles = getBloomStyle(); 
 
   return (
@@ -538,8 +389,6 @@ const BodyContent = ({ onLottoClick }) => {
              perspective: 1000px;
           }
 
-          /* --- HEADER Z-INDEX FIXED TO LOWER VALUE SO CONTENT CAN COVER IT --- */
-          /* ӨӨРЧЛӨЛТ: Header-ийг 9999-өөс 40 болгож буулгав, ингэснээр Bloom (10001) болон Картууд дээгүүр нь гарна */
           header, .header-container {
             position: fixed !important; top: 0; left: 0; width: 100%; z-index: 40 !important; background: transparent;
           }
@@ -547,7 +396,12 @@ const BodyContent = ({ onLottoClick }) => {
           .mobile-title-container, .desktop-title-container { z-index: 110 !important; }
 
           .custom-swiper { 
-            width: 100%; height: 100%; padding-top: 10px; padding-bottom: 10px; overflow: visible !important; 
+            width: 100%; 
+            height: 100%; 
+            /* ЗАСВАР: Padding-ийг ихэсгэв, ингэснээр hover хийхэд доошоо томрох зай гарна */
+            padding-top: 10px; 
+            padding-bottom: 80px; 
+            overflow: visible !important; 
           }
           .swiper-wrapper { align-items: center; transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1) !important; }
           
@@ -581,17 +435,13 @@ const BodyContent = ({ onLottoClick }) => {
              }
              
              .swiper-slide { filter: blur(2px); opacity: 0.8; }
-             
-             /* ЭНД ӨӨРЧЛӨЛТ ОРСОН: Цаашаагаа (Z-axis) жижгэрч алга болох эффект */
              .swiper-slide-prev { 
                 opacity: 0 !important; 
                 visibility: hidden !important; 
                 pointer-events: none !important;
-                /* Дээшээ 500% шидэхгүйгээр, бага зэрэг дээшлээд гүн рүү (Z) түлхэж, жижгэрүүлнэ */
                 transform: translate3d(0, -50px, -400px) scale(0.6) !important; 
                 z-index: -100 !important;
              }
-
              .swiper-slide-next {
                 opacity: 0.6 !important; filter: blur(4px) !important; z-index: 50 !important; visibility: visible !important;
              }
@@ -632,10 +482,10 @@ const BodyContent = ({ onLottoClick }) => {
 
           @media (max-width: 739px) {
               .custom-swiper { 
-        padding-top: 0px !important; 
-        padding-bottom: 80px !important; 
-        overflow: visible !important; 
-    }
+                padding-top: 0px !important; 
+                padding-bottom: 80px !important; 
+                overflow: visible !important; 
+             }
           }
           
           @media (min-width: 740px) and (max-width: 1025px) {
@@ -663,14 +513,13 @@ const BodyContent = ({ onLottoClick }) => {
         `}
       </style>
 
-      {/* --- FIXED BACKGROUND (ӨӨРЧЛӨГДСӨН: 120vh - Доош сунгав) --- */}
       <div 
         style={{
           position: 'fixed', 
           top: 0, 
           left: 0, 
           width: '100vw', 
-          height: '120vh', // ЗАСВАР: Доор цагаан зай гарахаас сэргийлж сунгав
+          height: '120vh',
           backgroundImage: "url('assets/background.jpg')", 
           backgroundSize: 'cover',
           backgroundPosition: 'center', 
@@ -680,70 +529,55 @@ const BodyContent = ({ onLottoClick }) => {
         }}
       />
 
-      {/* Main Container */}
       <div className={`w-full relative flex`} 
            style={{ 
-               // ӨӨРЧЛӨЛТ: 100dvh (Safari Bottom Bar Fix)
                height: isPhone ? '100dvh' : '100%', 
-               
                minHeight: isMobile ? '100dvh' : '600px', 
                flexDirection: 'column', 
                justifyContent: isPhone ? 'flex-start' : (isMobile ? 'flex-start' : 'center'), 
                alignItems: 'center', 
                paddingTop: isMobile ? '0px' : '0', 
-               
                overflow: 'hidden', 
-               
                backgroundColor: 'transparent',
-               
-               // iPhone Home Indicator Fix
                paddingBottom: isPhone ? 'env(safe-area-inset-bottom)' : '0'
            }}>
           
           <div className="relative" 
                style={{ 
-                   width: isMobile ? '100%' : '1920px', 
+                   width: isPhone ? `${100 / scale}%` : (isMobile ? '100%' : '1920px'), 
                    height: isPhone ? '100%' : (isMobile ? '100%' : `${CONTAINER_HEIGHT}px`), 
-                   transform: isMobile ? 'none' : `scale(${scale})`, 
-                   transformOrigin: 'center center',
+                   transform: isMobile ? (isPhone ? `scale(${scale})` : 'none') : `scale(${scale})`, 
+                   transformOrigin: isPhone ? 'top center' : 'center center',
                    display: isPhone ? 'flex' : (isMobile ? 'flex' : 'block'),
                    flexDirection: isMobile ? 'column' : 'row',
                    alignItems: 'center', zIndex: isMobile ? 'auto' : 1200, position: 'relative'
                }}>
             
-            {/* ГАРЧИГ / EFFECT IMAGE ХЭСЭГ */}
             <div className={`mobile-title-container ${isMobile ? "w-full flex flex-col items-center justify-center px-4 shrink-0" : "absolute w-full flex justify-center z-10"}`} 
                  style={{ 
                     position: isPhone ? 'fixed' : (isMobile ? 'relative' : 'absolute'),
-                    // getBloomStyle функцээс ирсэн containerTop-ийг ашиглана
                     marginTop: isMobile ? bloomStyles.containerTop : '-140px', 
                     top: isPhone ? (isSmallPhone ? '60px' : '50px') : (isMobile ? 'auto' : '50px'),
                     marginBottom: isPhone ? '-40px' : '0', paddingBottom: isPhone ? '0px' : '0',
-                    
-                    // ЗАСВАР: Z-Index-ийг 10001 хэвээр үлдээв (Header 40 болсон тул энэ нь наана харагдана)
                     zIndex: 10001, 
-                    
                     flexShrink: 0, pointerEvents: 'none', 
                     left: isPhone ? 0 : 'auto', 
                     width: '100%'
                  }}>
 
-              {/* Image Container */}
               <div style={{
                 position: 'relative', 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                // Функцээс ирсэн өргөн ба байрлалууд:
                 width: bloomStyles.width, 
                 maxWidth: isMobile ? '180%' : '100%',
                 height: isSmallPhone ? '160px' : (isPhone ? '200px' : (isMobile ? '180px' : '180px')),
-                transform: bloomStyles.transform, // X тэнхлэгийн дагуу төвлөрүүлэх
+                transform: bloomStyles.transform, 
                 left: isMobile ? '0' : '0', 
               }}>
                 <div style={{
                     position: 'absolute', 
-                    // Функцээс ирсэн нарийн тохиргоонууд:
                     left: bloomStyles.left === '50%' ? '50%' : bloomStyles.left,
                     top: bloomStyles.top,
                     transform: bloomStyles.left === '50%' ? 'translateX(-50%)' : 'none',
@@ -754,7 +588,7 @@ const BodyContent = ({ onLottoClick }) => {
                     zIndex: 1,
                     width: '100%',
                     height: '100%',
-                    scale: bloomStyles.scale // Томруулах/Жижигрүүлэх
+                    scale: bloomStyles.scale 
                 }}>
                     <img src="assets/Bloom.png" alt="Bloom"
                         style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'screen', position: 'absolute', top: 0, left: 0 }}
@@ -767,7 +601,7 @@ const BodyContent = ({ onLottoClick }) => {
                           top: '65%', 
                           left: '50%', 
                           transform: 'translate(-50%, -50%)',
-                          width: isMobile ? bloomStyles.effectWidth : '18%', // Effect-ийн хэмжээг мөн тааруулав
+                          width: isMobile ? bloomStyles.effectWidth : '18%', 
                           height: 'auto'
                         }}
                     />
@@ -792,11 +626,11 @@ const BodyContent = ({ onLottoClick }) => {
               </div>
             )}
 
-            {/* SWIPER CONTAINER - MASK ADDED HERE TO HIDE CONTENT BEHIND HEADER */}
             <div className={`swiper-container-wrapper ${isMobile ? "w-full relative" : "absolute w-full"}`} 
                  style={{ 
                      flexGrow: isPhone ? 0 : 0, 
-                     height: isPhone ? `${mobileSlideSize.height + 400}px` : (isMobile ? `${mobileSlideSize.height}px` : '700px'), 
+                     // ЗАСВАР: Desktop дээр Swiper-ийн өндрийг ихэсгэв (700px -> 850px)
+                     height: isPhone ? `${mobileSlideSize.height + 400}px` : (isMobile ? `${mobileSlideSize.height}px` : '850px'), 
                      minHeight: isPhone ? '0' : 'auto', 
                      top: (isPhone && window.innerWidth === 428) ? '-50px' : (isMobile ? '10px' : (isNotebook ? '40px' : '120px')),
                      marginTop: isMobile ? (isSmallPhone ? '60px' : (isPhone ? '80px' : '-8px')) : '0', 
@@ -817,7 +651,7 @@ const BodyContent = ({ onLottoClick }) => {
                 )}
 
                 <Swiper
-                    initialSlide={5} // ЗАСВАР: LEXUS RX (Index 5)-ээс эхлүүлж байна (Infinite loop-ийн гол хэсгээс)
+                    initialSlide={5} 
                     onSwiper={setSwiperRef}
                     direction={isPhone ? 'vertical' : 'horizontal'} 
                     effect={'coverflow'}
@@ -866,27 +700,43 @@ const BodyContent = ({ onLottoClick }) => {
                 </Swiper>
             </div>
 
-            {/* WOMAN IMAGE - Dynamic for Phones Only */}
+            {/* WOMAN IMAGE - FIXED POSITION */}
             {(isPhone || window.innerWidth < 768) && (
-             <div style={{ 
-                  position: 'absolute', 
-                  bottom: imageStyle.bottom, 
-                  left: imageStyle.left, 
-                  // ЗАСВАР: zIndex: 5 (Card-ны цаана оруулав)
-                  zIndex: 999,
-                  pointerEvents: 'none', 
-                  display: imageStyle.display 
-             }}>
-                  <img src="/assets/mongolian-woman.png" style={{ width: imageStyle.width, height: 'auto' }} alt="Host" />
+             <div style={getImageStyles()}>
+                  <img src="/assets/mongolian-woman.png" 
+                       style={{ 
+                         width: 'auto', 
+                         height: '100%', 
+                         objectFit: 'contain', 
+                         display: 'block', 
+                         margin: 0, 
+                         padding: 0
+                       }} 
+                       alt="Host" />
              </div>
             )}
 
             {isMobile && !isPhone && (
-              <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
-                   style={{ marginTop: '1px', marginLeft: '40px', transform: 'translateY(0px)' }}>
-                <img src="/assets/mongolian-woman.png" alt="Host" style={{ width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' }} />
-              </div>
-            )}
+  <div className="w-full flex justify-start items-end mt-4 relative z-50 pointer-events-none mobile-host-container"
+       style={{ 
+         marginTop: '1px', 
+         marginLeft: '40px', 
+         transform: 'translateY(0px)',
+         height: '50vh',
+         display: 'flex',
+         alignItems: 'flex-end'
+       }}>
+    <img src="/assets/mongolian-woman.png" alt="Host" 
+         style={{ 
+           width: 'auto', 
+           height: '100%', 
+           maxHeight: '500px', 
+           objectFit: 'contain', 
+           filter: 'drop-shadow(0px 5px 15px rgba(0,0,0,0.2))' 
+         }} 
+    />
+  </div>
+)}
 
           </div>
 
